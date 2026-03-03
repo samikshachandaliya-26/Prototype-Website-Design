@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from "react";
+import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button";
+import { StaggerTestimonials } from "@/components/ui/stagger-testimonials";
 import svgPaths from "../imports/svg-9yfe37tpyu";
 import Plasma from "./components/Plasma";
 import imgImage120 from "../assets/eec2f74ce2ad486e20ef40a4a0e13e319ee42aa4.png";
@@ -28,9 +30,7 @@ function Header() {
       <div className="h-[50px] relative shrink-0 w-[147px]">
         <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgImage120} />
       </div>
-      <div className="bg-[#bc312e] content-stretch flex items-center justify-center px-[14px] py-[7px] relative rounded-[1000px] shrink-0 cursor-pointer transition-all duration-300 hover:bg-[#a02926] hover:scale-105">
-        <p className="font-['Satoshi',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[24px] text-white tracking-[-0.45px]">Contact Us</p>
-      </div>
+      <InteractiveHoverButton className="w-[170px]" />
     </div>
   );
 }
@@ -468,52 +468,11 @@ function JourneySection() {
 }
 
 function TestimonialsSection() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-
   return (
     <div className="relative shrink-0 w-full">
       <div className="content-stretch flex flex-col gap-[60px] items-start px-[90px] relative w-full">
         <p className="font-['Cormorant_Garamond',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[60px] text-white tracking-[-0.45px]">What Our Partners Say</p>
-        <div className="bg-[#17181d] relative shrink-0 w-full transition-all duration-300 hover:bg-[#1f2026]">
-          <div className="content-stretch flex flex-col gap-[40px] items-start px-[120px] py-[40px] relative w-full">
-            <div className="content-stretch flex items-center justify-between relative shrink-0 w-full">
-              <div className="h-[30.928px] relative shrink-0 w-[125px]">
-                <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                  <img alt="" className="absolute h-[333.33%] left-[-13.4%] max-w-none top-[-116.67%] w-[123.71%]" src={imgFossilGroupLogoWine} />
-                </div>
-              </div>
-            </div>
-            <p className="font-['Satoshi',sans-serif] font-normal h-[136px] leading-[25px] not-italic relative shrink-0 text-[24px] text-white tracking-[-0.45px] w-full whitespace-pre-wrap">"Brewery transformed our vision into a product our users love. Their attention to detail is unmatched. Brewery transformed our vision into a product our users love. Their attention to detail is unmatched."</p>
-            <div className="content-stretch flex gap-[40px] items-end relative shrink-0 w-full">
-              <div className="flex-[1_0_0] font-['Satoshi',sans-serif] font-normal leading-[normal] min-h-px min-w-px not-italic opacity-85 relative text-[18px] text-white tracking-[-0.45px] whitespace-pre-wrap">
-                <p className="font-['Satoshi',sans-serif] font-bold mb-0">Priya Sharma</p>
-                <p>Founder, Nexus Healthcare</p>
-              </div>
-              <div className="content-stretch flex gap-[12px] items-start relative shrink-0">
-                <div className="relative shrink-0 size-[24px] cursor-pointer opacity-75 hover:opacity-100 transition-opacity duration-300">
-                  <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 24 24">
-                    <g clipPath="url(#clip0_1_796)" opacity="0.75">
-                      <path d={svgPaths.p2aab4540} fill="white" />
-                    </g>
-                    <defs>
-                      <clipPath id="clip0_1_796">
-                        <rect fill="white" height="24" width="24" />
-                      </clipPath>
-                    </defs>
-                  </svg>
-                </div>
-                <p className="font-['Satoshi',sans-serif] font-normal leading-[normal] not-italic relative shrink-0 text-[18px] text-white tracking-[-0.45px]">2 / 10</p>
-                <div className="relative shrink-0 size-[24px] cursor-pointer opacity-75 hover:opacity-100 transition-opacity duration-300">
-                  <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 24 24">
-                    <g opacity="0.75">
-                      <path d={svgPaths.p26612e80} fill="white" />
-                    </g>
-                  </svg>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <StaggerTestimonials />
       </div>
     </div>
   );
@@ -584,9 +543,7 @@ function ContactSection() {
                 <p className="leading-[60px] text-[#17181d]">to work with you!</p>
               </div>
             </div>
-            <div className="bg-[#bc312e] content-stretch flex items-center justify-center px-[14px] py-[7px] relative rounded-[1000px] shrink-0 cursor-pointer transition-all duration-300 hover:bg-[#a02926] hover:scale-105">
-              <p className="font-['Satoshi',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[24px] text-white tracking-[-0.45px]">Contact Us</p>
-            </div>
+            <InteractiveHoverButton className="w-[200px]" />
           </div>
           <div className="content-stretch flex flex-col gap-[24px] items-start leading-[normal] not-italic relative shrink-0 text-black tracking-[-0.45px]">
             <p className="font-['Satoshi',sans-serif] font-medium min-w-full relative shrink-0 text-[24px] w-[min-content] whitespace-pre-wrap">Locations</p>
