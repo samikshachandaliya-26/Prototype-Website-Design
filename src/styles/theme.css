@@ -1,10 +1,14 @@
 @custom-variant dark (&:is(.dark *));
 
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
 }
 
 :root {
+  /* Fixed section nav: gutter + width + mirrored gutter before main content */
+  --sidenav-gutter: 21px;
+  --sidenav-width: 95px;
+  --content-inset-left: calc(var(--sidenav-gutter) + var(--sidenav-width) + var(--sidenav-gutter));
   --font-size: 16px;
   --background: #ffffff;
   --foreground: oklch(0.145 0 0);

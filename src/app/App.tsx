@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { StaggerTestimonials } from "@/components/ui/stagger-testimonials";
+import { TestimonialsMinimal } from "@/components/TestimonialsMinimal";
 import { LiquidMetalButton } from "../components/LiquidMetalButton";
 import svgPaths from "../imports/svg-9yfe37tpyu";
 import Plasma from "./components/Plasma";
@@ -30,7 +30,7 @@ import imgJourney8YearsGrowing from "../assets/journey-8-years-growing.png";
 
 function Header() {
   return (
-    <div className="backdrop-blur-[30px] bg-[rgba(0,0,0,0.2)] content-stretch flex items-center justify-between px-[90px] py-[24px] shrink-0 fixed top-0 left-0 w-full z-50">
+    <div className="relative z-[2] w-full shrink-0 backdrop-blur-[30px] bg-[rgba(0,0,0,0.2)] content-stretch flex items-center justify-between pl-[max(90px,var(--content-inset-left))] pr-[90px] py-[24px]">
       <div className="h-[50px] relative shrink-0 w-[147px]">
         <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgImage120} />
       </div>
@@ -65,7 +65,7 @@ function NavButton({ label, href }: { label: string; href: string }) {
 function SideNav() {
   return (
     <nav
-      className="fixed left-[21px] top-1/2 -translate-y-1/2 content-stretch flex flex-col gap-[8px] items-start w-[95px] z-50 pointer-events-auto"
+      className="fixed left-[var(--sidenav-gutter)] top-1/2 -translate-y-1/2 content-stretch flex flex-col gap-[8px] items-start w-[var(--sidenav-width)] z-50 pointer-events-auto"
       aria-label="Section navigation"
     >
       {NAV_ITEMS.map((item) => (
@@ -75,19 +75,33 @@ function SideNav() {
   );
 }
 
+function HeroPlasmaLayer() {
+  return (
+    <div
+      className="pointer-events-none absolute left-1/2 top-0 z-[1] w-[min(1440px,100vw)] -translate-x-1/2"
+      style={{
+        height: "min(1750px, 125vh)",
+        WebkitMaskImage:
+          "linear-gradient(to bottom, #000 0%, #000 58%, rgba(0,0,0,0.85) 72%, rgba(0,0,0,0.35) 88%, transparent 100%)",
+        maskImage:
+          "linear-gradient(to bottom, #000 0%, #000 58%, rgba(0,0,0,0.85) 72%, rgba(0,0,0,0.35) 88%, transparent 100%)",
+      }}
+    >
+      <Plasma
+        color="#bc312e"
+        speed={0.6}
+        direction="forward"
+        scale={0.98}
+        opacity={0.82}
+        mouseInteractive={false}
+      />
+    </div>
+  );
+}
+
 function HeroSection() {
   return (
-    <div id="intro" className="content-stretch flex flex-col gap-[60px] items-start relative shrink-0 w-full scroll-mt-0">
-      <div className="-translate-x-1/2 absolute h-[731px] left-1/2 top-0 w-[1280px]">
-        <Plasma
-          color="#ff6b35"
-          speed={0.6}
-          direction="forward"
-          scale={1.1}
-          opacity={0.8}
-          mouseInteractive={true}
-        />
-      </div>
+    <div id="intro" className="relative z-[2] content-stretch flex flex-col gap-[60px] items-start shrink-0 w-full scroll-mt-0">
       <div className="h-[460px] relative shrink-0 w-full">
         <div className="absolute content-stretch flex flex-col font-['Cormorant_Garamond',sans-serif] font-medium items-end leading-[normal] left-[210px] not-italic pb-[10px] text-[80px] text-white top-[230px] tracking-[-0.45px] w-[968px]">
           <p className="min-w-full relative shrink-0 w-[min-content] whitespace-pre-wrap">{`We design products `}</p>
@@ -101,7 +115,9 @@ function HeroSection() {
 
 function SectionContainer({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={`w-full max-w-[1440px] mx-auto px-6 sm:px-10 md:px-14 lg:px-20 xl:px-[90px] ${className}`}>
+    <div
+      className={`w-full max-w-[1440px] mx-auto pl-[max(1.5rem,var(--content-inset-left))] sm:pl-[max(2.5rem,var(--content-inset-left))] md:pl-[max(3.5rem,var(--content-inset-left))] lg:pl-[max(5rem,var(--content-inset-left))] xl:pl-[max(90px,var(--content-inset-left))] pr-6 sm:pr-10 md:pr-14 lg:pr-20 xl:pr-[90px] ${className}`}
+    >
       {children}
     </div>
   );
@@ -109,7 +125,10 @@ function SectionContainer({ children, className = "" }: { children: React.ReactN
 
 function ClientsSection() {
   return (
-    <div id="clients" className="bg-black relative shrink-0 w-full scroll-mt-0">
+    <div
+      id="clients"
+      className="relative z-[2] shrink-0 w-full scroll-mt-0 bg-[linear-gradient(to_bottom,transparent_0%,rgba(0,0,0,0.15)_22%,rgba(0,0,0,0.55)_48%,#000000_72%)]"
+    >
       <div className="flex flex-col items-center justify-center size-full">
         <SectionContainer className="content-stretch flex flex-col gap-[60px] items-center justify-center py-[60px] relative w-full">
           <div className="content-stretch flex flex-col h-[160px] items-start relative shrink-0 w-full">
@@ -268,7 +287,7 @@ function ServicesSection() {
             </p>
           </div>
 
-          <div className="w-full overflow-x-auto overflow-y-hidden -mx-6 px-6 sm:mx-0 sm:px-0 sm:overflow-visible">
+          <div className="w-full overflow-x-auto overflow-y-hidden -mx-[max(1.5rem,var(--content-inset-left))] px-[max(1.5rem,var(--content-inset-left))] sm:mx-0 sm:px-0 sm:overflow-visible">
             <div className="flex min-w-[720px] sm:min-w-0 w-full">
             {SERVICES_COLUMNS.map((col, idx) => (
               <div
@@ -301,6 +320,53 @@ function ServicesSection() {
 }
 
 function IndustriesSection() {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const rowRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    const row = rowRef.current;
+    const viewport = viewportRef.current;
+    if (!track || !row || !viewport) return;
+
+    const easeInOutQuad = (t: number) =>
+      t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
+
+    const update = () => {
+      const trackRect = track.getBoundingClientRect();
+      const trackTop = window.scrollY + trackRect.top;
+      const scrollable = Math.max(0, track.offsetHeight - window.innerHeight);
+      // Row is as wide as its content; use the clip container width, not row.clientWidth.
+      const visibleW = viewport.clientWidth;
+      const maxScroll = Math.max(0, row.scrollWidth - visibleW);
+      const rawProgress =
+        scrollable <= 0
+          ? 0
+          : Math.min(1, Math.max(0, (window.scrollY - trackTop) / scrollable));
+      // Horizontal motion uses the first ~2/3 of vertical travel (more pixels = easier to read each card).
+      // Remaining vertical scroll holds the last frame before the next section.
+      const HORIZONTAL_END = 0.66;
+      const horizontalT = Math.min(1, rawProgress / HORIZONTAL_END);
+      const eased = easeInOutQuad(horizontalT);
+      const tx = -eased * maxScroll;
+      row.style.transform = `translate3d(${tx}px, 0, 0)`;
+    };
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    const ro = new ResizeObserver(update);
+    ro.observe(track);
+    ro.observe(row);
+    ro.observe(viewport);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+      ro.disconnect();
+    };
+  }, []);
+
   const industries = [
     {
       title: "NGO & Social Welfare",
@@ -349,45 +415,53 @@ function IndustriesSection() {
   return (
     <section id="industries" className="w-full bg-black py-[100px] scroll-mt-0">
       <SectionContainer>
-      {/* Heading */}
-      <div className="mb-[60px]">
-        <h2 className="text-[60px] text-white font-['Cormorant_Garamond'] leading-tight">
-          8+ industries. 50+ products.
-          <br />
-          We understand your user's problems
-        </h2>
-      </div>
-
-      {/* Horizontal Scroll Container */}
-      <div className="flex gap-[80px] overflow-x-auto overflow-y-hidden scrollbar-thin -mx-6 sm:-mx-10 md:-mx-14 lg:-mx-20 xl:-mx-[90px] px-6 sm:px-10 md:px-14 lg:px-20 xl:px-[90px]">
-
-        {industries.map((industry, idx) => (
-          <div
-            key={idx}
-            className="flex gap-[24px] shrink-0 w-[600px] hover:scale-105 transition-transform duration-300"
-          >
-            {/* Image */}
-            <div className="w-[291px] h-[300px] relative overflow-hidden rounded-lg">
-              <img
-                src={industry.image}
-                alt=""
-                className="absolute inset-0 w-full h-full object-cover"
-              />
+        {/* Scroll track: vertical scroll pins heading + row, drives horizontal translate */}
+        <div ref={trackRef} className="relative h-[520vh] w-full">
+          <div className="sticky top-0 z-[5] flex h-screen w-full flex-col overflow-hidden bg-black">
+            <div className="mb-[60px] shrink-0">
+              <h2 className="text-[60px] text-white font-['Cormorant_Garamond'] leading-tight">
+                8+ industries. 50+ products.
+                <br />
+                We understand your user's problems
+              </h2>
             </div>
+            <div
+              ref={viewportRef}
+              className="min-h-[300px] flex-1 overflow-hidden -ml-[max(1.5rem,var(--content-inset-left))] sm:-ml-[max(2.5rem,var(--content-inset-left))] md:-ml-[max(3.5rem,var(--content-inset-left))] lg:-ml-[max(5rem,var(--content-inset-left))] xl:-ml-[max(90px,var(--content-inset-left))] -mr-6 sm:-mr-10 md:-mr-14 lg:-mr-20 xl:-mr-[90px] pl-[max(1.5rem,var(--content-inset-left))] sm:pl-[max(2.5rem,var(--content-inset-left))] md:pl-[max(3.5rem,var(--content-inset-left))] lg:pl-[max(5rem,var(--content-inset-left))] xl:pl-[max(90px,var(--content-inset-left))] pr-6 sm:pr-10 md:pr-14 lg:pr-20 xl:pr-[90px]"
+            >
+              <div
+                ref={rowRef}
+                className="flex w-max gap-[80px] will-change-transform"
+              >
+                {industries.map((industry, idx) => (
+                  <div
+                    key={idx}
+                    className="flex gap-[24px] shrink-0 w-[600px] hover:scale-105 transition-transform duration-300"
+                  >
+                    {/* Image */}
+                    <div className="w-[291px] h-[300px] relative overflow-hidden rounded-lg">
+                      <img
+                        src={industry.image}
+                        alt=""
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                    </div>
 
-            {/* Text */}
-            <div className="w-[300px]">
-              <h3 className="text-white text-[24px] font-medium">
-                {industry.title}
-              </h3>
-              <p className="text-white/70 text-[18px] mt-2">
-                {industry.description}
-              </p>
+                    {/* Text */}
+                    <div className="w-[300px]">
+                      <h3 className="text-white text-[24px] font-medium">
+                        {industry.title}
+                      </h3>
+                      <p className="text-white/70 text-[18px] mt-2">
+                        {industry.description}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        ))}
-
-      </div>
+        </div>
       </SectionContainer>
     </section>
   );
@@ -429,44 +503,110 @@ function ImpactSection() {
 }
 
 function WorkSection() {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const rowRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    const row = rowRef.current;
+    const viewport = viewportRef.current;
+    if (!track || !row || !viewport) return;
+
+    const easeInOutQuad = (t: number) =>
+      t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
+
+    const update = () => {
+      const trackRect = track.getBoundingClientRect();
+      const trackTop = window.scrollY + trackRect.top;
+      const scrollable = Math.max(0, track.offsetHeight - window.innerHeight);
+      const visibleW = viewport.clientWidth;
+      const maxScroll = Math.max(0, row.scrollWidth - visibleW);
+      const rawProgress =
+        scrollable <= 0
+          ? 0
+          : Math.min(1, Math.max(0, (window.scrollY - trackTop) / scrollable));
+      const HORIZONTAL_END = 0.66;
+      const horizontalT = Math.min(1, rawProgress / HORIZONTAL_END);
+      const eased = easeInOutQuad(horizontalT);
+      const tx = -eased * maxScroll;
+      row.style.transform = `translate3d(${tx}px, 0, 0)`;
+    };
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    const ro = new ResizeObserver(update);
+    ro.observe(track);
+    ro.observe(row);
+    ro.observe(viewport);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+      ro.disconnect();
+    };
+  }, []);
+
   return (
     <div id="our-work" className="relative shrink-0 w-full scroll-mt-0">
-    <SectionContainer className="content-stretch flex gap-[24px] items-start justify-center relative w-full overflow-x-auto">
-      <div className="h-[180px] relative shrink-0 w-[300px] transition-all duration-300 hover:scale-105 cursor-pointer">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <img alt="" className="absolute h-[111.11%] left-0 max-w-none top-0 w-full" src={imgImage126} />
+      <SectionContainer>
+        <div className="relative left-1/2 w-screen -translate-x-1/2">
+          <div ref={trackRef} className="relative h-[520vh] w-full">
+            <div className="sticky top-0 z-[5] flex h-screen w-full flex-col overflow-hidden bg-black">
+              <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center">
+                <div className="relative h-[60px] w-[425px] shrink-0 rounded-[99px]">
+                  <div
+                    aria-hidden="true"
+                    className="absolute bg-[#bc312e] blur-[15px] h-[94px] left-[-51.5px] opacity-25 rounded-[99px] top-[-15px] w-[498px]"
+                  />
+                  <p className="absolute font-['Cormorant_Garamond',sans-serif] font-medium leading-[normal] left-[24px] not-italic text-[60px] text-white top-0 tracking-[-0.45px] text-center">{`World-class work `}</p>
+                </div>
+              </div>
+
+              <div
+                ref={viewportRef}
+                className="relative z-[1] flex min-h-0 flex-1 items-center overflow-hidden px-6 sm:px-10 md:px-14 lg:px-20 xl:px-[90px]"
+              >
+                <div
+                  ref={rowRef}
+                  className="flex w-max items-center gap-[24px] will-change-transform"
+                >
+                  <div className="h-[180px] relative shrink-0 w-[300px] transition-all duration-300 hover:scale-105 cursor-pointer">
+                    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                      <img alt="" className="absolute h-[111.11%] left-0 max-w-none top-0 w-full" src={imgImage126} />
+                    </div>
+                  </div>
+                  <div className="h-[334px] relative shrink-0 w-[451px] transition-all duration-300 hover:scale-105 cursor-pointer">
+                    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                      <img alt="" className="absolute h-[316.93%] left-[-26.89%] max-w-none top-[-100.14%] w-[132.1%]" src={imgImage127} />
+                    </div>
+                  </div>
+                  <div className="h-[465px] relative shrink-0 w-[451px] transition-all duration-300 hover:scale-105 cursor-pointer">
+                    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                      <img alt="" className="absolute h-[122.18%] left-[-0.69%] max-w-none top-[-11.37%] w-[100.69%]" src={imgUiAppConceptForCommunityOfDesigners} />
+                    </div>
+                  </div>
+                  <div className="h-[334px] relative shrink-0 w-[556px] transition-all duration-300 hover:scale-105 cursor-pointer">
+                    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                      <img alt="" className="absolute h-[111.11%] left-0 max-w-none top-0 w-full" src={imgImage126} />
+                    </div>
+                  </div>
+                  <div className="h-[465px] relative shrink-0 w-[451px] transition-all duration-300 hover:scale-105 cursor-pointer">
+                    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                      <img alt="" className="absolute h-[121.6%] left-[-0.08%] max-w-none top-[-10.03%] w-[100.15%]" src={imgExperimentalMusicAppUi} />
+                    </div>
+                  </div>
+                  <div className="h-[309px] relative shrink-0 w-[300px] transition-all duration-300 hover:scale-105 cursor-pointer">
+                    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                      <img alt="" className="absolute h-[122.18%] left-[-0.69%] max-w-none top-[-11.37%] w-[100.69%]" src={imgUiAppConceptForCommunityOfDesigners} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-      <div className="h-[334px] relative shrink-0 w-[451px] transition-all duration-300 hover:scale-105 cursor-pointer">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <img alt="" className="absolute h-[316.93%] left-[-26.89%] max-w-none top-[-100.14%] w-[132.1%]" src={imgImage127} />
-        </div>
-      </div>
-      <div className="h-[465px] relative shrink-0 w-[451px] transition-all duration-300 hover:scale-105 cursor-pointer">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <img alt="" className="absolute h-[122.18%] left-[-0.69%] max-w-none top-[-11.37%] w-[100.69%]" src={imgUiAppConceptForCommunityOfDesigners} />
-        </div>
-      </div>
-      <div className="h-[334px] relative shrink-0 w-[556px] transition-all duration-300 hover:scale-105 cursor-pointer">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <img alt="" className="absolute h-[111.11%] left-0 max-w-none top-0 w-full" src={imgImage126} />
-        </div>
-      </div>
-      <div className="h-[465px] relative shrink-0 w-[451px] transition-all duration-300 hover:scale-105 cursor-pointer">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <img alt="" className="absolute h-[121.6%] left-[-0.08%] max-w-none top-[-10.03%] w-[100.15%]" src={imgExperimentalMusicAppUi} />
-        </div>
-      </div>
-      <div className="h-[309px] relative shrink-0 w-[300px] transition-all duration-300 hover:scale-105 cursor-pointer">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <img alt="" className="absolute h-[122.18%] left-[-0.69%] max-w-none top-[-11.37%] w-[100.69%]" src={imgUiAppConceptForCommunityOfDesigners} />
-        </div>
-      </div>
-      <div className="-translate-x-1/2 -translate-y-1/2 absolute h-[60px] left-[calc(50%-0.5px)] rounded-[99px] top-[calc(50%+0.5px)] w-[425px] pointer-events-none">
-        <div className="absolute bg-[#bc312e] blur-[15px] h-[94px] left-[-51.5px] opacity-25 rounded-[99px] top-[-15px] w-[498px]" />
-        <p className="absolute font-['Cormorant_Garamond',sans-serif] font-medium leading-[normal] left-[24px] not-italic text-[60px] text-white top-0 tracking-[-0.45px] text-center">{`World-class work `}</p>
-      </div>
-    </SectionContainer>
+      </SectionContainer>
     </div>
   );
 }
@@ -524,9 +664,10 @@ function JourneySection() {
           <p className="font-['Cormorant_Garamond',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[60px] text-white tracking-[-0.45px] w-full whitespace-pre-wrap">How we got here</p>
         </div>
         <div className="relative w-full shrink-0 pt-[24px] pb-[24px] md:pt-[83px] md:pb-[40px]">
-          {/* Spine: fixed x so it stays centered on the 200px marker column (80 + gap + half of 200) */}
-          <div className="pointer-events-none absolute top-0 bottom-0 w-px bg-white/50 z-0 left-[calc(50%-66px)]" aria-hidden />
-          <div className="relative z-10 flex w-full max-w-[706px] mx-auto flex-col gap-[60px]">
+          <div className="relative mx-auto w-full max-w-[706px]">
+            {/* Spine: center of this block so it tracks dot/image column */}
+            <div className="pointer-events-none absolute left-1/2 top-0 bottom-0 z-0 w-px -translate-x-1/2 bg-white/50" aria-hidden />
+            <div className="relative z-10 flex w-full flex-col gap-[60px]">
             {milestones.map((milestone, idx) => {
               const isActive = hoveredMilestoneIndex === idx || activeMilestoneIndex === idx;
               return (
@@ -538,21 +679,26 @@ function JourneySection() {
                 data-milestone-index={idx}
                 onMouseEnter={() => setHoveredMilestoneIndex(idx)}
                 onMouseLeave={() => setHoveredMilestoneIndex(null)}
-                className={`group flex w-full max-w-full flex-col gap-[16px] sm:flex-row sm:items-center sm:gap-6 sm:justify-center transition-[min-height] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                className={`group grid w-full max-w-full grid-cols-1 items-center gap-[16px] transition-[min-height] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] sm:gap-x-3 sm:gap-y-0 ${
                   isActive ? "min-h-[120px] sm:min-h-[112px]" : "min-h-0"
                 }`}
               >
-                <div className="flex w-full shrink-0 justify-center sm:w-[80px] sm:justify-center">
+                {/* Year: left track — grid keeps center column on spine */}
+                <div className="flex w-full min-w-0 justify-center sm:justify-end">
                   <div className="bg-[rgba(118,118,128,0.12)] content-stretch flex items-center justify-center px-[10px] py-[4px] relative rounded-[1000px] shrink-0 cursor-pointer transition-all duration-300 group-hover:bg-[rgba(118,118,128,0.25)]">
                     <div aria-hidden="true" className="absolute border border-solid border-white inset-0 pointer-events-none rounded-[1000px] group-hover:border-2 transition-all duration-300" />
                     <p className="font-['Satoshi',sans-serif] font-bold leading-[normal] not-italic relative shrink-0 text-[14px] text-white tracking-[-0.23px]">{milestone.year}</p>
                   </div>
                 </div>
-                {/* Fixed-width column so spine + layout stay stable; image grows in-flow (no overlap) */}
-                <div className="flex w-full shrink-0 justify-center sm:w-[200px] sm:justify-center">
+                {/* Marker: auto column stays centered — width change expands left+right from dot (spine) */}
+                <div
+                  className={`relative z-10 flex shrink-0 justify-center justify-self-center transition-[width] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] origin-center ${
+                    isActive ? "w-[min(100%,200px)] sm:w-[200px]" : "w-4"
+                  }`}
+                >
                   <div
-                    className={`relative flex shrink-0 items-center justify-center overflow-hidden rounded-none bg-black/20 shadow-[0_12px_40px_rgba(0,0,0,0.35)] transition-[width,height,transform,opacity] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                      isActive ? "h-[112px] w-[min(100%,200px)] max-w-[200px] scale-100" : "h-4 w-4 rounded-full scale-95"
+                    className={`relative flex w-full shrink-0 origin-center items-center justify-center overflow-hidden rounded-none bg-black/20 shadow-[0_12px_40px_rgba(0,0,0,0.35)] transition-[width,height,transform,opacity] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                      isActive ? "h-[112px] w-full max-w-[200px] scale-100" : "h-4 w-4 rounded-full scale-95"
                     }`}
                   >
                     <div
@@ -570,12 +716,14 @@ function JourneySection() {
                     />
                   </div>
                 </div>
-                <div className="content-stretch flex min-w-0 flex-1 flex-col gap-[8px] items-start leading-[normal] not-italic text-white sm:max-w-[212px] sm:whitespace-pre-wrap">
+                {/* Text: right track */}
+                <div className="content-stretch flex min-w-0 flex-col gap-[8px] items-start justify-self-start leading-[normal] not-italic text-white sm:max-w-[212px] sm:whitespace-pre-wrap">
                   <p className="font-['Satoshi',sans-serif] font-bold relative shrink-0 text-[18px] tracking-[-0.45px]">{milestone.title}</p>
                   <p className="font-['Satoshi',sans-serif] font-normal relative shrink-0 text-[14px] tracking-[-0.23px] sm:w-[203px]">{milestone.description}</p>
                 </div>
               </div>
             );})}
+            </div>
           </div>
         </div>
       </SectionContainer>
@@ -588,7 +736,7 @@ function TestimonialsSection() {
     <div id="testimonials" className="relative shrink-0 w-full scroll-mt-0">
       <SectionContainer className="content-stretch flex flex-col gap-[60px] items-start relative w-full">
         <p className="font-['Cormorant_Garamond',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[60px] text-white tracking-[-0.45px]">What Our Partners Say</p>
-        <StaggerTestimonials />
+        <TestimonialsMinimal />
       </SectionContainer>
     </div>
   );
@@ -751,19 +899,24 @@ function ContactSection() {
 
 export default function App() {
   return (
-    <div className="bg-black content-stretch flex flex-col gap-[120px] items-start relative size-full overflow-x-hidden">
-      <Header />
+    <div className="relative size-full overflow-x-clip bg-black">
       <SideNav />
-      <HeroSection />
-      <ClientsSection />
-      <ServicesSection />
-      <IndustriesSection />
-      <ImpactSection />
-      <WorkSection />
-      <JourneySection />
-      <TestimonialsSection />
-      <FAQsSection />
-      <ContactSection />
+      <HeroPlasmaLayer />
+      <div className="content-stretch relative z-[2] flex flex-col items-start gap-[120px]">
+        <div className="flex w-full flex-col gap-0">
+          <Header />
+          <HeroSection />
+        </div>
+        <ClientsSection />
+        <ServicesSection />
+        <IndustriesSection />
+        <ImpactSection />
+        <WorkSection />
+        <JourneySection />
+        <TestimonialsSection />
+        <FAQsSection />
+        <ContactSection />
+      </div>
     </div>
   );
 }
