@@ -51,11 +51,15 @@ const NAV_ITEMS: { label: string; href: string }[] = [
   { label: "Contact", href: "#contact" },
 ];
 
-function NavButton({ label, href }: { label: string; href: string }) {
+function NavButton({ label, href, onLightBackground }: { label: string; href: string; onLightBackground?: boolean }) {
   return (
     <a
       href={href}
-      className="backdrop-blur-[2px] bg-[rgba(255,255,255,0.15)] content-stretch flex items-center justify-center px-[10px] py-[4px] relative rounded-[1000px] shrink-0 cursor-pointer transition-all duration-300 hover:bg-[rgba(255,255,255,0.25)] hover:scale-105 no-underline"
+      className={
+        onLightBackground
+          ? "backdrop-blur-[2px] bg-[rgba(23,24,29,0.92)] content-stretch flex items-center justify-center px-[10px] py-[4px] relative rounded-[1000px] shrink-0 cursor-pointer transition-all duration-300 hover:bg-[#17181d] hover:scale-105 no-underline shadow-[0_1px_2px_rgba(0,0,0,0.08)]"
+          : "backdrop-blur-[2px] bg-[rgba(255,255,255,0.15)] content-stretch flex items-center justify-center px-[10px] py-[4px] relative rounded-[1000px] shrink-0 cursor-pointer transition-all duration-300 hover:bg-[rgba(255,255,255,0.25)] hover:scale-105 no-underline"
+      }
     >
       <p className="font-['Satoshi',sans-serif] font-normal leading-[normal] not-italic relative shrink-0 text-[14px] text-white tracking-[-0.23px]">{label}</p>
     </a>
@@ -63,13 +67,41 @@ function NavButton({ label, href }: { label: string; href: string }) {
 }
 
 function SideNav() {
+  const navRef = useRef<HTMLElement>(null);
+  const [onLightBackground, setOnLightBackground] = useState(false);
+
+  useEffect(() => {
+    const update = () => {
+      const navEl = navRef.current;
+      const contactEl = document.getElementById("contact");
+      if (!navEl || !contactEl) return;
+      const nav = navEl.getBoundingClientRect();
+      const contact = contactEl.getBoundingClientRect();
+      const overlaps = nav.bottom > contact.top && nav.top < contact.bottom;
+      setOnLightBackground(overlaps);
+    };
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    const ro = new ResizeObserver(update);
+    const contactEl = document.getElementById("contact");
+    if (contactEl) ro.observe(contactEl);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+      ro.disconnect();
+    };
+  }, []);
+
   return (
     <nav
+      ref={navRef}
       className="fixed left-[var(--sidenav-gutter)] top-1/2 -translate-y-1/2 content-stretch flex flex-col gap-[8px] items-start w-[var(--sidenav-width)] z-50 pointer-events-auto"
       aria-label="Section navigation"
     >
       {NAV_ITEMS.map((item) => (
-        <NavButton key={item.href} label={item.label} href={item.href} />
+        <NavButton key={item.href} label={item.label} href={item.href} onLightBackground={onLightBackground} />
       ))}
     </nav>
   );
