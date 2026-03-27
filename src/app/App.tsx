@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button";
 import { StaggerTestimonials } from "@/components/ui/stagger-testimonials";
+import { LiquidMetalButton } from "../components/LiquidMetalButton";
 import svgPaths from "../imports/svg-9yfe37tpyu";
 import Plasma from "./components/Plasma";
 import imgImage120 from "../assets/eec2f74ce2ad486e20ef40a4a0e13e319ee42aa4.png";
@@ -23,14 +23,18 @@ import imgUiAppConceptForCommunityOfDesigners from "../assets/586456e31488f8c169
 import imgExperimentalMusicAppUi from "../assets/5c008c433b69e1c43602b9bfa4507f66610ed9d4.png";
 import imgImage126 from "../assets/8b55e6cc6038907cb96735a4bd022d2efe2032c7.png";
 import imgImage127 from "../assets/902ebce3a0eaeee9fbd0fbccfc3da751a28cd379.png";
+import imgJourneyBreweryEstablished from "../assets/journey-brewery-established.png";
+import imgJourneyKareemTrophy from "../assets/journey-kareem-trophy.png";
+import imgJourneyWebbyAward from "../assets/journey-webby-award.png";
+import imgJourney8YearsGrowing from "../assets/journey-8-years-growing.png";
 
 function Header() {
   return (
-    <div className="backdrop-blur-[30px] content-stretch flex items-center justify-between px-[90px] py-[24px] shrink-0 sticky top-0 w-full z-50">
+    <div className="backdrop-blur-[30px] bg-[rgba(0,0,0,0.2)] content-stretch flex items-center justify-between px-[90px] py-[24px] shrink-0 fixed top-0 left-0 w-full z-50">
       <div className="h-[50px] relative shrink-0 w-[147px]">
         <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgImage120} />
       </div>
-      <InteractiveHoverButton className="w-[170px]" />
+      <LiquidMetalButton label="Contact Us" onClick={() => window.open("mailto:vijay@brewery.agency", "_self")} />
     </div>
   );
 }
@@ -84,7 +88,6 @@ function HeroSection() {
           mouseInteractive={true}
         />
       </div>
-      <Header />
       <div className="h-[460px] relative shrink-0 w-full">
         <div className="absolute content-stretch flex flex-col font-['Cormorant_Garamond',sans-serif] font-medium items-end leading-[normal] left-[210px] not-italic pb-[10px] text-[80px] text-white top-[230px] tracking-[-0.45px] w-[968px]">
           <p className="min-w-full relative shrink-0 w-[min-content] whitespace-pre-wrap">{`We design products `}</p>
@@ -469,12 +472,50 @@ function WorkSection() {
 }
 
 function JourneySection() {
+  const [activeMilestoneIndex, setActiveMilestoneIndex] = useState(0);
+  const [hoveredMilestoneIndex, setHoveredMilestoneIndex] = useState<number | null>(null);
+  const milestoneRefs = useRef<Array<HTMLDivElement | null>>([]);
+
   const milestones = [
-    { year: "2020", title: "Brewery Established", description: "Founded with a vision to redefine digital experiences through human-centered design" },
-    { year: "2021", title: "Kareem Abdul-Jabbar Trophy", description: "UX awards recognition for annual Social Justice Champion award" },
-    { year: "2022", title: "Social Impact Campaign - Webby Winner", description: "Associated with the Fossil Group, Inc. Judas & The Black Messiah" },
-    { year: "2026", title: "8 Years & Growing", description: "8 years serving 50+ clients across 15+ industries. Still pushing boundaries." }
+    { year: "2020", title: "Brewery Established", description: "Founded with a vision to redefine digital experiences through human-centered design", image: imgJourneyBreweryEstablished },
+    { year: "2021", title: "Kareem Abdul-Jabbar Trophy", description: "UX awards recognition for annual Social Justice Champion award", image: imgJourneyKareemTrophy },
+    { year: "2022", title: "Social Impact Campaign - Webby Winner", description: "Associated with the Fossil Group, Inc. Judas & The Black Messiah", image: imgJourneyWebbyAward },
+    { year: "2026", title: "8 Years & Growing", description: "8 years serving 50+ clients across 15+ industries. Still pushing boundaries.", image: imgJourney8YearsGrowing }
   ];
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+
+        if (visible.length === 0) {
+          return;
+        }
+
+        const activeElement = visible[0].target as HTMLDivElement;
+        const nextIndex = Number(activeElement.dataset.milestoneIndex);
+
+        if (!Number.isNaN(nextIndex)) {
+          setActiveMilestoneIndex(nextIndex);
+        }
+      },
+      {
+        root: null,
+        threshold: [0.25, 0.4, 0.55, 0.7],
+        rootMargin: "-35% 0px -35% 0px",
+      },
+    );
+
+    milestoneRefs.current.forEach((node) => {
+      if (node) {
+        observer.observe(node);
+      }
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div id="our-journey" className="relative shrink-0 w-full scroll-mt-0">
@@ -482,36 +523,59 @@ function JourneySection() {
         <div className="content-stretch flex flex-col items-start relative shrink-0 w-[430px]">
           <p className="font-['Cormorant_Garamond',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[60px] text-white tracking-[-0.45px] w-full whitespace-pre-wrap">How we got here</p>
         </div>
-        <div className="h-[692px] relative shrink-0 w-full">
-          <div className="-translate-x-1/2 absolute flex h-[692px] items-center justify-center left-[calc(50%-65px)] top-0 w-0">
-            <div className="-rotate-90 flex-none">
-              <div className="h-0 relative w-[692px]">
-                <div className="absolute inset-[-1px_0_0_0]">
-                  <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 692 1">
-                    <line opacity="0.5" stroke="white" x2="692" y1="0.5" y2="0.5" />
-                  </svg>
+        <div className="relative w-full shrink-0 pt-[24px] pb-[24px] md:pt-[83px] md:pb-[40px]">
+          {/* Spine: fixed x so it stays centered on the 200px marker column (80 + gap + half of 200) */}
+          <div className="pointer-events-none absolute top-0 bottom-0 w-px bg-white/50 z-0 left-[calc(50%-66px)]" aria-hidden />
+          <div className="relative z-10 flex w-full max-w-[706px] mx-auto flex-col gap-[60px]">
+            {milestones.map((milestone, idx) => {
+              const isActive = hoveredMilestoneIndex === idx || activeMilestoneIndex === idx;
+              return (
+              <div
+                key={idx}
+                ref={(el) => {
+                  milestoneRefs.current[idx] = el;
+                }}
+                data-milestone-index={idx}
+                onMouseEnter={() => setHoveredMilestoneIndex(idx)}
+                onMouseLeave={() => setHoveredMilestoneIndex(null)}
+                className={`group flex w-full max-w-full flex-col gap-[16px] sm:flex-row sm:items-center sm:gap-6 sm:justify-center transition-[min-height] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                  isActive ? "min-h-[120px] sm:min-h-[112px]" : "min-h-0"
+                }`}
+              >
+                <div className="flex w-full shrink-0 justify-center sm:w-[80px] sm:justify-center">
+                  <div className="bg-[rgba(118,118,128,0.12)] content-stretch flex items-center justify-center px-[10px] py-[4px] relative rounded-[1000px] shrink-0 cursor-pointer transition-all duration-300 group-hover:bg-[rgba(118,118,128,0.25)]">
+                    <div aria-hidden="true" className="absolute border border-solid border-white inset-0 pointer-events-none rounded-[1000px] group-hover:border-2 transition-all duration-300" />
+                    <p className="font-['Satoshi',sans-serif] font-bold leading-[normal] not-italic relative shrink-0 text-[14px] text-white tracking-[-0.23px]">{milestone.year}</p>
+                  </div>
+                </div>
+                {/* Fixed-width column so spine + layout stay stable; image grows in-flow (no overlap) */}
+                <div className="flex w-full shrink-0 justify-center sm:w-[200px] sm:justify-center">
+                  <div
+                    className={`relative flex shrink-0 items-center justify-center overflow-hidden rounded-none bg-black/20 shadow-[0_12px_40px_rgba(0,0,0,0.35)] transition-[width,height,transform,opacity] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                      isActive ? "h-[112px] w-[min(100%,200px)] max-w-[200px] scale-100" : "h-4 w-4 rounded-full scale-95"
+                    }`}
+                  >
+                    <div
+                      aria-hidden
+                      className={`absolute inset-0 rounded-full bg-[#BC312E] transition-opacity duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                        isActive ? "opacity-0" : "opacity-100"
+                      }`}
+                    />
+                    <img
+                      alt=""
+                      src={milestone.image}
+                      className={`absolute inset-0 h-full w-full rounded-none object-cover transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                        isActive ? "opacity-100 scale-100" : "opacity-0 scale-90"
+                      }`}
+                    />
+                  </div>
+                </div>
+                <div className="content-stretch flex min-w-0 flex-1 flex-col gap-[8px] items-start leading-[normal] not-italic text-white sm:max-w-[212px] sm:whitespace-pre-wrap">
+                  <p className="font-['Satoshi',sans-serif] font-bold relative shrink-0 text-[18px] tracking-[-0.45px]">{milestone.title}</p>
+                  <p className="font-['Satoshi',sans-serif] font-normal relative shrink-0 text-[14px] tracking-[-0.23px] sm:w-[203px]">{milestone.description}</p>
                 </div>
               </div>
-            </div>
-          </div>
-          <div className="-translate-x-1/2 absolute content-stretch flex flex-col gap-[60px] items-start left-1/2 top-[83px] w-[706px]">
-            {milestones.map((milestone, idx) => (
-              <div key={idx} className="content-stretch flex gap-[24px] items-end justify-center relative shrink-0 w-full group">
-                <div className="bg-[rgba(118,118,128,0.12)] content-stretch flex items-center justify-center px-[10px] py-[4px] relative rounded-[1000px] shrink-0 w-[80px] cursor-pointer transition-all duration-300 group-hover:bg-[rgba(118,118,128,0.25)]">
-                  <div aria-hidden="true" className="absolute border border-solid border-white inset-0 pointer-events-none rounded-[1000px] group-hover:border-2 transition-all duration-300" />
-                  <p className="font-['Satoshi',sans-serif] font-bold leading-[normal] not-italic relative shrink-0 text-[14px] text-white tracking-[-0.23px]">{milestone.year}</p>
-                </div>
-                <div className="relative shrink-0 size-[16px] group-hover:scale-150 transition-all duration-300">
-                  <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 16 16">
-                    <circle cx="8" cy="8" fill="#BC312E" r="8" />
-                  </svg>
-                </div>
-                <div className="content-stretch flex flex-col gap-[8px] items-start leading-[normal] not-italic relative shrink-0 text-white w-[212px] whitespace-pre-wrap">
-                  <p className="font-['Satoshi',sans-serif] font-bold min-w-full relative shrink-0 text-[18px] tracking-[-0.45px] w-[min-content]">{milestone.title}</p>
-                  <p className="font-['Satoshi',sans-serif] font-normal relative shrink-0 text-[14px] tracking-[-0.23px] w-[203px]">{milestone.description}</p>
-                </div>
-              </div>
-            ))}
+            );})}
           </div>
         </div>
       </SectionContainer>
@@ -662,7 +726,7 @@ function ContactSection() {
                 <p className="leading-[60px] text-[#17181d]">to work with you!</p>
               </div>
             </div>
-            <InteractiveHoverButton className="w-[200px]" />
+            <LiquidMetalButton label="Contact Us" onClick={() => window.open("mailto:vijay@brewery.agency", "_self")} />
           </div>
           <div className="content-stretch flex flex-col gap-[24px] items-start leading-[normal] not-italic relative shrink-0 text-black tracking-[-0.45px]">
             <p className="font-['Satoshi',sans-serif] font-medium min-w-full relative shrink-0 text-[24px] w-[min-content] whitespace-pre-wrap">Locations</p>
@@ -688,6 +752,7 @@ function ContactSection() {
 export default function App() {
   return (
     <div className="bg-black content-stretch flex flex-col gap-[120px] items-start relative size-full overflow-x-hidden">
+      <Header />
       <SideNav />
       <HeroSection />
       <ClientsSection />
