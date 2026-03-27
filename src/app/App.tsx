@@ -35,33 +35,45 @@ function Header() {
   );
 }
 
-function NavButton({ label }: { label: string }) {
+const NAV_ITEMS: { label: string; href: string }[] = [
+  { label: "Intro", href: "#intro" },
+  { label: "Clients", href: "#clients" },
+  { label: "Services", href: "#services" },
+  { label: "Industries", href: "#industries" },
+  { label: "Our Work", href: "#our-work" },
+  { label: "Our Journey", href: "#our-journey" },
+  { label: "Testimonials", href: "#testimonials" },
+  { label: "FAQs", href: "#faqs" },
+  { label: "Contact", href: "#contact" },
+];
+
+function NavButton({ label, href }: { label: string; href: string }) {
   return (
-    <div className="backdrop-blur-[2px] bg-[rgba(255,255,255,0.15)] content-stretch flex items-center justify-center px-[10px] py-[4px] relative rounded-[1000px] shrink-0 cursor-pointer transition-all duration-300 hover:bg-[rgba(255,255,255,0.25)] hover:scale-105">
+    <a
+      href={href}
+      className="backdrop-blur-[2px] bg-[rgba(255,255,255,0.15)] content-stretch flex items-center justify-center px-[10px] py-[4px] relative rounded-[1000px] shrink-0 cursor-pointer transition-all duration-300 hover:bg-[rgba(255,255,255,0.25)] hover:scale-105 no-underline"
+    >
       <p className="font-['Satoshi',sans-serif] font-normal leading-[normal] not-italic relative shrink-0 text-[14px] text-white tracking-[-0.23px]">{label}</p>
-    </div>
+    </a>
   );
 }
 
 function SideNav() {
   return (
-    <div className="absolute content-stretch flex flex-col gap-[8px] items-start left-[21px] top-[25px] w-[95px] z-10">
-      <NavButton label="Intro" />
-      <NavButton label="Clients" />
-      <NavButton label="Services" />
-      <NavButton label="Industries" />
-      <NavButton label="Our Work" />
-      <NavButton label="Our Journey" />
-      <NavButton label="Testimonials" />
-      <NavButton label="FAQs" />
-      <NavButton label="Contact" />
-    </div>
+    <nav
+      className="fixed left-[21px] top-1/2 -translate-y-1/2 content-stretch flex flex-col gap-[8px] items-start w-[95px] z-50 pointer-events-auto"
+      aria-label="Section navigation"
+    >
+      {NAV_ITEMS.map((item) => (
+        <NavButton key={item.href} label={item.label} href={item.href} />
+      ))}
+    </nav>
   );
 }
 
 function HeroSection() {
   return (
-    <div className="content-stretch flex flex-col gap-[60px] items-start relative shrink-0 w-full">
+    <div id="intro" className="content-stretch flex flex-col gap-[60px] items-start relative shrink-0 w-full scroll-mt-0">
       <div className="-translate-x-1/2 absolute h-[731px] left-1/2 top-0 w-[1280px]">
         <Plasma
           color="#ff6b35"
@@ -79,24 +91,31 @@ function HeroSection() {
           <p className="relative shrink-0 text-center">people actually want to use</p>
         </div>
         <p className="absolute font-['Satoshi',sans-serif] font-normal leading-[normal] left-[793px] not-italic text-[14px] text-white top-[100px] tracking-[-0.23px] w-[300px] whitespace-pre-wrap">Since 2020 we've helped startups and enterprises design and build high-performance digital products that drive growth and user adoption</p>
-        <SideNav />
       </div>
+    </div>
+  );
+}
+
+function SectionContainer({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={`w-full max-w-[1440px] mx-auto px-6 sm:px-10 md:px-14 lg:px-20 xl:px-[90px] ${className}`}>
+      {children}
     </div>
   );
 }
 
 function ClientsSection() {
   return (
-    <div className="bg-white relative shrink-0 w-full">
+    <div id="clients" className="bg-black relative shrink-0 w-full scroll-mt-0">
       <div className="flex flex-col items-center justify-center size-full">
-        <div className="content-stretch flex flex-col gap-[60px] items-center justify-center px-[90px] py-[60px] relative w-full">
+        <SectionContainer className="content-stretch flex flex-col gap-[60px] items-center justify-center py-[60px] relative w-full">
           <div className="content-stretch flex flex-col h-[160px] items-start relative shrink-0 w-full">
-            <div className="font-['Cormorant_Garamond',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[#17181d] text-[60px] tracking-[-0.45px] w-[554px] whitespace-pre-wrap">
+            <div className="font-['Cormorant_Garamond',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-white text-[60px] tracking-[-0.45px] w-[554px] whitespace-pre-wrap">
               <p className="mb-0">{`They trusted us `}</p>
               <p>with their biggest bets</p>
             </div>
           </div>
-          <p className="-translate-x-full absolute font-['Satoshi',sans-serif] font-normal leading-[normal] left-[1189px] not-italic text-[#17181d] text-[18px] text-right top-[170px] tracking-[-0.45px] w-[346px] whitespace-pre-wrap">From Fortune 500s to funded startups, we help teams ship products that users love</p>
+          <p className="-translate-x-full absolute font-['Satoshi',sans-serif] font-normal leading-[normal] left-[1189px] not-italic text-[rgba(255,255,255,0.82)] text-[18px] text-right top-[170px] tracking-[-0.45px] w-[346px] whitespace-pre-wrap">From Fortune 500s to funded startups, we help teams ship products that users love</p>
 
           <div className="gap-x-[75px] gap-y-[60px] grid grid-cols-[repeat(5,fit-content(100%))] grid-rows-[repeat(3,fit-content(100%))] relative shrink-0 w-full">
             <div className="col-1 h-[42px] justify-self-center relative row-1 self-center shrink-0 w-[136px] transition-all duration-300 hover:scale-110 cursor-pointer">
@@ -114,7 +133,7 @@ function ClientsSection() {
             </div>
             <div className="col-4 h-[30px] justify-self-center relative row-1 self-center shrink-0 w-[125px] transition-all duration-300 hover:scale-110 cursor-pointer">
               <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <img alt="" className="absolute h-[333.33%] left-[-13.4%] max-w-none top-[-116.67%] w-[123.71%]" src={imgFossilGroupLogoWine} />
+                <img alt="" className="absolute h-[333.33%] left-[-13.4%] max-w-none top-[-116.67%] w-[123.71%] brightness-0 invert opacity-90" src={imgFossilGroupLogoWine} />
               </div>
             </div>
             <div className="col-5 h-[60px] justify-self-center relative row-1 self-center shrink-0 w-[235px] transition-all duration-300 hover:scale-110 cursor-pointer">
@@ -126,20 +145,20 @@ function ClientsSection() {
             <div className="col-1 h-[42px] justify-self-center relative row-2 self-center shrink-0 w-[118px] transition-all duration-300 hover:scale-110 cursor-pointer">
               <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 118 42">
                 <g clipPath="url(#clip0_1_799)">
-                  <path d={svgPaths.p19b2bd00} fill="black" />
-                  <path d={svgPaths.p3e5bbff2} fill="black" />
-                  <path d={svgPaths.p282f8280} fill="black" />
-                  <path d={svgPaths.p15c8db30} fill="black" />
-                  <path d={svgPaths.p1e7c3c80} fill="black" />
-                  <path d={svgPaths.p30b32200} fill="black" />
-                  <path d={svgPaths.p1fbdbdc0} fill="black" />
-                  <path d={svgPaths.pa7f9cc0} fill="black" />
-                  <path d={svgPaths.pee90500} fill="black" />
-                  <path d={svgPaths.p2fcec900} fill="black" />
-                  <path d={svgPaths.p34b57500} fill="black" />
-                  <path d={svgPaths.p3caaac00} fill="black" />
-                  <path d={svgPaths.p271d7b80} fill="black" />
-                  <path d={svgPaths.p37e38b00} fill="black" />
+                  <path d={svgPaths.p19b2bd00} fill="#f1f5f9" />
+                  <path d={svgPaths.p3e5bbff2} fill="#f1f5f9" />
+                  <path d={svgPaths.p282f8280} fill="#f1f5f9" />
+                  <path d={svgPaths.p15c8db30} fill="#f1f5f9" />
+                  <path d={svgPaths.p1e7c3c80} fill="#f1f5f9" />
+                  <path d={svgPaths.p30b32200} fill="#f1f5f9" />
+                  <path d={svgPaths.p1fbdbdc0} fill="#f1f5f9" />
+                  <path d={svgPaths.pa7f9cc0} fill="#f1f5f9" />
+                  <path d={svgPaths.pee90500} fill="#f1f5f9" />
+                  <path d={svgPaths.p2fcec900} fill="#f1f5f9" />
+                  <path d={svgPaths.p34b57500} fill="#f1f5f9" />
+                  <path d={svgPaths.p3caaac00} fill="#f1f5f9" />
+                  <path d={svgPaths.p271d7b80} fill="#f1f5f9" />
+                  <path d={svgPaths.p37e38b00} fill="#f1f5f9" />
                 </g>
                 <defs>
                   <clipPath id="clip0_1_799">
@@ -150,19 +169,19 @@ function ClientsSection() {
             </div>
             <div className="col-2 h-[34px] justify-self-center relative row-2 self-center shrink-0 w-[142px] transition-all duration-300 hover:scale-110 cursor-pointer">
               <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <img alt="" className="absolute h-[216.41%] left-0 max-w-none top-[-62.26%] w-full" src={imgImage122} />
+                <img alt="" className="absolute h-[216.41%] left-0 max-w-none top-[-62.26%] w-full brightness-0 invert opacity-90" src={imgImage122} />
               </div>
             </div>
             <div className="col-3 h-[60px] justify-self-center relative row-2 self-center shrink-0 w-[92px] transition-all duration-300 hover:scale-110 cursor-pointer">
               <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <img alt="" className="absolute h-[153.85%] left-0 max-w-none top-[-15.38%] w-full" src={img482Df7C8B90645369C33B8445Ce39Aa31} />
+                <img alt="" className="absolute h-[153.85%] left-0 max-w-none top-[-15.38%] w-full brightness-0 invert contrast-200" src={img482Df7C8B90645369C33B8445Ce39Aa31} />
               </div>
             </div>
             <div className="col-4 h-[42px] justify-self-center relative row-2 self-center shrink-0 w-[81px] transition-all duration-300 hover:scale-110 cursor-pointer">
               <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={img3Copy} />
             </div>
             <div className="col-5 h-[60px] justify-self-center relative row-2 self-center shrink-0 w-[107px] transition-all duration-300 hover:scale-110 cursor-pointer">
-              <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgHennessyLogoPngImageHd} />
+              <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full brightness-0 invert opacity-90" src={imgHennessyLogoPngImageHd} />
             </div>
 
             <div className="col-1 h-[30px] justify-self-center relative row-3 self-center shrink-0 w-[175px] transition-all duration-300 hover:scale-110 cursor-pointer">
@@ -171,7 +190,7 @@ function ClientsSection() {
               </div>
             </div>
             <div className="col-2 h-[60px] justify-self-center relative row-3 self-center shrink-0 w-[134px] transition-all duration-300 hover:scale-110 cursor-pointer">
-              <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgColourLogoOnWhiteV11} />
+              <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full brightness-0 invert opacity-90" src={imgColourLogoOnWhiteV11} />
             </div>
             <div className="col-3 h-[42px] justify-self-center relative row-3 self-center shrink-0 w-[100px] transition-all duration-300 hover:scale-110 cursor-pointer">
               <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -189,64 +208,90 @@ function ClientsSection() {
               </div>
             </div>
           </div>
-        </div>
+        </SectionContainer>
       </div>
     </div>
   );
 }
 
-function ServiceItem({ title, description, items }: { title: string; description: string; items: string[] }) {
-  return (
-    <div className="content-stretch flex gap-[120px] items-start relative shrink-0 w-full">
-      <p className="font-['Satoshi',sans-serif] font-bold leading-[normal] not-italic relative shrink-0 text-[28px] text-white w-[109px] whitespace-pre-wrap">{title}</p>
-      <div className="content-stretch flex flex-col gap-[24px] items-start relative shrink-0 w-[300px]">
-        <p className="font-['Satoshi',sans-serif] font-normal leading-[normal] min-w-full not-italic relative shrink-0 text-[18px] text-[rgba(255,255,255,0.75)] tracking-[-0.45px] w-[min-content] whitespace-pre-wrap">{description}</p>
-        <div className="h-0 relative shrink-0 w-[120px]">
-          <div className="absolute inset-[-1px_0_0_0]">
-            <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 120 1">
-              <line stroke="#BC312E" strokeLinecap="round" x1="0.5" x2="119.5" y1="0.5" y2="0.5" />
-            </svg>
-          </div>
-        </div>
-      </div>
-      <div className="content-stretch flex flex-col font-['Satoshi',sans-serif] font-normal gap-[12px] items-start leading-[0] not-italic opacity-75 relative shrink-0 text-[18px] text-white tracking-[-0.45px] whitespace-nowrap">
-        {items.map((item, idx) => (
-          <ul key={idx} className="block relative shrink-0">
-            <li className="list-disc ms-[27px] whitespace-pre-wrap">
-              <span className="leading-[normal]">{item}</span>
-            </li>
-          </ul>
-        ))}
-      </div>
-    </div>
-  );
-}
+const SERVICES_COLUMNS: {
+  category: string;
+  name: string;
+  description: string;
+}[] = [
+  {
+    category: "Research",
+    name: "User Research",
+    description:
+      "Ethnography, interviews, and usability studies that uncover real needs and inform every product decision.",
+  },
+  {
+    category: "Strategy",
+    name: "UX Consulting",
+    description:
+      "Journey mapping, audits, and roadmaps that align stakeholders on what to fix first for impact.",
+  },
+  {
+    category: "Design",
+    name: "Product & UI",
+    description:
+      "Interaction design, systems, and prototyping so interfaces feel intuitive, cohesive, and ready to ship.",
+  },
+  {
+    category: "Visual",
+    name: "Branding",
+    description:
+      "Visual identity and UI craft that express your brand clearly across every touchpoint.",
+  },
+  {
+    category: "Build",
+    name: "App Development",
+    description:
+      "Engineering across web and mobile with integrations and scalable architecture for growth.",
+  },
+];
 
 function ServicesSection() {
   return (
-    <div className="relative shrink-0 w-full">
+    <div id="services" className="relative shrink-0 w-full scroll-mt-0">
       <div className="flex flex-col items-center size-full">
-        <div className="content-stretch flex flex-col gap-[40px] items-center px-[90px] relative w-full">
-          <div className="content-stretch flex flex-col gap-[16px] items-start leading-[normal] not-italic relative shrink-0 text-white tracking-[-0.45px] w-full whitespace-pre-wrap">
-            <p className="font-['Cormorant_Garamond',sans-serif] font-medium min-w-full relative shrink-0 text-[60px] w-[min-content]">How we help you win</p>
-            <p className="font-['Satoshi',sans-serif] font-normal relative shrink-0 text-[18px] w-[624px]">Our services include end-to-end product design and development spanning strategy, design, and engineering to build scalable digital products and experiences</p>
+        <SectionContainer className="content-stretch flex flex-col gap-[60px] items-stretch relative w-full">
+          <div className="content-stretch flex flex-col gap-[24px] md:flex-row md:items-start md:justify-between not-italic relative shrink-0 text-white tracking-[-0.45px] w-full">
+            <p className="font-['Cormorant_Garamond',sans-serif] font-medium shrink-0 text-[60px] leading-[normal] max-w-[min(100%,520px)]">
+              How we help you win
+            </p>
+            <p className="font-['Satoshi',sans-serif] font-normal text-[18px] leading-[normal] md:max-w-[420px] md:text-right shrink-0">
+              Our services include end-to-end product design and development spanning strategy, design, and engineering.
+            </p>
           </div>
-          <ServiceItem
-            title="Strategy"
-            description="We identify friction across your user journey through research, audits, and real-user validation, delivering actionable insights and optimization roadmaps that improve usability, conversion, and retention."
-            items={["UX Consulting", "Usability Testing", "User Research", "Experience Strategy", "Product Discovery"]}
-          />
-          <ServiceItem
-            title="Design"
-            description="We craft intuitive interfaces and cohesive brand systems, combining interaction design, visual identity, and prototyping to create premium, consistent digital experiences users instantly understand and trust."
-            items={["Interaction Design", "UI/UX Design", "Design Systems", "Prototyping", "Branding"]}
-          />
-          <ServiceItem
-            title="Build"
-            description="We design, engineer, and scale high-performance digital products across web and mobile platforms, integrating intelligent AI-driven workflows and automation systems to enhance efficiency, decision-making, and long-term product growth."
-            items={["Product Engineering", "App Development", "Web Platforms", "System Integrations", "AI Workflows"]}
-          />
-        </div>
+
+          <div className="w-full overflow-x-auto overflow-y-hidden -mx-6 px-6 sm:mx-0 sm:px-0 sm:overflow-visible">
+            <div className="flex min-w-[720px] sm:min-w-0 w-full">
+            {SERVICES_COLUMNS.map((col, idx) => (
+              <div
+                key={idx}
+                className="group relative flex flex-[1_1_0%] min-w-0 flex-col justify-between min-h-[320px] md:min-h-[360px] px-[16px] sm:px-[20px] py-[24px] cursor-pointer border-l border-solid border-[#bc312e] transition-[flex-grow,flex-basis,background-color] duration-500 ease-out hover:flex-[1.35_1_0%] hover:z-10 hover:bg-[rgba(255,255,255,0.04)]"
+              >
+                <p className="font-['Satoshi',sans-serif] font-normal leading-[normal] not-italic text-[18px] text-white tracking-[-0.45px] uppercase">
+                  {col.category}
+                </p>
+                <div className="flex flex-col items-stretch justify-end mt-auto">
+                  <p className="font-['Satoshi',sans-serif] font-medium text-[20px] sm:text-[22px] md:text-[24px] text-white leading-[normal] tracking-[-0.45px]">
+                    {col.name}
+                  </p>
+                  <div className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 ease-out group-hover:grid-rows-[1fr]">
+                    <div className="min-h-0 overflow-hidden">
+                      <p className="font-['Satoshi',sans-serif] font-normal text-[14px] sm:text-[15px] leading-[1.45] text-[rgba(255,255,255,0.72)] tracking-[-0.23px] pt-[16px]">
+                        {col.description}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+            </div>
+          </div>
+        </SectionContainer>
       </div>
     </div>
   );
@@ -299,10 +344,10 @@ function IndustriesSection() {
   ];
 
   return (
-    <section className="w-full bg-black py-[100px]">
-
+    <section id="industries" className="w-full bg-black py-[100px] scroll-mt-0">
+      <SectionContainer>
       {/* Heading */}
-      <div className="px-[90px] mb-[60px]">
+      <div className="mb-[60px]">
         <h2 className="text-[60px] text-white font-['Cormorant_Garamond'] leading-tight">
           8+ industries. 50+ products.
           <br />
@@ -311,7 +356,7 @@ function IndustriesSection() {
       </div>
 
       {/* Horizontal Scroll Container */}
-      <div className="flex gap-[80px] px-[90px] overflow-x-auto overflow-y-hidden scrollbar-thin">
+      <div className="flex gap-[80px] overflow-x-auto overflow-y-hidden scrollbar-thin -mx-6 sm:-mx-10 md:-mx-14 lg:-mx-20 xl:-mx-[90px] px-6 sm:px-10 md:px-14 lg:px-20 xl:px-[90px]">
 
         {industries.map((industry, idx) => (
           <div
@@ -340,6 +385,7 @@ function IndustriesSection() {
         ))}
 
       </div>
+      </SectionContainer>
     </section>
   );
 }
@@ -347,7 +393,7 @@ function IndustriesSection() {
 function ImpactSection() {
   return (
     <div className="relative shrink-0 w-full">
-      <div className="content-stretch flex flex-col gap-[60px] items-start px-[90px] relative w-full">
+      <SectionContainer className="content-stretch flex flex-col gap-[60px] items-start relative w-full">
         <p className="font-['Cormorant_Garamond',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[60px] text-white tracking-[-0.45px] w-full whitespace-pre-wrap">Impact at scale</p>
         <div className="content-stretch flex items-center justify-between relative shrink-0 w-full">
           {[
@@ -356,28 +402,33 @@ function ImpactSection() {
             { label: "YEARS OF PRACTICE", value: "8", description: "8 years of crafting exceptional digital experiences across industries" },
             { label: "CLIENTS WORKED WITH", value: "50+", description: "From Fortune 500 companies to innovative startups across 8+ industries" }
           ].map((stat, idx) => (
-            <div key={idx} className="content-stretch flex flex-col h-[428px] items-start justify-between max-w-[350px] min-w-[250px] px-[20px] py-[24px] relative shrink-0 w-[250px] group cursor-pointer overflow-hidden">
+            <div key={idx} className="content-stretch flex flex-col h-[428px] items-start max-w-[350px] min-w-[250px] px-[20px] py-[24px] relative shrink-0 w-[250px] group cursor-pointer overflow-hidden">
               <div aria-hidden="true" className="absolute border-[#bc312e] border-l border-solid inset-0 pointer-events-none group-hover:border-l-2 transition-all duration-300" />
               <p className="font-['Satoshi',sans-serif] font-normal leading-[normal] not-italic relative shrink-0 text-[18px] text-white tracking-[-0.45px]">{stat.label}</p>
-              <div className="flex flex-col min-w-full relative shrink-0 w-[min-content]">
+              <div className="flex flex-col min-w-full relative shrink-0 w-[min-content] mt-auto">
                 <div className="flex flex-col font-['Satoshi',sans-serif] font-medium justify-end leading-[0] not-italic text-[100px] text-white transition-all duration-500 group-hover:-translate-y-[60px]">
                   <p className="leading-[normal] whitespace-pre-wrap">{stat.value}</p>
                 </div>
-                <div className="font-['Satoshi',sans-serif] font-normal leading-[normal] not-italic text-[18px] text-white tracking-[-0.45px] opacity-0 group-hover:opacity-100 transition-all duration-500 mt-[20px]">
-                  <p className="whitespace-pre-wrap">{stat.description}</p>
+                <div className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 ease-out group-hover:grid-rows-[1fr]">
+                  <div className="min-h-0 overflow-hidden">
+                    <p className="font-['Satoshi',sans-serif] font-normal leading-[normal] not-italic text-[18px] text-white tracking-[-0.45px] mt-[20px] whitespace-pre-wrap opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                      {stat.description}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           ))}
         </div>
-      </div>
+      </SectionContainer>
     </div>
   );
 }
 
 function WorkSection() {
   return (
-    <div className="content-stretch flex gap-[24px] items-start justify-center relative shrink-0 w-full overflow-x-auto">
+    <div id="our-work" className="relative shrink-0 w-full scroll-mt-0">
+    <SectionContainer className="content-stretch flex gap-[24px] items-start justify-center relative w-full overflow-x-auto">
       <div className="h-[180px] relative shrink-0 w-[300px] transition-all duration-300 hover:scale-105 cursor-pointer">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <img alt="" className="absolute h-[111.11%] left-0 max-w-none top-0 w-full" src={imgImage126} />
@@ -412,6 +463,7 @@ function WorkSection() {
         <div className="absolute bg-[#bc312e] blur-[15px] h-[94px] left-[-51.5px] opacity-25 rounded-[99px] top-[-15px] w-[498px]" />
         <p className="absolute font-['Cormorant_Garamond',sans-serif] font-medium leading-[normal] left-[24px] not-italic text-[60px] text-white top-0 tracking-[-0.45px] text-center">{`World-class work `}</p>
       </div>
+    </SectionContainer>
     </div>
   );
 }
@@ -425,8 +477,8 @@ function JourneySection() {
   ];
 
   return (
-    <div className="relative shrink-0 w-full">
-      <div className="content-stretch flex flex-col gap-[60px] items-start px-[90px] relative w-full">
+    <div id="our-journey" className="relative shrink-0 w-full scroll-mt-0">
+      <SectionContainer className="content-stretch flex flex-col gap-[60px] items-start relative w-full">
         <div className="content-stretch flex flex-col items-start relative shrink-0 w-[430px]">
           <p className="font-['Cormorant_Garamond',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[60px] text-white tracking-[-0.45px] w-full whitespace-pre-wrap">How we got here</p>
         </div>
@@ -462,76 +514,143 @@ function JourneySection() {
             ))}
           </div>
         </div>
-      </div>
+      </SectionContainer>
     </div>
   );
 }
 
 function TestimonialsSection() {
   return (
-    <div className="relative shrink-0 w-full">
-      <div className="content-stretch flex flex-col gap-[60px] items-start px-[90px] relative w-full">
+    <div id="testimonials" className="relative shrink-0 w-full scroll-mt-0">
+      <SectionContainer className="content-stretch flex flex-col gap-[60px] items-start relative w-full">
         <p className="font-['Cormorant_Garamond',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[60px] text-white tracking-[-0.45px]">What Our Partners Say</p>
         <StaggerTestimonials />
-      </div>
+      </SectionContainer>
     </div>
   );
 }
 
-function FAQItem({ question, isOpen, onClick }: { question: string; isOpen: boolean; onClick: () => void }) {
+function FAQItem({
+  question,
+  answer,
+  answerId,
+  isOpen,
+  onClick,
+}: {
+  question: string;
+  answer: string;
+  answerId: string;
+  isOpen: boolean;
+  onClick: () => void;
+}) {
   return (
-    <button onClick={onClick} className="mb-[-0.5px] relative shrink-0 w-full cursor-pointer transition-all duration-300 hover:bg-[rgba(255,255,255,0.05)]">
+    <div className="mb-[-0.5px] relative shrink-0 w-full">
       <div aria-hidden="true" className="absolute border-[rgba(255,255,255,0.25)] border-b border-solid border-t inset-0 pointer-events-none" />
-      <div className="content-stretch flex items-start px-[60px] py-[30px] relative w-full">
+      <button
+        type="button"
+        onClick={onClick}
+        aria-expanded={isOpen}
+        aria-controls={answerId}
+        className={`relative w-full cursor-pointer transition-colors duration-300 hover:bg-[rgba(255,255,255,0.05)] text-left ${
+          isOpen ? "items-start" : "items-center"
+        } content-stretch flex gap-[16px] px-[60px] py-[30px]`}
+      >
         <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px min-w-px relative">
-          <p className="font-['Satoshi',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[24px] text-left text-white tracking-[-0.45px] w-full whitespace-pre-wrap">{question}</p>
+          <p className="font-['Satoshi',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[24px] text-white tracking-[-0.45px] w-full whitespace-pre-wrap pr-[8px]">
+            {question}
+          </p>
+          <div
+            className={`grid w-full transition-[grid-template-rows] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+              isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+            }`}
+          >
+            <div className="min-h-0 overflow-hidden">
+              <p
+                id={answerId}
+                className="font-['Satoshi',sans-serif] font-normal leading-[normal] not-italic pt-[16px] text-[18px] text-[rgba(255,255,255,0.75)] tracking-[-0.45px] w-full whitespace-pre-wrap"
+              >
+                {answer}
+              </p>
+            </div>
+          </div>
         </div>
-        <div className={`relative shrink-0 size-[24px] transition-transform duration-300 ${isOpen ? 'rotate-45' : ''}`}>
-          <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 24 24">
-            <g>
-              <path d={svgPaths.p2a6e0600} fill="white" />
-            </g>
-          </svg>
-        </div>
-      </div>
-    </button>
+        <span
+          className="relative shrink-0 size-[24px] flex items-center justify-center text-white select-none pointer-events-none"
+          aria-hidden
+        >
+          {isOpen ? (
+            <svg className="block size-[20px]" fill="none" viewBox="0 0 24 24" aria-hidden>
+              <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+          ) : (
+            <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 24 24" aria-hidden>
+              <path d={svgPaths.p2a6e0600} fill="currentColor" />
+            </svg>
+          )}
+        </span>
+      </button>
+    </div>
   );
 }
 
 function FAQsSection() {
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
 
-  const faqs = [
-    "What are your core services?",
-    "What makes Brewery different from other agencies?",
-    "How is pricing structured?",
-    "Do you work with startups?",
-    "What is your UX mapping process?"
+  const faqs: { question: string; answer: string }[] = [
+    {
+      question: "What are your core services?",
+      answer:
+        "We specialize in UX consulting, interaction design, usability testing, product engineering, app development, and branding & visual identity. Each engagement is tailored to your specific needs and goals",
+    },
+    {
+      question: "What makes Brewery different from other agencies?",
+      answer:
+        "We combine deep domain expertise across 15+ industries with a relentless user-first methodology. We don't just make things look good — we engineer experiences that deliver measurable business impact.",
+    },
+    {
+      question: "How is pricing structured?",
+      answer:
+        "We offer project-based and retainer models, tailored to your scope and timeline. Each engagement begins with a scoping session to ensure alignment on deliverables, budget, and expectations",
+    },
+    {
+      question: "Do you work with startups?",
+      answer:
+        "Absolutely. We've helped 50+ organizations — from early-stage startups to enterprise — launch and scale their products. We understand the unique challenges and pace of startup environments",
+    },
+    {
+      question: "What is your UX mapping process?",
+      answer:
+        "Our process involves discovery workshops, comprehensive user research, journey mapping, wireframing, high-fidelity prototyping, and iterative usability testing. Every decision is grounded in data and validated with real users",
+    },
   ];
 
   return (
-    <div className="relative shrink-0 w-full">
-      <div className="content-stretch flex flex-col gap-[40px] items-start px-[90px] relative w-full">
-        <p className="font-['Cormorant_Garamond',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[60px] text-white tracking-[-0.45px]">FAQs</p>
-        <div className="content-stretch cursor-pointer flex flex-col items-start pb-[0.5px] relative shrink-0 w-full">
+    <div id="faqs" className="relative shrink-0 w-full scroll-mt-0">
+      <SectionContainer className="content-stretch flex flex-col gap-[40px] items-start relative w-full">
+        <p className="font-['Cormorant_Garamond',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[60px] text-white tracking-[-0.45px]">
+          FAQs
+        </p>
+        <div className="content-stretch flex flex-col items-start pb-[0.5px] relative shrink-0 w-full">
           {faqs.map((faq, idx) => (
             <FAQItem
               key={idx}
-              question={faq}
+              question={faq.question}
+              answer={faq.answer}
+              answerId={`faq-answer-${idx}`}
               isOpen={openFAQ === idx}
               onClick={() => setOpenFAQ(openFAQ === idx ? null : idx)}
             />
           ))}
         </div>
-      </div>
+      </SectionContainer>
     </div>
   );
 }
 
 function ContactSection() {
   return (
-    <div className="bg-white relative shrink-0 w-full">
-      <div className="content-stretch flex flex-col gap-[150px] items-start pb-[24px] pt-[60px] px-[90px] relative w-full">
+    <div id="contact" className="bg-white relative shrink-0 w-full scroll-mt-0">
+      <SectionContainer className="content-stretch flex flex-col gap-[150px] items-start pb-[24px] pt-[60px] relative w-full">
         <div className="content-stretch flex gap-[60px] items-start relative shrink-0 w-full">
           <div className="content-stretch flex flex-[1_0_0] flex-col gap-[24px] items-start min-h-px min-w-px relative">
             <div className="content-stretch flex flex-col items-start relative shrink-0 w-full">
@@ -561,7 +680,7 @@ function ContactSection() {
             <p className="relative shrink-0 hover:text-[#bc312e] transition-colors duration-300">Email</p>
           </div>
         </div>
-      </div>
+      </SectionContainer>
     </div>
   );
 }
@@ -569,6 +688,7 @@ function ContactSection() {
 export default function App() {
   return (
     <div className="bg-black content-stretch flex flex-col gap-[120px] items-start relative size-full overflow-x-hidden">
+      <SideNav />
       <HeroSection />
       <ClientsSection />
       <ServicesSection />
