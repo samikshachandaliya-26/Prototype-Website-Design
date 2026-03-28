@@ -23,7 +23,7 @@ import imgImage127 from "figma:asset/902ebce3a0eaeee9fbd0fbccfc3da751a28cd379.pn
 
 function Frame7() {
   return (
-    <div className="backdrop-blur-[30px] content-stretch flex items-center justify-between px-[90px] py-[24px] shrink-0 sticky top-0 w-[1280px]">
+    <div className="content-stretch flex items-center justify-between px-[90px] py-[24px] shrink-0 sticky top-0 w-[1280px]">
       <div className="h-[50px] relative shrink-0 w-[147px]" data-name="image 120">
         <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgImage120} />
       </div>
@@ -60,9 +60,6 @@ function Frame8() {
       </div>
       <div className="backdrop-blur-[2px] bg-[rgba(255,255,255,0.15)] content-stretch flex items-center justify-center px-[10px] py-[4px] relative rounded-[1000px] shrink-0" data-name="Button - Content Area">
         <p className="font-['Satoshi_Variable:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[14px] text-white tracking-[-0.23px]">Our Work</p>
-      </div>
-      <div className="backdrop-blur-[2px] bg-[rgba(255,255,255,0.15)] content-stretch flex items-center justify-center px-[10px] py-[4px] relative rounded-[1000px] shrink-0" data-name="Button - Content Area">
-        <p className="font-['Satoshi_Variable:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[14px] text-white tracking-[-0.23px]">Our Journey</p>
       </div>
       <div className="backdrop-blur-[2px] bg-[rgba(255,255,255,0.15)] content-stretch flex items-center justify-center px-[10px] py-[4px] relative rounded-[1000px] shrink-0" data-name="Button - Content Area">
         <p className="font-['Satoshi_Variable:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[14px] text-white tracking-[-0.23px]">Testimonials</p>
@@ -534,6 +531,8 @@ function Frame63() {
     <div className="relative shrink-0 w-full">
       <div className="content-stretch flex flex-col gap-[60px] items-start px-[90px] relative w-full">
         <Frame64 />
+      </div>
+      <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2">
         <Frame45 />
       </div>
     </div>
@@ -753,7 +752,7 @@ function Frame39() {
 
 function Frame46() {
   return (
-    <div className="relative shrink-0 w-full">
+    <div className="relative shrink-0 w-full hidden" aria-hidden="true">
       <div className="content-stretch flex flex-col gap-[60px] items-start px-[90px] relative w-full">
         <Frame42 />
         <Frame39 />
@@ -1066,7 +1065,7 @@ function Frame31() {
 function Frame48() {
   return (
     <div className="content-stretch flex font-['Satoshi_Variable:Regular',sans-serif] items-start justify-between leading-[normal] not-italic relative shrink-0 text-[#17181d] text-[18px] tracking-[-0.45px] w-full">
-      <p className="relative shrink-0">@2025 Brewery Agency</p>
+      <p className="relative shrink-0">@2026 Brewery Agency</p>
       <Frame31 />
     </div>
   );

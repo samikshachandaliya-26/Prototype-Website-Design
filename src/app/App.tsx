@@ -30,7 +30,7 @@ import imgJourney8YearsGrowing from "../assets/journey-8-years-growing.png";
 
 function Header() {
   return (
-    <div className="relative z-[2] w-full shrink-0 backdrop-blur-[30px] bg-[rgba(0,0,0,0.2)] content-stretch flex items-center justify-between pl-[max(90px,var(--content-inset-left))] pr-[90px] py-[24px]">
+    <div className="relative z-[2] w-full shrink-0 bg-[rgba(0,0,0,0.2)] content-stretch flex items-center justify-between pl-[max(90px,var(--content-inset-left))] pr-[90px] py-[24px] max-sm:pr-6">
       <div className="h-[50px] relative shrink-0 w-[147px]">
         <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgImage120} />
       </div>
@@ -45,23 +45,65 @@ const NAV_ITEMS: { label: string; href: string }[] = [
   { label: "Services", href: "#services" },
   { label: "Industries", href: "#industries" },
   { label: "Our Work", href: "#our-work" },
-  { label: "Our Journey", href: "#our-journey" },
   { label: "Testimonials", href: "#testimonials" },
   { label: "FAQs", href: "#faqs" },
   { label: "Contact", href: "#contact" },
 ];
 
-function NavButton({ label, href, onLightBackground }: { label: string; href: string; onLightBackground?: boolean }) {
+function computeActiveNavHref(): string {
+  const probeY = window.innerHeight * 0.32;
+  for (let i = NAV_ITEMS.length - 1; i >= 0; i--) {
+    const item = NAV_ITEMS[i];
+    const el = document.getElementById(item.href.slice(1));
+    if (!el) continue;
+    const r = el.getBoundingClientRect();
+    if (r.top <= probeY && r.bottom >= probeY) {
+      return item.href;
+    }
+  }
+  let bestHref = NAV_ITEMS[0].href;
+  let bestDist = Infinity;
+  for (const item of NAV_ITEMS) {
+    const el = document.getElementById(item.href.slice(1));
+    if (!el) continue;
+    const r = el.getBoundingClientRect();
+    const dist =
+      probeY < r.top ? r.top - probeY : probeY > r.bottom ? probeY - r.bottom : 0;
+    if (dist < bestDist) {
+      bestDist = dist;
+      bestHref = item.href;
+    }
+  }
+  return bestHref;
+}
+
+function NavButton({
+  label,
+  href,
+  onLightBackground,
+  isActive,
+}: {
+  label: string;
+  href: string;
+  onLightBackground?: boolean;
+  isActive?: boolean;
+}) {
+  const base =
+    onLightBackground
+      ? "backdrop-blur-[2px] bg-[rgba(23,24,29,0.92)] content-stretch flex items-center justify-center px-[10px] py-[4px] relative rounded-[1000px] shrink-0 cursor-pointer transition-all duration-300 hover:bg-[#17181d] hover:scale-105 no-underline shadow-[0_1px_2px_rgba(0,0,0,0.08)]"
+      : "backdrop-blur-[2px] bg-[rgba(255,255,255,0.15)] content-stretch flex items-center justify-center px-[10px] py-[4px] relative rounded-[1000px] shrink-0 cursor-pointer transition-all duration-300 hover:bg-[rgba(255,255,255,0.25)] hover:scale-105 no-underline";
   return (
     <a
       href={href}
-      className={
-        onLightBackground
-          ? "backdrop-blur-[2px] bg-[rgba(23,24,29,0.92)] content-stretch flex items-center justify-center px-[10px] py-[4px] relative rounded-[1000px] shrink-0 cursor-pointer transition-all duration-300 hover:bg-[#17181d] hover:scale-105 no-underline shadow-[0_1px_2px_rgba(0,0,0,0.08)]"
-          : "backdrop-blur-[2px] bg-[rgba(255,255,255,0.15)] content-stretch flex items-center justify-center px-[10px] py-[4px] relative rounded-[1000px] shrink-0 cursor-pointer transition-all duration-300 hover:bg-[rgba(255,255,255,0.25)] hover:scale-105 no-underline"
-      }
+      aria-current={isActive ? "location" : undefined}
+      className={`${base} ${isActive ? "gap-[6px]" : "gap-0"}`}
     >
-      <p className="font-['Satoshi',sans-serif] font-normal leading-[normal] not-italic relative shrink-0 text-[14px] text-white tracking-[-0.23px]">{label}</p>
+      {isActive ? (
+        <span className="size-[5px] shrink-0 rounded-full bg-white" aria-hidden />
+      ) : null}
+      <p className="font-['Satoshi',sans-serif] font-normal leading-[normal] not-italic relative shrink-0 text-[14px] text-white tracking-[-0.23px]">
+        {label}
+      </p>
     </a>
   );
 }
@@ -69,6 +111,7 @@ function NavButton({ label, href, onLightBackground }: { label: string; href: st
 function SideNav() {
   const navRef = useRef<HTMLElement>(null);
   const [onLightBackground, setOnLightBackground] = useState(false);
+  const [activeHref, setActiveHref] = useState<string>(NAV_ITEMS[0].href);
 
   useEffect(() => {
     const update = () => {
@@ -94,6 +137,25 @@ function SideNav() {
     };
   }, []);
 
+  useEffect(() => {
+    let raf = 0;
+    const sync = () => {
+      raf = 0;
+      setActiveHref(computeActiveNavHref());
+    };
+    const onScrollOrResize = () => {
+      if (raf === 0) raf = requestAnimationFrame(sync);
+    };
+    sync();
+    window.addEventListener("scroll", onScrollOrResize, { passive: true });
+    window.addEventListener("resize", onScrollOrResize);
+    return () => {
+      window.removeEventListener("scroll", onScrollOrResize);
+      window.removeEventListener("resize", onScrollOrResize);
+      if (raf !== 0) cancelAnimationFrame(raf);
+    };
+  }, []);
+
   return (
     <nav
       ref={navRef}
@@ -101,7 +163,13 @@ function SideNav() {
       aria-label="Section navigation"
     >
       {NAV_ITEMS.map((item) => (
-        <NavButton key={item.href} label={item.label} href={item.href} onLightBackground={onLightBackground} />
+        <NavButton
+          key={item.href}
+          label={item.label}
+          href={item.href}
+          onLightBackground={onLightBackground}
+          isActive={activeHref === item.href}
+        />
       ))}
     </nav>
   );
@@ -110,36 +178,40 @@ function SideNav() {
 function HeroPlasmaLayer() {
   return (
     <div
-      className="pointer-events-none absolute left-1/2 top-0 z-[1] w-[min(1440px,100vw)] -translate-x-1/2"
+      className="pointer-events-none absolute inset-0 z-0 w-full overflow-hidden min-h-[100dvh]"
       style={{
-        height: "min(1750px, 125vh)",
         WebkitMaskImage:
-          "linear-gradient(to bottom, #000 0%, #000 58%, rgba(0,0,0,0.85) 72%, rgba(0,0,0,0.35) 88%, transparent 100%)",
+          "linear-gradient(to bottom, #000 0%, #000 70%, rgba(0,0,0,0.75) 88%, transparent 100%)",
         maskImage:
-          "linear-gradient(to bottom, #000 0%, #000 58%, rgba(0,0,0,0.85) 72%, rgba(0,0,0,0.35) 88%, transparent 100%)",
+          "linear-gradient(to bottom, #000 0%, #000 70%, rgba(0,0,0,0.75) 88%, transparent 100%)",
       }}
     >
-      <Plasma
-        color="#bc312e"
-        speed={0.6}
-        direction="forward"
-        scale={0.98}
-        opacity={0.82}
-        mouseInteractive={false}
-      />
+      <div className="h-full min-h-[100dvh] w-full">
+        <Plasma
+          color="#bc312e"
+          speed={0.6}
+          direction="forward"
+          scale={0.98}
+          opacity={0.82}
+          mouseInteractive={false}
+        />
+      </div>
     </div>
   );
 }
 
 function HeroSection() {
   return (
-    <div id="intro" className="relative z-[2] content-stretch flex flex-col gap-[60px] items-start shrink-0 w-full scroll-mt-0">
+    <div className="relative z-[2] flex w-full flex-1 min-h-0 flex-col content-stretch items-start">
       <div className="h-[460px] relative shrink-0 w-full">
         <div className="absolute content-stretch flex flex-col font-['Cormorant_Garamond',sans-serif] font-medium items-end leading-[normal] left-[210px] not-italic pb-[10px] text-[80px] text-white top-[230px] tracking-[-0.45px] w-[968px]">
           <p className="min-w-full relative shrink-0 w-[min-content] whitespace-pre-wrap">{`We design products `}</p>
           <p className="relative shrink-0 text-center">people actually want to use</p>
         </div>
-        <p className="absolute font-['Satoshi',sans-serif] font-normal leading-[normal] left-[793px] not-italic text-[14px] text-white top-[100px] tracking-[-0.23px] w-[300px] whitespace-pre-wrap">Since 2020 we've helped startups and enterprises design and build high-performance digital products that drive growth and user adoption</p>
+        <p className="absolute font-['Satoshi',sans-serif] font-normal leading-[normal] left-[793px] not-italic text-[14px] text-white top-[100px] tracking-[-0.23px] w-[300px] whitespace-pre-wrap">
+          Since 2020 we've helped startups and enterprises design and build high-performance digital products that drive
+          growth and user adoption
+        </p>
       </div>
     </div>
   );
@@ -447,49 +519,40 @@ function IndustriesSection() {
   return (
     <section id="industries" className="w-full bg-black py-[100px] scroll-mt-0">
       <SectionContainer>
-        {/* Scroll track: vertical scroll pins heading + row, drives horizontal translate */}
-        <div ref={trackRef} className="relative h-[520vh] w-full">
-          <div className="sticky top-0 z-[5] flex h-screen w-full flex-col overflow-hidden bg-black">
-            <div className="mb-[60px] shrink-0">
-              <h2 className="text-[60px] text-white font-['Cormorant_Garamond'] leading-tight">
-                8+ industries. 50+ products.
-                <br />
-                We understand your user's problems
-              </h2>
-            </div>
-            <div
-              ref={viewportRef}
-              className="min-h-[300px] flex-1 overflow-hidden -ml-[max(1.5rem,var(--content-inset-left))] sm:-ml-[max(2.5rem,var(--content-inset-left))] md:-ml-[max(3.5rem,var(--content-inset-left))] lg:-ml-[max(5rem,var(--content-inset-left))] xl:-ml-[max(90px,var(--content-inset-left))] -mr-6 sm:-mr-10 md:-mr-14 lg:-mr-20 xl:-mr-[90px] pl-[max(1.5rem,var(--content-inset-left))] sm:pl-[max(2.5rem,var(--content-inset-left))] md:pl-[max(3.5rem,var(--content-inset-left))] lg:pl-[max(5rem,var(--content-inset-left))] xl:pl-[max(90px,var(--content-inset-left))] pr-6 sm:pr-10 md:pr-14 lg:pr-20 xl:pr-[90px]"
-            >
+        <div className="relative left-1/2 w-screen -translate-x-1/2">
+          <div ref={trackRef} className="relative h-[520vh] w-full">
+            <div className="sticky top-0 z-[5] flex h-screen w-full flex-col overflow-hidden bg-black">
+              <div className="mb-[60px] shrink-0 pl-[max(1.5rem,var(--content-inset-left))] sm:pl-[max(2.5rem,var(--content-inset-left))] md:pl-[max(3.5rem,var(--content-inset-left))] lg:pl-[max(5rem,var(--content-inset-left))] xl:pl-[max(90px,var(--content-inset-left))] pr-6 sm:pr-10 md:pr-14 lg:pr-20 xl:pr-[90px]">
+                <h2 className="text-[60px] text-white font-['Cormorant_Garamond'] leading-tight">
+                  8+ industries. 50+ products.
+                  <br />
+                  We understand your user's problems
+                </h2>
+              </div>
               <div
-                ref={rowRef}
-                className="flex w-max gap-[80px] will-change-transform"
+                ref={viewportRef}
+                className="min-h-[300px] flex-1 overflow-hidden px-6 sm:px-10 md:px-14 lg:px-20 xl:px-[90px]"
               >
-                {industries.map((industry, idx) => (
-                  <div
-                    key={idx}
-                    className="flex gap-[24px] shrink-0 w-[600px] hover:scale-105 transition-transform duration-300"
-                  >
-                    {/* Image */}
-                    <div className="w-[291px] h-[300px] relative overflow-hidden rounded-lg">
-                      <img
-                        src={industry.image}
-                        alt=""
-                        className="absolute inset-0 w-full h-full object-cover"
-                      />
+                <div ref={rowRef} className="flex w-max gap-[80px] will-change-transform">
+                  {industries.map((industry, idx) => (
+                    <div
+                      key={idx}
+                      className="flex gap-[24px] shrink-0 w-[600px] hover:scale-105 transition-transform duration-300"
+                    >
+                      <div className="w-[291px] h-[300px] relative overflow-hidden rounded-lg">
+                        <img
+                          src={industry.image}
+                          alt=""
+                          className="absolute inset-0 w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="w-[300px]">
+                        <h3 className="text-white text-[24px] font-medium">{industry.title}</h3>
+                        <p className="text-white/70 text-[18px] mt-2">{industry.description}</p>
+                      </div>
                     </div>
-
-                    {/* Text */}
-                    <div className="w-[300px]">
-                      <h3 className="text-white text-[24px] font-medium">
-                        {industry.title}
-                      </h3>
-                      <p className="text-white/70 text-[18px] mt-2">
-                        {industry.description}
-                      </p>
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -690,7 +753,7 @@ function JourneySection() {
   }, []);
 
   return (
-    <div id="our-journey" className="relative shrink-0 w-full scroll-mt-0">
+    <div id="our-journey" className="hidden relative shrink-0 w-full scroll-mt-0" aria-hidden="true">
       <SectionContainer className="content-stretch flex flex-col gap-[60px] items-start relative w-full">
         <div className="content-stretch flex flex-col items-start relative shrink-0 w-[430px]">
           <p className="font-['Cormorant_Garamond',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[60px] text-white tracking-[-0.45px] w-full whitespace-pre-wrap">How we got here</p>
@@ -918,7 +981,7 @@ function ContactSection() {
           </div>
         </div>
         <div className="content-stretch flex font-['Satoshi',sans-serif] font-normal items-start justify-between leading-[normal] not-italic relative shrink-0 text-[#17181d] text-[18px] tracking-[-0.45px] w-full">
-          <p className="relative shrink-0">@2025 Brewery Agency</p>
+          <p className="relative shrink-0">@2026 Brewery Agency</p>
           <div className="content-stretch flex gap-[24px] items-start relative shrink-0 cursor-pointer">
             <p className="relative shrink-0 hover:text-[#bc312e] transition-colors duration-300">LinkedIn</p>
             <p className="relative shrink-0 hover:text-[#bc312e] transition-colors duration-300">Email</p>
@@ -931,11 +994,14 @@ function ContactSection() {
 
 export default function App() {
   return (
-    <div className="relative size-full overflow-x-clip bg-black">
+    <div className="relative min-h-screen w-full overflow-x-clip bg-black">
       <SideNav />
-      <HeroPlasmaLayer />
-      <div className="content-stretch relative z-[2] flex flex-col items-start gap-[120px]">
-        <div className="flex w-full flex-col gap-0">
+      <div className="content-stretch relative z-[2] flex w-full flex-col items-start gap-[120px]">
+        <div
+          id="intro"
+          className="relative flex min-h-[100dvh] w-full flex-col scroll-mt-0"
+        >
+          <HeroPlasmaLayer />
           <Header />
           <HeroSection />
         </div>
