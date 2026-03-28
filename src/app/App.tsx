@@ -1,23 +1,23 @@
 import { useState, useRef, useEffect } from "react";
+import { AddieClientLogo } from "@/components/AddieClientLogo";
 import { TestimonialsMinimal } from "@/components/TestimonialsMinimal";
 import { LiquidMetalButton } from "../components/LiquidMetalButton";
 import svgPaths from "../imports/svg-9yfe37tpyu";
 import Plasma from "./components/Plasma";
-import imgImage120 from "../assets/eec2f74ce2ad486e20ef40a4a0e13e319ee42aa4.png";
+import imgImage120 from "../assets/Brewery logo red.svg";
 import imgCocaColaLogoSvg from "../assets/b07c59db1f930f349d78f88f1539a45fadb516fd.png";
 import imgNbaLogoNbaIconTransparentFreePng from "../assets/f27e9b699c0830cb489fd15868d944346bd3ccd1.png";
 import img5968863 from "../assets/6685bb55a5822c06513e7f7efb8337bdd5f0377a.png";
 import imgFossilGroupLogoWine from "../assets/65d8e3b63f29b375435372d3a6a5c4f46fddd264.png";
-import img67499F452B7D45C48Cb5Ab3FSeo from "../assets/3e6cd97c3d930fccf4b855245af90226db637591.png";
-import imgImage122 from "../assets/d13c27f38f7f19a70fb4c21059e43a825a49fd55.png";
-import img482Df7C8B90645369C33B8445Ce39Aa31 from "../assets/f71b47fca4ab1e823c0465d7e0636c553d7d5ebc.png";
-import img3Copy from "../assets/674a1f6ebd3aac2f6dcb0857081af7188a57949a.png";
+import img67499F452B7D45C48Cb5Ab3FSeo from "../assets/mgp logo.png";
+import imgImage122 from "../assets/Klasnobl logo.png";
+import img482Df7C8B90645369C33B8445Ce39Aa31 from "../assets/trailerpark logo.png";
 import imgHennessyLogoPngImageHd from "../assets/4b99611c8f53821098dec44346dab8471c3a10a2.png";
-import imgIvukLogo30011 from "../assets/40729da181c435cd15b4bf549df628dc57dd7fb9.png";
+import imgIvukLogo30011 from "../assets/future ventures logo.svg";
 import imgColourLogoOnWhiteV11 from "../assets/ff35cc666d39aacef5eb058126345d78ae40e40f.png";
 import img2E42C9A6Ba16477CBa47A104557E051B from "../assets/5648a147c55d19bcd5774622c1b331d60d8fdb6d.png";
-import img1200X630Wa from "../assets/439bdf82d9f73e6d26e7e4125a47e37202db5859.png";
-import imgKeynoteSystemsLogoPngSeeklogo78182 from "../assets/231508c727b58c002c12067488b210d757d8e659.png";
+import img1200X630Wa from "../assets/G3 logo.svg";
+import imgKeynoteSystemsLogoPngSeeklogo78182 from "../assets/key node logo.png";
 import imgImage125 from "../assets/e8d5b166233ace22b929e25dbad387b37e84e73f.png";
 import imgUiAppConceptForCommunityOfDesigners from "../assets/586456e31488f8c169fa075ef9f5534fada3cc0d.png";
 import imgExperimentalMusicAppUi from "../assets/5c008c433b69e1c43602b9bfa4507f66610ed9d4.png";
@@ -30,11 +30,19 @@ import imgJourney8YearsGrowing from "../assets/journey-8-years-growing.png";
 
 function Header() {
   return (
-    <div className="relative z-[2] w-full shrink-0 bg-[rgba(0,0,0,0.2)] content-stretch flex items-center justify-between pl-[max(90px,var(--content-inset-left))] pr-[90px] py-[24px] max-sm:pr-6">
-      <div className="h-[50px] relative shrink-0 w-[147px]">
-        <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgImage120} />
+    <div className="relative z-[2] w-full shrink-0 bg-[rgba(0,0,0,0.2)] py-[24px]">
+      <div
+        className={`mx-auto flex w-full max-w-[1440px] content-stretch items-center justify-between ${SECTION_EDGE_X}`}
+      >
+        <div className="flex h-[50px] min-w-0 shrink-0 items-center justify-start">
+          <img
+            alt="Brewery"
+            className="h-[42px] w-auto max-h-[50px] max-w-[min(240px,calc(100vw-180px))] object-contain object-left pointer-events-none"
+            src={imgImage120}
+          />
+        </div>
+        <LiquidMetalButton label="Contact Us" onClick={() => window.open("mailto:vijay@brewery.agency", "_self")} />
       </div>
-      <LiquidMetalButton label="Contact Us" onClick={() => window.open("mailto:vijay@brewery.agency", "_self")} />
     </div>
   );
 }
@@ -217,15 +225,46 @@ function HeroSection() {
   );
 }
 
+/** Same horizontal inset left & right as main content (matches sidenav gutter). */
+const SECTION_EDGE_X =
+  "pl-[max(1.5rem,var(--content-inset-left))] sm:pl-[max(2.5rem,var(--content-inset-left))] md:pl-[max(3.5rem,var(--content-inset-left))] lg:pl-[max(5rem,var(--content-inset-left))] xl:pl-[max(90px,var(--content-inset-left))] pr-[max(1.5rem,var(--content-inset-left))] sm:pr-[max(2.5rem,var(--content-inset-left))] md:pr-[max(3.5rem,var(--content-inset-left))] lg:pr-[max(5rem,var(--content-inset-left))] xl:pr-[max(90px,var(--content-inset-left))]";
+
 function SectionContainer({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <div
-      className={`w-full max-w-[1440px] mx-auto pl-[max(1.5rem,var(--content-inset-left))] sm:pl-[max(2.5rem,var(--content-inset-left))] md:pl-[max(3.5rem,var(--content-inset-left))] lg:pl-[max(5rem,var(--content-inset-left))] xl:pl-[max(90px,var(--content-inset-left))] pr-6 sm:pr-10 md:pr-14 lg:pr-20 xl:pr-[90px] ${className}`}
-    >
+    <div className={`w-full max-w-[1440px] mx-auto ${SECTION_EDGE_X} ${className}`}>
       {children}
     </div>
   );
 }
+
+const clientLogoCellClass =
+  "flex min-h-[56px] w-full max-w-[260px] items-center justify-center p-1.5 transition-all duration-300 hover:scale-110 cursor-pointer";
+/** Slightly smaller — visually heavy marks (Coca-Cola, Lead Me Not) */
+const clientLogoImgSm =
+  "max-h-[44px] max-w-full h-auto w-auto object-contain object-center pointer-events-none sm:max-h-[46px]";
+/** Addie — inline SVG scales; icon stays brand blue, wordmark white */
+const clientLogoImgAddie =
+  "max-h-[34px] max-w-full h-auto w-auto object-contain object-center pointer-events-none sm:max-h-[38px]";
+/** Default visual weight */
+const clientLogoImgMd =
+  "max-h-[52px] max-w-full h-auto w-auto object-contain object-center pointer-events-none sm:max-h-[56px]";
+/** Wordmarks with lots of empty canvas (NBA, Google, Fossil, Klas Nobl) */
+const clientLogoImgLg =
+  "max-h-[76px] max-w-full h-auto w-auto object-contain object-center pointer-events-none sm:max-h-[88px]";
+/** Icon column — G3 */
+const clientLogoImgIconCol =
+  "max-h-[84px] max-w-full h-auto w-auto object-contain object-center pointer-events-none sm:max-h-[96px]";
+/** Icon column — MGP & Trailer Park (larger than G3) */
+const clientLogoImgIconColLg =
+  "max-h-[102px] max-w-full h-auto w-auto object-contain object-center pointer-events-none sm:max-h-[118px]";
+/** Klas Nobl — ~2× previous wordmark cap */
+const clientLogoImgKlas =
+  "max-h-[152px] max-w-full h-auto w-auto object-contain object-center pointer-events-none sm:max-h-[176px]";
+/** KeyNode — slightly under default row weight */
+const clientLogoImgKeyNode =
+  "max-h-[29px] max-w-full h-auto w-auto object-contain object-center pointer-events-none sm:max-h-[32px]";
+/** MGP brand orange (mask fill) */
+const MGP_ORANGE = "#FF5F23";
 
 function ClientsSection() {
   return (
@@ -234,103 +273,121 @@ function ClientsSection() {
       className="relative z-[2] shrink-0 w-full scroll-mt-0 bg-[linear-gradient(to_bottom,transparent_0%,rgba(0,0,0,0.15)_22%,rgba(0,0,0,0.55)_48%,#000000_72%)]"
     >
       <div className="flex flex-col items-center justify-center size-full">
-        <SectionContainer className="content-stretch flex flex-col gap-[60px] items-center justify-center py-[60px] relative w-full">
-          <div className="content-stretch flex flex-col h-[160px] items-start relative shrink-0 w-full">
-            <div className="font-['Cormorant_Garamond',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-white text-[60px] tracking-[-0.45px] w-[554px] whitespace-pre-wrap">
+        <SectionContainer className="content-stretch flex flex-col gap-10 items-stretch justify-center py-[60px] relative w-full">
+          <div className="flex w-full flex-col gap-6 sm:gap-8 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
+            <div className="font-['Cormorant_Garamond',sans-serif] font-medium leading-[normal] not-italic text-white text-[60px] tracking-[-0.45px] max-w-[554px] shrink-0 whitespace-pre-wrap">
               <p className="mb-0">{`They trusted us `}</p>
               <p>with their biggest bets</p>
             </div>
+            <p className="max-w-[346px] font-['Satoshi',sans-serif] font-normal leading-[normal] not-italic text-[rgba(255,255,255,0.82)] text-[18px] tracking-[-0.45px] text-left lg:shrink-0 lg:text-right w-full lg:w-auto lg:max-w-[346px]">
+              From Fortune 500s to funded startups, we help teams ship products that users love
+            </p>
           </div>
-          <p className="-translate-x-full absolute font-['Satoshi',sans-serif] font-normal leading-[normal] left-[1189px] not-italic text-[rgba(255,255,255,0.82)] text-[18px] text-right top-[170px] tracking-[-0.45px] w-[346px] whitespace-pre-wrap">From Fortune 500s to funded startups, we help teams ship products that users love</p>
 
-          <div className="gap-x-[75px] gap-y-[60px] grid grid-cols-[repeat(5,fit-content(100%))] grid-rows-[repeat(3,fit-content(100%))] relative shrink-0 w-full">
-            <div className="col-1 h-[42px] justify-self-center relative row-1 self-center shrink-0 w-[136px] transition-all duration-300 hover:scale-110 cursor-pointer">
-              <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgCocaColaLogoSvg} />
-            </div>
-            <div className="col-2 h-[42px] justify-self-center relative row-1 self-center shrink-0 w-[118px] transition-all duration-300 hover:scale-110 cursor-pointer">
-              <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <img alt="" className="absolute h-[275.86%] left-0 max-w-none top-[-89.66%] w-full" src={imgNbaLogoNbaIconTransparentFreePng} />
+          <div className="flex w-full justify-center">
+            <div className="grid w-full max-w-[min(1120px,100%)] grid-cols-2 justify-items-center gap-x-6 gap-y-1 px-4 sm:grid-cols-3 sm:gap-x-8 sm:gap-y-1 sm:px-6 md:px-8 xl:grid-cols-5 xl:gap-x-6 xl:gap-y-1.5 xl:px-10">
+              {/* DOM order: main 4×3 block first, then icon column (MGP, Trailer, G3) for <xl auto-flow; xl uses explicit placement */}
+              <div className={`${clientLogoCellClass} xl:col-start-1 xl:row-start-1`}>
+                <img alt="" className={clientLogoImgSm} src={imgCocaColaLogoSvg} />
               </div>
-            </div>
-            <div className="col-3 h-[43px] justify-self-center relative row-1 self-center shrink-0 w-[122px] transition-all duration-300 hover:scale-110 cursor-pointer">
-              <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <img alt="" className="absolute h-[285.71%] left-0 max-w-none top-[-92.86%] w-full" src={img5968863} />
+              <div className={`${clientLogoCellClass} xl:col-start-2 xl:row-start-1`}>
+                <img
+                  alt=""
+                  className={`${clientLogoImgLg} brightness-125 contrast-110`}
+                  src={imgNbaLogoNbaIconTransparentFreePng}
+                />
               </div>
-            </div>
-            <div className="col-4 h-[30px] justify-self-center relative row-1 self-center shrink-0 w-[125px] transition-all duration-300 hover:scale-110 cursor-pointer">
-              <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <img alt="" className="absolute h-[333.33%] left-[-13.4%] max-w-none top-[-116.67%] w-[123.71%] brightness-0 invert opacity-90" src={imgFossilGroupLogoWine} />
+              <div className={`${clientLogoCellClass} xl:col-start-3 xl:row-start-1`}>
+                <img alt="" className={clientLogoImgLg} src={img5968863} />
               </div>
-            </div>
-            <div className="col-5 h-[60px] justify-self-center relative row-1 self-center shrink-0 w-[235px] transition-all duration-300 hover:scale-110 cursor-pointer">
-              <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <img alt="" className="absolute h-[235.29%] left-[-7.66%] max-w-none top-[-64.71%] w-[114.57%]" src={img67499F452B7D45C48Cb5Ab3FSeo} />
+              <div className={`${clientLogoCellClass} xl:col-start-4 xl:row-start-1`}>
+                <img
+                  alt=""
+                  className={`${clientLogoImgLg} brightness-0 invert opacity-90`}
+                  src={imgFossilGroupLogoWine}
+                />
               </div>
-            </div>
 
-            <div className="col-1 h-[42px] justify-self-center relative row-2 self-center shrink-0 w-[118px] transition-all duration-300 hover:scale-110 cursor-pointer">
-              <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 118 42">
-                <g clipPath="url(#clip0_1_799)">
-                  <path d={svgPaths.p19b2bd00} fill="#f1f5f9" />
-                  <path d={svgPaths.p3e5bbff2} fill="#f1f5f9" />
-                  <path d={svgPaths.p282f8280} fill="#f1f5f9" />
-                  <path d={svgPaths.p15c8db30} fill="#f1f5f9" />
-                  <path d={svgPaths.p1e7c3c80} fill="#f1f5f9" />
-                  <path d={svgPaths.p30b32200} fill="#f1f5f9" />
-                  <path d={svgPaths.p1fbdbdc0} fill="#f1f5f9" />
-                  <path d={svgPaths.pa7f9cc0} fill="#f1f5f9" />
-                  <path d={svgPaths.pee90500} fill="#f1f5f9" />
-                  <path d={svgPaths.p2fcec900} fill="#f1f5f9" />
-                  <path d={svgPaths.p34b57500} fill="#f1f5f9" />
-                  <path d={svgPaths.p3caaac00} fill="#f1f5f9" />
-                  <path d={svgPaths.p271d7b80} fill="#f1f5f9" />
-                  <path d={svgPaths.p37e38b00} fill="#f1f5f9" />
-                </g>
-                <defs>
-                  <clipPath id="clip0_1_799">
-                    <rect fill="white" height="42" width="118" />
-                  </clipPath>
-                </defs>
-              </svg>
-            </div>
-            <div className="col-2 h-[34px] justify-self-center relative row-2 self-center shrink-0 w-[142px] transition-all duration-300 hover:scale-110 cursor-pointer">
-              <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <img alt="" className="absolute h-[216.41%] left-0 max-w-none top-[-62.26%] w-full brightness-0 invert opacity-90" src={imgImage122} />
+              <div className={`${clientLogoCellClass} xl:col-start-1 xl:row-start-2`}>
+                <svg
+                  className="max-h-[44px] w-auto max-w-full shrink-0 sm:max-h-[46px]"
+                  fill="none"
+                  preserveAspectRatio="xMidYMid meet"
+                  viewBox="0 0 118 42"
+                >
+                  <g clipPath="url(#clip0_clients_leadmenot)">
+                    <path d={svgPaths.p19b2bd00} fill="#f1f5f9" />
+                    <path d={svgPaths.p3e5bbff2} fill="#f1f5f9" />
+                    <path d={svgPaths.p282f8280} fill="#f1f5f9" />
+                    <path d={svgPaths.p15c8db30} fill="#f1f5f9" />
+                    <path d={svgPaths.p1e7c3c80} fill="#f1f5f9" />
+                    <path d={svgPaths.p30b32200} fill="#f1f5f9" />
+                    <path d={svgPaths.p1fbdbdc0} fill="#f1f5f9" />
+                    <path d={svgPaths.pa7f9cc0} fill="#f1f5f9" />
+                    <path d={svgPaths.pee90500} fill="#f1f5f9" />
+                    <path d={svgPaths.p2fcec900} fill="#f1f5f9" />
+                    <path d={svgPaths.p34b57500} fill="#f1f5f9" />
+                    <path d={svgPaths.p3caaac00} fill="#f1f5f9" />
+                    <path d={svgPaths.p271d7b80} fill="#f1f5f9" />
+                    <path d={svgPaths.p37e38b00} fill="#f1f5f9" />
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_clients_leadmenot">
+                      <rect fill="white" height="42" width="118" />
+                    </clipPath>
+                  </defs>
+                </svg>
               </div>
-            </div>
-            <div className="col-3 h-[60px] justify-self-center relative row-2 self-center shrink-0 w-[92px] transition-all duration-300 hover:scale-110 cursor-pointer">
-              <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <img alt="" className="absolute h-[153.85%] left-0 max-w-none top-[-15.38%] w-full brightness-0 invert contrast-200" src={img482Df7C8B90645369C33B8445Ce39Aa31} />
+              <div className={`${clientLogoCellClass} xl:col-start-2 xl:row-start-2`}>
+                <img alt="" className={`${clientLogoImgKlas} brightness-0 invert opacity-90`} src={imgImage122} />
               </div>
-            </div>
-            <div className="col-4 h-[42px] justify-self-center relative row-2 self-center shrink-0 w-[81px] transition-all duration-300 hover:scale-110 cursor-pointer">
-              <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={img3Copy} />
-            </div>
-            <div className="col-5 h-[60px] justify-self-center relative row-2 self-center shrink-0 w-[107px] transition-all duration-300 hover:scale-110 cursor-pointer">
-              <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full brightness-0 invert opacity-90" src={imgHennessyLogoPngImageHd} />
-            </div>
+              <div className={`${clientLogoCellClass} xl:col-start-3 xl:row-start-2`}>
+                <AddieClientLogo className={`${clientLogoImgAddie} w-auto max-w-full shrink-0`} />
+              </div>
+              <div className={`${clientLogoCellClass} xl:col-start-4 xl:row-start-2`}>
+                <img alt="" className={`${clientLogoImgMd} brightness-0 invert opacity-90`} src={imgHennessyLogoPngImageHd} />
+              </div>
 
-            <div className="col-1 h-[30px] justify-self-center relative row-3 self-center shrink-0 w-[175px] transition-all duration-300 hover:scale-110 cursor-pointer">
-              <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <img alt="" className="absolute h-[285.71%] left-[-17.68%] max-w-none top-[-89.29%] w-[151.09%]" src={imgIvukLogo30011} />
+              <div className={`${clientLogoCellClass} xl:col-start-1 xl:row-start-3`}>
+                <img alt="" className={clientLogoImgMd} src={imgIvukLogo30011} />
               </div>
-            </div>
-            <div className="col-2 h-[60px] justify-self-center relative row-3 self-center shrink-0 w-[134px] transition-all duration-300 hover:scale-110 cursor-pointer">
-              <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full brightness-0 invert opacity-90" src={imgColourLogoOnWhiteV11} />
-            </div>
-            <div className="col-3 h-[42px] justify-self-center relative row-3 self-center shrink-0 w-[100px] transition-all duration-300 hover:scale-110 cursor-pointer">
-              <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <img alt="" className="absolute h-[119.73%] left-0 max-w-none top-[-6.13%] w-full" src={img2E42C9A6Ba16477CBa47A104557E051B} />
+              <div className={`${clientLogoCellClass} xl:col-start-2 xl:row-start-3`}>
+                <img alt="" className={`${clientLogoImgMd} brightness-0 invert opacity-90`} src={imgColourLogoOnWhiteV11} />
               </div>
-            </div>
-            <div className="col-4 h-[60px] justify-self-center relative row-3 self-center shrink-0 w-[61px] transition-all duration-300 hover:scale-110 cursor-pointer">
-              <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <img alt="" className="absolute h-[142.86%] left-[-82.79%] max-w-none top-[-21.43%] w-[267.33%]" src={img1200X630Wa} />
+              <div className={`${clientLogoCellClass} xl:col-start-3 xl:row-start-3`}>
+                <img alt="" className={clientLogoImgMd} src={img2E42C9A6Ba16477CBa47A104557E051B} />
               </div>
-            </div>
-            <div className="col-5 h-[30px] justify-self-center relative row-3 self-center shrink-0 w-[154px] transition-all duration-300 hover:scale-110 cursor-pointer">
-              <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <img alt="" className="absolute h-[533.33%] left-[-4%] max-w-none top-[-213.33%] w-[106.67%]" src={imgKeynoteSystemsLogoPngSeeklogo78182} />
+              <div className={`${clientLogoCellClass} xl:col-start-4 xl:row-start-3`}>
+                <img alt="" className={clientLogoImgKeyNode} src={imgKeynoteSystemsLogoPngSeeklogo78182} />
+              </div>
+
+              <div className={`${clientLogoCellClass} xl:col-start-5 xl:row-start-1`}>
+                <div className="relative inline-flex max-w-full items-center justify-center">
+                  <img
+                    alt="MGP"
+                    className={`${clientLogoImgIconColLg} max-w-full opacity-0`}
+                    src={img67499F452B7D45C48Cb5Ab3FSeo}
+                  />
+                  <div
+                    aria-hidden
+                    className="absolute inset-0 m-auto max-h-full max-w-full [mask-size:contain] [mask-repeat:no-repeat] [mask-position:center]"
+                    style={{
+                      backgroundColor: MGP_ORANGE,
+                      maskImage: `url(${img67499F452B7D45C48Cb5Ab3FSeo})`,
+                      WebkitMaskImage: `url(${img67499F452B7D45C48Cb5Ab3FSeo})`,
+                    }}
+                  />
+                </div>
+              </div>
+              <div className={`${clientLogoCellClass} xl:col-start-5 xl:row-start-2`}>
+                <img
+                  alt=""
+                  className={`${clientLogoImgIconColLg} brightness-0 invert contrast-200`}
+                  src={img482Df7C8B90645369C33B8445Ce39Aa31}
+                />
+              </div>
+              <div className={`${clientLogoCellClass} xl:col-start-5 xl:row-start-3`}>
+                <img alt="" className={clientLogoImgIconCol} src={img1200X630Wa} />
               </div>
             </div>
           </div>
@@ -382,11 +439,11 @@ function ServicesSection() {
     <div id="services" className="relative shrink-0 w-full scroll-mt-0">
       <div className="flex flex-col items-center size-full">
         <SectionContainer className="content-stretch flex flex-col gap-[60px] items-stretch relative w-full">
-          <div className="content-stretch flex flex-col gap-[24px] md:flex-row md:items-start md:justify-between not-italic relative shrink-0 text-white tracking-[-0.45px] w-full">
+          <div className="content-stretch flex flex-col gap-[24px] md:flex-row md:items-end md:justify-between not-italic relative shrink-0 text-white tracking-[-0.45px] w-full">
             <p className="font-['Cormorant_Garamond',sans-serif] font-medium shrink-0 text-[60px] leading-[normal] max-w-[min(100%,520px)]">
               How we help you win
             </p>
-            <p className="font-['Satoshi',sans-serif] font-normal text-[18px] leading-[normal] md:max-w-[420px] md:text-right shrink-0">
+            <p className="max-w-full text-balance font-['Satoshi',sans-serif] font-normal text-[18px] leading-[1.45] text-left md:ml-auto md:max-w-[min(100%,560px)] md:text-right shrink-0">
               Our services include end-to-end product design and development spanning strategy, design, and engineering.
             </p>
           </div>
@@ -522,7 +579,7 @@ function IndustriesSection() {
         <div className="relative left-1/2 w-screen -translate-x-1/2">
           <div ref={trackRef} className="relative h-[520vh] w-full">
             <div className="sticky top-0 z-[5] flex h-screen w-full flex-col overflow-hidden bg-black">
-              <div className="mb-[60px] shrink-0 pl-[max(1.5rem,var(--content-inset-left))] sm:pl-[max(2.5rem,var(--content-inset-left))] md:pl-[max(3.5rem,var(--content-inset-left))] lg:pl-[max(5rem,var(--content-inset-left))] xl:pl-[max(90px,var(--content-inset-left))] pr-6 sm:pr-10 md:pr-14 lg:pr-20 xl:pr-[90px]">
+              <div className={`mb-[60px] shrink-0 ${SECTION_EDGE_X}`}>
                 <h2 className="text-[60px] text-white font-['Cormorant_Garamond'] leading-tight">
                   8+ industries. 50+ products.
                   <br />
