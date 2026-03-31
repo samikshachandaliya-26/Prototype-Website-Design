@@ -259,8 +259,9 @@ function SectionContainer({ children, className = "" }: { children: React.ReactN
   );
 }
 
+/** Full-width grid: cells stretch; logos stay centered; gap comes from column distribution (xl: five equal columns). */
 const clientLogoCellClass =
-  "flex min-h-[48px] w-full max-w-[260px] items-center justify-center p-1 transition-all duration-300 hover:scale-110 cursor-pointer";
+  "flex min-h-[48px] w-full min-w-0 max-w-full items-center justify-center p-1 transition-all duration-300 hover:scale-110 cursor-pointer";
 /** Slightly smaller — visually heavy marks (Coca-Cola, Lead Me Not) */
 const clientLogoImgSm =
   "max-h-[44px] max-w-full h-auto w-auto object-contain object-center pointer-events-none sm:max-h-[46px]";
@@ -306,8 +307,8 @@ function ClientsSection() {
             </p>
           </div>
 
-          <div className="flex w-full justify-center">
-            <div className="grid w-full max-w-[min(1120px,100%)] grid-cols-2 justify-items-center gap-x-6 gap-y-2 px-4 sm:grid-cols-3 sm:gap-x-8 sm:gap-y-2 sm:px-6 md:px-8 xl:grid-cols-5 xl:gap-x-6 xl:gap-y-2 xl:px-10">
+          <div className="w-full">
+            <div className="grid w-full grid-cols-2 justify-items-stretch gap-x-[clamp(0.75rem,3vw,2rem)] gap-y-2 sm:grid-cols-3 sm:gap-x-[clamp(1rem,3.5vw,2.25rem)] sm:gap-y-2 xl:grid-cols-5 xl:gap-x-[clamp(1.25rem,4vw,3rem)] xl:gap-y-2">
               {/* DOM order: main 4×3 block first, then icon column (MGP, Trailer, G3) for <xl auto-flow; xl uses explicit placement */}
               <div className={`${clientLogoCellClass} xl:col-start-1 xl:row-start-1`}>
                 <img alt="" className={clientLogoImgSm} src={imgCocaColaLogoSvg} />
