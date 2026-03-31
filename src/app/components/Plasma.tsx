@@ -162,6 +162,7 @@ export const Plasma = ({
     setSize();
 
     let raf = 0;
+    let isVisible = true;
     const t0 = performance.now();
     const loop = t => {
       let timeValue = (t - t0) * 0.001;
@@ -180,10 +181,35 @@ export const Plasma = ({
       renderer.render({ scene: mesh });
       raf = requestAnimationFrame(loop);
     };
-    raf = requestAnimationFrame(loop);
+
+    const startLoop = () => {
+      if (raf !== 0 || !isVisible) return;
+      raf = requestAnimationFrame(loop);
+    };
+
+    const stopLoop = () => {
+      if (raf === 0) return;
+      cancelAnimationFrame(raf);
+      raf = 0;
+    };
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = !!entry?.isIntersecting;
+        if (isVisible) {
+          startLoop();
+        } else {
+          stopLoop();
+        }
+      },
+      { threshold: 0.01 },
+    );
+    io.observe(containerEl);
+    startLoop();
 
     return () => {
-      cancelAnimationFrame(raf);
+      stopLoop();
+      io.disconnect();
       ro.disconnect();
       if (mouseInteractive && containerEl) {
         containerEl.removeEventListener('mousemove', handleMouseMove);

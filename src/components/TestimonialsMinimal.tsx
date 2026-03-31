@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import logoCocaCola from "../assets/b07c59db1f930f349d78f88f1539a45fadb516fd.png";
 import logoNba from "../assets/f27e9b699c0830cb489fd15868d944346bd3ccd1.png";
 import logoPlaceholder from "../assets/6685bb55a5822c06513e7f7efb8337bdd5f0377a.png";
@@ -21,7 +21,7 @@ const testimonials = [
     role: "Design Lead at Linear",
     logo: logoNba,
     logoAlt: "NBA",
-    logoAdjustClass: "scale-[1.32] origin-center",
+    logoAdjustClass: "scale-[0.66] origin-center",
   },
   {
     quote:
@@ -29,42 +29,32 @@ const testimonials = [
     name: "Elena Voss",
     role: "Founder at Notion",
     logo: logoPlaceholder,
-    logoAlt: "Client partner",
-    logoAdjustClass: "scale-[1.32] origin-center",
+    logoAlt: "Google",
+    logoAdjustClass: "scale-[0.77] origin-center",
   },
 ] as const;
 
 export function TestimonialsMinimal() {
   const [active, setActive] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const sync = () => setIsMobile(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+
+  // Keep testimonial switching manual to avoid laggy/overlapping auto transitions.
 
   return (
     <div className="w-full max-w-4xl py-16">
-      {/* Quote — room for ~2 lines at common breakpoints */}
-      <div className="relative mb-12 min-h-[120px] sm:min-h-[100px]">
-        {testimonials.map((t, i) => (
-          <p
-            key={i}
-            className={`
-              absolute inset-0 font-['Satoshi',sans-serif] font-normal leading-[1.55] not-italic text-[18px] md:text-[20px] text-white tracking-[-0.45px]
-              transition-all duration-500 ease-out
-              ${
-                active === i
-                  ? "opacity-100 translate-y-0 blur-0"
-                  : "opacity-0 translate-y-4 blur-sm pointer-events-none"
-              }
-            `}
-          >
-            "{t.quote}"
-          </p>
-        ))}
-      </div>
-
-      {/* Author row — same rhythm as original: gap-6 between logos | divider | name */}
-      <div className="flex w-full min-w-0 items-center gap-6">
-        <div className="flex shrink-0 items-center justify-start gap-3 sm:gap-4 md:gap-5">
+      {/* Logos */}
+      <div className="mb-6 w-full">
+        <div className="hidden w-full items-center justify-start gap-3 md:flex">
           {testimonials.map((t, i) => {
             const isActive = active === i;
-            const isFirst = i === 0;
             return (
               <button
                 key={i}
@@ -73,10 +63,9 @@ export function TestimonialsMinimal() {
                 aria-label={`Show testimonial from ${t.logoAlt}`}
                 aria-pressed={isActive}
                 className={`
-                  relative flex h-12 shrink-0 items-center
-                  transition-[filter] duration-300 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 rounded-sm
+                  relative flex h-12 w-[108px] shrink-0 items-center justify-center
+                  transition-[filter] duration-200 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 rounded-sm
                   ${isActive ? "z-10" : "z-0"}
-                  ${isFirst ? "justify-start" : "justify-center"}
                 `}
               >
                 <img
@@ -84,8 +73,8 @@ export function TestimonialsMinimal() {
                   alt=""
                   className={`
                     h-10 max-h-10 w-auto max-w-[132px] sm:h-11 sm:max-h-11 sm:max-w-[148px] object-contain
-                    transition-[filter] duration-300 ease-out
-                    ${isFirst ? "object-left" : "object-center"}
+                    transition-[filter] duration-200 ease-out
+                    object-center
                     ${isActive ? "grayscale-0" : "grayscale"}
                     ${t.logoAdjustClass}
                   `}
@@ -95,29 +84,60 @@ export function TestimonialsMinimal() {
           })}
         </div>
 
-        {/* Divider */}
-        <div className="h-8 w-px shrink-0 bg-white/25" aria-hidden />
-
-        {/* Active Author Info */}
-        <div className="relative min-h-[44px] min-w-0 flex-1">
-          {testimonials.map((t, i) => (
-            <div
-              key={i}
+        <div className="flex w-full items-center justify-start md:hidden">
+          <div className="relative flex h-12 shrink-0 items-center justify-start">
+            <img
+              src={testimonials[active].logo}
+              alt=""
               className={`
-                absolute inset-0 flex flex-col justify-center gap-0.5
-                transition-all duration-[400ms] ease-out
-                ${active === i ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-2 pointer-events-none"}
+                h-10 max-h-10 w-auto max-w-[132px] object-contain object-left
+                transition-all duration-300 ease-out
+                ${testimonials[active].logoAdjustClass}
               `}
-            >
-              <span className="font-['Satoshi',sans-serif] font-semibold leading-[1.2] text-[20px] sm:text-[22px] md:text-[24px] text-white tracking-[-0.45px]">
-                {t.name}
-              </span>
-              <span className="font-['Satoshi',sans-serif] font-normal leading-[normal] text-[14px] sm:text-[15px] text-[rgba(255,255,255,0.72)] tracking-[-0.23px]">
-                {t.role}
-              </span>
-            </div>
-          ))}
+            />
+          </div>
         </div>
+      </div>
+
+      {/* Quote — room for ~2 lines at common breakpoints */}
+      <div className="relative mb-4 min-h-[156px] md:min-h-[118px]">
+        {testimonials.map((t, i) => (
+          <p
+            key={i}
+            className={`
+              absolute inset-0 font-['Satoshi',sans-serif] font-normal leading-[1.5] not-italic text-[20px] md:text-[24px] text-white tracking-[-0.45px]
+              transition-all duration-250 ease-out
+              ${
+                active === i
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-4 pointer-events-none"
+              }
+            `}
+          >
+            "{t.quote}"
+          </p>
+        ))}
+      </div>
+
+      {/* Active Author Info */}
+      <div className="relative min-h-[54px] w-full">
+        {testimonials.map((t, i) => (
+          <div
+            key={i}
+            className={`
+              absolute inset-0 flex flex-col justify-center gap-0.5
+              transition-all duration-250 ease-out
+              ${active === i ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-2 pointer-events-none"}
+            `}
+          >
+            <span className="font-['Satoshi',sans-serif] font-semibold leading-[1.2] text-[20px] sm:text-[22px] md:text-[24px] text-white tracking-[-0.45px]">
+              {t.name}
+            </span>
+            <span className="font-['Satoshi',sans-serif] font-normal leading-[normal] text-[14px] sm:text-[15px] text-[rgba(255,255,255,0.72)] tracking-[-0.23px]">
+              {t.role}
+            </span>
+          </div>
+        ))}
       </div>
     </div>
   );

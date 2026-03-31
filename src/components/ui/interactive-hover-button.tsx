@@ -15,19 +15,19 @@ const InteractiveHoverButton = React.forwardRef<
     <button
       ref={ref}
       className={cn(
-        "group relative w-36 cursor-pointer overflow-hidden rounded-full border border-transparent bg-[#bc312e] p-2 text-center font-semibold text-white transition-colors duration-300 hover:bg-[#a02926]",
+        "group relative inline-flex h-10 cursor-pointer items-center justify-center overflow-hidden rounded-full bg-[rgba(255,255,255,0.15)] px-4 text-center font-['Satoshi',sans-serif] text-[18px] font-normal leading-[normal] tracking-[-0.45px] text-white backdrop-blur-[2px] transition-[transform,background-color] duration-200 ease-[cubic-bezier(0.33,1,0.68,1)] will-change-transform hover:-translate-y-0.5 hover:bg-[rgba(255,255,255,0.07)] active:translate-y-0 active:scale-[0.99]",
         className,
       )}
       {...props}
     >
-      <span className="inline-block translate-x-1 transition-all duration-300 group-hover:translate-x-12 group-hover:opacity-0">
-        {text}
-      </span>
-      <div className="absolute top-0 z-10 flex h-full w-full translate-x-12 items-center justify-center gap-2 text-white opacity-0 transition-all duration-300 group-hover:-translate-x-1 group-hover:opacity-100">
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 rounded-full border border-white scale-x-0 origin-center transition-none group-hover:scale-x-100"
+      />
+      <span className="relative z-10 inline-flex items-center justify-center gap-1.5">
         <span>{text}</span>
-        <ArrowRight className="h-4 w-4" />
-      </div>
-      <div className="absolute left-[20%] top-[40%] h-2 w-2 scale-[1] rounded-lg bg-[#bc312e] transition-all duration-300 group-hover:left-[0%] group-hover:top-[0%] group-hover:h-full group-hover:w-full group-hover:scale-[1.8] group-hover:bg-[#bc312e]" />
+        <ArrowRight strokeWidth={2.3} className="h-4 w-4 -rotate-45" />
+      </span>
     </button>
   );
 });

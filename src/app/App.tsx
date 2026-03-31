@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { AddieClientLogo } from "@/components/AddieClientLogo";
 import { TestimonialsMinimal } from "@/components/TestimonialsMinimal";
-import { LiquidMetalButton } from "../components/LiquidMetalButton";
+import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button";
+import { CustomCursor } from "@/components/CustomCursor";
 import svgPaths from "../imports/svg-9yfe37tpyu";
 import Plasma from "./components/Plasma";
 import imgImage120 from "../assets/Brewery logo red.svg";
@@ -18,6 +19,8 @@ import imgColourLogoOnWhiteV11 from "../assets/ff35cc666d39aacef5eb058126345d78a
 import img2E42C9A6Ba16477CBa47A104557E051B from "../assets/5648a147c55d19bcd5774622c1b331d60d8fdb6d.png";
 import img1200X630Wa from "../assets/G3 logo.svg";
 import imgKeynoteSystemsLogoPngSeeklogo78182 from "../assets/key node logo.png";
+import imgUntrapLogo from "../assets/untrap logo.png";
+import imgParticipantLogo from "../assets/participant logo.png";
 import imgImage125 from "../assets/e8d5b166233ace22b929e25dbad387b37e84e73f.png";
 import imgUiAppConceptForCommunityOfDesigners from "../assets/586456e31488f8c169fa075ef9f5534fada3cc0d.png";
 import imgExperimentalMusicAppUi from "../assets/5c008c433b69e1c43602b9bfa4507f66610ed9d4.png";
@@ -41,7 +44,7 @@ function Header() {
             src={imgImage120}
           />
         </div>
-        <LiquidMetalButton label="Contact Us" onClick={() => window.open("mailto:vijay@brewery.agency", "_self")} />
+        <InteractiveHoverButton text="Contact Us" onClick={() => window.open("mailto:vijay@brewery.agency", "_self")} />
       </div>
     </div>
   );
@@ -88,18 +91,14 @@ function computeActiveNavHref(): string {
 function NavButton({
   label,
   href,
-  onLightBackground,
   isActive,
 }: {
   label: string;
   href: string;
-  onLightBackground?: boolean;
   isActive?: boolean;
 }) {
   const base =
-    onLightBackground
-      ? "backdrop-blur-[2px] bg-[rgba(23,24,29,0.92)] content-stretch flex items-center justify-center px-[10px] py-[4px] relative rounded-[1000px] shrink-0 cursor-pointer transition-all duration-300 hover:bg-[#17181d] hover:scale-105 no-underline shadow-[0_1px_2px_rgba(0,0,0,0.08)]"
-      : "backdrop-blur-[2px] bg-[rgba(255,255,255,0.15)] content-stretch flex items-center justify-center px-[10px] py-[4px] relative rounded-[1000px] shrink-0 cursor-pointer transition-all duration-300 hover:bg-[rgba(255,255,255,0.25)] hover:scale-105 no-underline";
+    "backdrop-blur-[2px] bg-[rgba(255,255,255,0.15)] border border-transparent content-stretch flex items-center justify-center px-[10px] py-[4px] relative rounded-[1000px] shrink-0 cursor-pointer transition-[background-color,transform] duration-300 hover:bg-[rgba(255,255,255,0.07)] hover:scale-105 hover:border-white active:border-transparent no-underline";
   return (
     <a
       href={href}
@@ -117,33 +116,7 @@ function NavButton({
 }
 
 function SideNav() {
-  const navRef = useRef<HTMLElement>(null);
-  const [onLightBackground, setOnLightBackground] = useState(false);
   const [activeHref, setActiveHref] = useState<string>(NAV_ITEMS[0].href);
-
-  useEffect(() => {
-    const update = () => {
-      const navEl = navRef.current;
-      const contactEl = document.getElementById("contact");
-      if (!navEl || !contactEl) return;
-      const nav = navEl.getBoundingClientRect();
-      const contact = contactEl.getBoundingClientRect();
-      const overlaps = nav.bottom > contact.top && nav.top < contact.bottom;
-      setOnLightBackground(overlaps);
-    };
-
-    update();
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-    const ro = new ResizeObserver(update);
-    const contactEl = document.getElementById("contact");
-    if (contactEl) ro.observe(contactEl);
-    return () => {
-      window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
-      ro.disconnect();
-    };
-  }, []);
 
   useEffect(() => {
     let raf = 0;
@@ -166,7 +139,6 @@ function SideNav() {
 
   return (
     <nav
-      ref={navRef}
       className="fixed left-[var(--sidenav-gutter)] top-1/2 -translate-y-1/2 content-stretch flex flex-col gap-[8px] items-start w-[var(--sidenav-width)] z-50 pointer-events-auto"
       aria-label="Section navigation"
     >
@@ -175,7 +147,6 @@ function SideNav() {
           key={item.href}
           label={item.label}
           href={item.href}
-          onLightBackground={onLightBackground}
           isActive={activeHref === item.href}
         />
       ))}
@@ -238,7 +209,7 @@ function SectionContainer({ children, className = "" }: { children: React.ReactN
 }
 
 const clientLogoCellClass =
-  "flex min-h-[56px] w-full max-w-[260px] items-center justify-center p-1.5 transition-all duration-300 hover:scale-110 cursor-pointer";
+  "flex min-h-[48px] w-full max-w-[260px] items-center justify-center p-1 transition-all duration-300 hover:scale-110 cursor-pointer";
 /** Slightly smaller — visually heavy marks (Coca-Cola, Lead Me Not) */
 const clientLogoImgSm =
   "max-h-[44px] max-w-full h-auto w-auto object-contain object-center pointer-events-none sm:max-h-[46px]";
@@ -285,7 +256,7 @@ function ClientsSection() {
           </div>
 
           <div className="flex w-full justify-center">
-            <div className="grid w-full max-w-[min(1120px,100%)] grid-cols-2 justify-items-center gap-x-6 gap-y-1 px-4 sm:grid-cols-3 sm:gap-x-8 sm:gap-y-1 sm:px-6 md:px-8 xl:grid-cols-5 xl:gap-x-6 xl:gap-y-1.5 xl:px-10">
+            <div className="grid w-full max-w-[min(1120px,100%)] grid-cols-2 justify-items-center gap-x-6 gap-y-2 px-4 sm:grid-cols-3 sm:gap-x-8 sm:gap-y-2 sm:px-6 md:px-8 xl:grid-cols-5 xl:gap-x-6 xl:gap-y-2 xl:px-10">
               {/* DOM order: main 4×3 block first, then icon column (MGP, Trailer, G3) for <xl auto-flow; xl uses explicit placement */}
               <div className={`${clientLogoCellClass} xl:col-start-1 xl:row-start-1`}>
                 <img alt="" className={clientLogoImgSm} src={imgCocaColaLogoSvg} />
@@ -293,17 +264,17 @@ function ClientsSection() {
               <div className={`${clientLogoCellClass} xl:col-start-2 xl:row-start-1`}>
                 <img
                   alt=""
-                  className={`${clientLogoImgLg} brightness-125 contrast-110`}
+                  className={`${clientLogoImgLg} brightness-125 contrast-110 scale-50 origin-center`}
                   src={imgNbaLogoNbaIconTransparentFreePng}
                 />
               </div>
               <div className={`${clientLogoCellClass} xl:col-start-3 xl:row-start-1`}>
-                <img alt="" className={clientLogoImgLg} src={img5968863} />
+                <img alt="" className={`${clientLogoImgLg} scale-[0.6] origin-center`} src={img5968863} />
               </div>
               <div className={`${clientLogoCellClass} xl:col-start-4 xl:row-start-1`}>
                 <img
                   alt=""
-                  className={`${clientLogoImgLg} brightness-0 invert opacity-90`}
+                  className={`${clientLogoImgLg} brightness-0 invert opacity-90 scale-[0.8] origin-center`}
                   src={imgFossilGroupLogoWine}
                 />
               </div>
@@ -348,21 +319,27 @@ function ClientsSection() {
                 <img alt="" className={`${clientLogoImgMd} brightness-0 invert opacity-90`} src={imgHennessyLogoPngImageHd} />
               </div>
 
-              <div className={`${clientLogoCellClass} xl:col-start-1 xl:row-start-3`}>
+              <div className={`${clientLogoCellClass} xl:col-start-1 xl:row-start-3 xl:mt-2`}>
                 <img alt="" className={clientLogoImgMd} src={imgIvukLogo30011} />
               </div>
-              <div className={`${clientLogoCellClass} xl:col-start-2 xl:row-start-3`}>
+              <div className={`${clientLogoCellClass} xl:col-start-1 xl:row-start-4 xl:mt-6`}>
+                <img alt="" className={`${clientLogoImgMd} scale-[0.8] origin-center`} src={imgUntrapLogo} />
+              </div>
+              <div className={`${clientLogoCellClass} xl:col-start-2 xl:row-start-3 xl:mt-2`}>
                 <img alt="" className={`${clientLogoImgMd} brightness-0 invert opacity-90`} src={imgColourLogoOnWhiteV11} />
               </div>
-              <div className={`${clientLogoCellClass} xl:col-start-3 xl:row-start-3`}>
+              <div className={`${clientLogoCellClass} xl:col-start-2 xl:row-start-4 xl:mt-6`}>
+                <img alt="" className={`${clientLogoImgMd} brightness-0 invert opacity-90`} src={imgParticipantLogo} />
+              </div>
+              <div className={`${clientLogoCellClass} xl:col-start-3 xl:row-start-3 xl:mt-2`}>
                 <img alt="" className={clientLogoImgMd} src={img2E42C9A6Ba16477CBa47A104557E051B} />
               </div>
-              <div className={`${clientLogoCellClass} xl:col-start-4 xl:row-start-3`}>
+              <div className={`${clientLogoCellClass} xl:col-start-4 xl:row-start-3 xl:mt-2`}>
                 <img alt="" className={clientLogoImgKeyNode} src={imgKeynoteSystemsLogoPngSeeklogo78182} />
               </div>
 
               <div className={`${clientLogoCellClass} xl:col-start-5 xl:row-start-1`}>
-                <div className="relative inline-flex max-w-full items-center justify-center">
+                <div className="relative inline-flex max-w-full items-center justify-center scale-50 origin-center">
                   <img
                     alt="MGP"
                     className={`${clientLogoImgIconColLg} max-w-full opacity-0`}
@@ -386,7 +363,7 @@ function ClientsSection() {
                   src={img482Df7C8B90645369C33B8445Ce39Aa31}
                 />
               </div>
-              <div className={`${clientLogoCellClass} xl:col-start-5 xl:row-start-3`}>
+              <div className={`${clientLogoCellClass} xl:col-start-5 xl:row-start-3 xl:mt-2`}>
                 <img alt="" className={clientLogoImgIconCol} src={img1200X630Wa} />
               </div>
             </div>
@@ -1013,31 +990,33 @@ function FAQsSection() {
 
 function ContactSection() {
   return (
-    <div id="contact" className="bg-white relative shrink-0 w-full scroll-mt-0">
+    <div id="contact" className="bg-black relative shrink-0 w-full scroll-mt-0">
       <SectionContainer className="content-stretch flex flex-col gap-[150px] items-start pb-[24px] pt-[60px] relative w-full">
-        <div className="content-stretch flex gap-[60px] items-start relative shrink-0 w-full">
+        <div className="content-stretch flex items-start relative shrink-0 w-full">
           <div className="content-stretch flex flex-[1_0_0] flex-col gap-[24px] items-start min-h-px min-w-px relative">
             <div className="content-stretch flex flex-col items-start relative shrink-0 w-full">
               <div className="font-['Cormorant_Garamond',sans-serif] font-medium leading-[0] not-italic relative shrink-0 text-[60px] tracking-[-0.45px] w-full whitespace-pre-wrap">
                 <p className="mb-0">
                   <span className="leading-[60px] text-[#bc312e]">{`Let's talk. `}</span>
-                  <span className="leading-[60px] text-[#17181d]">{`We'd love `}</span>
+                  <span className="leading-[60px] text-white">{`We'd love `}</span>
                 </p>
-                <p className="leading-[60px] text-[#17181d]">to work with you!</p>
+                <p className="leading-[60px] text-white">to work with you!</p>
               </div>
             </div>
-            <LiquidMetalButton label="Contact Us" onClick={() => window.open("mailto:vijay@brewery.agency", "_self")} />
+            <InteractiveHoverButton text="Contact Us" onClick={() => window.open("mailto:vijay@brewery.agency", "_self")} />
           </div>
-          <div className="content-stretch flex flex-col gap-[24px] items-start leading-[normal] not-italic relative shrink-0 text-black tracking-[-0.45px]">
-            <p className="font-['Satoshi',sans-serif] font-medium min-w-full relative shrink-0 text-[24px] w-[min-content] whitespace-pre-wrap">Locations</p>
-            <div className="content-stretch flex flex-col font-['Satoshi',sans-serif] font-normal gap-[12px] items-start relative shrink-0 text-[18px]">
-              <p className="relative shrink-0">New York, USA</p>
-              <p className="relative shrink-0">Toronto, Canada</p>
-              <p className="relative shrink-0">Delhi, India</p>
+          <div className="ml-auto flex w-max max-w-full shrink-0 flex-col gap-[24px] text-right leading-[normal] not-italic text-white tracking-[-0.45px]">
+            <p className="w-full font-['Satoshi',sans-serif] font-medium text-[24px] whitespace-pre-wrap">
+              Locations
+            </p>
+            <div className="flex w-full flex-col gap-[12px] text-right font-['Satoshi',sans-serif] font-normal text-[18px] [&_p]:block [&_p]:w-full">
+              <p>New York, USA</p>
+              <p>Toronto, Canada</p>
+              <p>Delhi, India</p>
             </div>
           </div>
         </div>
-        <div className="content-stretch flex font-['Satoshi',sans-serif] font-normal items-start justify-between leading-[normal] not-italic relative shrink-0 text-[#17181d] text-[18px] tracking-[-0.45px] w-full">
+        <div className="content-stretch flex font-['Satoshi',sans-serif] font-normal items-start justify-between leading-[normal] not-italic relative shrink-0 text-white text-[18px] tracking-[-0.45px] w-full">
           <p className="relative shrink-0">@2026 Brewery Agency</p>
           <div className="content-stretch flex gap-[24px] items-start relative shrink-0 cursor-pointer">
             <p className="relative shrink-0 hover:text-[#bc312e] transition-colors duration-300">LinkedIn</p>
@@ -1052,6 +1031,7 @@ function ContactSection() {
 export default function App() {
   return (
     <div className="relative min-h-screen w-full overflow-x-clip bg-black">
+      <CustomCursor />
       <SideNav />
       <div className="content-stretch relative z-[2] flex w-full flex-col items-start gap-[120px]">
         <div
