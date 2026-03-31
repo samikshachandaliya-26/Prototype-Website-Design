@@ -481,7 +481,9 @@ function ServicesSection() {
             {SERVICES_COLUMNS.map((col, idx) => (
               <div
                 key={idx}
-                className="group relative flex min-h-0 w-full min-w-0 cursor-pointer flex-col justify-between px-4 py-6 transition-[flex-grow,flex-basis,background-color] duration-500 ease-out md:min-h-[360px] md:flex-[1_1_0%] md:px-5 md:py-6 md:hover:z-10 md:hover:flex-[1.35_1_0%] md:hover:bg-[rgba(255,255,255,0.04)]"
+                className={`group relative flex min-h-0 w-full min-w-0 cursor-pointer flex-col justify-between px-4 py-6 transition-[flex-grow,flex-basis,background-color] duration-500 ease-out md:min-h-[360px] md:flex-[1_1_0%] md:px-5 md:py-6 md:hover:z-10 md:hover:flex-[1.35_1_0%] md:hover:bg-[rgba(255,255,255,0.04)] ${
+                  idx === 0 ? "md:border-l md:border-[#bc312e]" : ""
+                }`}
               >
                 <p className="font-['Satoshi',sans-serif] font-normal leading-[normal] not-italic text-[16px] uppercase tracking-[-0.45px] text-white sm:text-[17px] md:text-[18px]">
                   {col.category}
@@ -603,29 +605,38 @@ function IndustriesSection() {
   return (
     <section id="industries" className="w-full bg-black scroll-mt-0">
       <SectionContainer>
-        {/* Mobile / tablet: vertical list (scroll-linked horizontal strip is desktop-only) */}
-        <div className="flex flex-col gap-10 py-12 md:hidden">
+        {/* Mobile: horizontal carousel (desktop unchanged below) */}
+        <div className="flex flex-col gap-8 py-12 md:hidden">
           <h2 className="font-['Cormorant_Garamond'] text-[clamp(2rem,8vw,2.75rem)] font-medium leading-[1.15] text-white">
             8+ industries. 50+ products.
             <br />
             We understand your user's problems
           </h2>
-          <div className="flex flex-col gap-12">
-            {industries.map((industry, idx) => (
-              <div key={idx} className="flex flex-col gap-4">
-                <div className="overflow-hidden rounded-sm">
-                  <img
-                    src={industry.image}
-                    alt=""
-                    className="block h-[200px] w-full object-cover sm:h-[220px]"
-                  />
+          <div
+            className="-mx-[max(1.5rem,var(--content-inset-left))] snap-x snap-mandatory overflow-x-auto overflow-y-hidden px-[max(1.5rem,var(--content-inset-left))] [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            role="region"
+            aria-label="Industries"
+          >
+            <div className="flex w-max gap-5 pb-1">
+              {industries.map((industry, idx) => (
+                <div
+                  key={idx}
+                  className="flex w-[min(85vw,300px)] shrink-0 snap-start flex-col gap-4 sm:w-[min(82vw,320px)]"
+                >
+                  <div className="overflow-hidden rounded-sm">
+                    <img
+                      src={industry.image}
+                      alt=""
+                      className="block h-[200px] w-full object-cover sm:h-[220px]"
+                    />
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="break-words text-[20px] font-medium text-white sm:text-[22px]">{industry.title}</h3>
+                    <p className="mt-2 break-words text-[16px] leading-[1.45] text-white/70 sm:text-[17px]">{industry.description}</p>
+                  </div>
                 </div>
-                <div className="min-w-0">
-                  <h3 className="break-words text-[20px] font-medium text-white sm:text-[22px]">{industry.title}</h3>
-                  <p className="mt-2 break-words text-[16px] leading-[1.45] text-white/70 sm:text-[17px]">{industry.description}</p>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
 
@@ -766,26 +777,32 @@ function WorkSection() {
   return (
     <div id="our-work" className="relative shrink-0 w-full scroll-mt-0">
       <SectionContainer>
-        {/* Mobile: vertical gallery */}
+        {/* Mobile: horizontal image carousel (desktop unchanged below) */}
         <div className="flex flex-col gap-8 py-12 md:hidden">
           <p className="font-['Cormorant_Garamond',sans-serif] text-[clamp(2rem,8vw,2.75rem)] font-medium leading-[1.1] tracking-[-0.45px] text-white">
             World-class work
           </p>
-          <div className="flex flex-col gap-4">
-            <div className="relative h-[140px] w-full overflow-hidden rounded-sm sm:h-[160px]">
-              <img alt="" className="absolute inset-0 h-full w-full object-cover" src={imgImage126} />
-            </div>
-            <div className="relative h-[200px] w-full overflow-hidden rounded-sm sm:h-[220px]">
-              <img alt="" className="absolute inset-0 h-full w-full object-cover" src={imgImage127} />
-            </div>
-            <div className="relative h-[240px] w-full overflow-hidden rounded-sm sm:h-[260px]">
-              <img alt="" className="absolute inset-0 h-full w-full object-cover" src={imgUiAppConceptForCommunityOfDesigners} />
-            </div>
-            <div className="relative h-[200px] w-full overflow-hidden rounded-sm sm:h-[220px]">
-              <img alt="" className="absolute inset-0 h-full w-full object-cover" src={imgImage126} />
-            </div>
-            <div className="relative h-[240px] w-full overflow-hidden rounded-sm sm:h-[260px]">
-              <img alt="" className="absolute inset-0 h-full w-full object-cover" src={imgExperimentalMusicAppUi} />
+          <div
+            className="-mx-[max(1.5rem,var(--content-inset-left))] snap-x snap-mandatory overflow-x-auto overflow-y-hidden px-[max(1.5rem,var(--content-inset-left))] [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            role="region"
+            aria-label="Selected work"
+          >
+            <div className="flex w-max items-stretch gap-4 pb-1">
+              {[
+                { h: "h-[160px] sm:h-[180px]", src: imgImage126 },
+                { h: "h-[220px] sm:h-[240px]", src: imgImage127 },
+                { h: "h-[260px] sm:h-[280px]", src: imgUiAppConceptForCommunityOfDesigners },
+                { h: "h-[220px] sm:h-[240px]", src: imgImage126 },
+                { h: "h-[260px] sm:h-[280px]", src: imgExperimentalMusicAppUi },
+                { h: "h-[200px] sm:h-[220px]", src: imgUiAppConceptForCommunityOfDesigners },
+              ].map((item, idx) => (
+                <div
+                  key={idx}
+                  className={`relative w-[min(88vw,320px)] shrink-0 snap-start overflow-hidden rounded-sm ${item.h}`}
+                >
+                  <img alt="" className="absolute inset-0 h-full w-full object-cover" src={item.src} />
+                </div>
+              ))}
             </div>
           </div>
         </div>
