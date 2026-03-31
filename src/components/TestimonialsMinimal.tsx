@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import logoCocaCola from "../assets/b07c59db1f930f349d78f88f1539a45fadb516fd.png";
 import logoNba from "../assets/f27e9b699c0830cb489fd15868d944346bd3ccd1.png";
 import logoPlaceholder from "../assets/6685bb55a5822c06513e7f7efb8337bdd5f0377a.png";
@@ -12,7 +12,7 @@ const testimonials = [
     logo: logoCocaCola,
     logoAlt: "Coca-Cola",
     /** Script mark reads huge at same bbox as other logos — shrink only this asset */
-    logoAdjustClass: "scale-[0.72] origin-left",
+    logoAdjustClass: "scale-[0.864] origin-center",
   },
   {
     quote:
@@ -36,22 +36,11 @@ const testimonials = [
 
 export function TestimonialsMinimal() {
   const [active, setActive] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const sync = () => setIsMobile(mq.matches);
-    sync();
-    mq.addEventListener("change", sync);
-    return () => mq.removeEventListener("change", sync);
-  }, []);
-
-  // Keep testimonial switching manual to avoid laggy/overlapping auto transitions.
 
   return (
-    <div className="w-full max-w-4xl py-16">
+    <div className="w-full max-w-4xl py-10 md:py-16">
       {/* Logos */}
-      <div className="mb-6 w-full">
+      <div className="mb-8 w-full md:mb-12">
         <div className="hidden w-full items-center justify-start gap-3 md:flex">
           {testimonials.map((t, i) => {
             const isActive = active === i;
@@ -72,7 +61,8 @@ export function TestimonialsMinimal() {
                   src={t.logo}
                   alt=""
                   className={`
-                    h-10 max-h-10 w-auto max-w-[132px] sm:h-11 sm:max-h-11 sm:max-w-[148px] object-contain
+                    h-10 max-h-10 w-auto max-w-full object-contain
+                    sm:h-11 sm:max-h-11
                     transition-[filter] duration-200 ease-out
                     object-center
                     ${isActive ? "grayscale-0" : "grayscale"}
@@ -84,7 +74,7 @@ export function TestimonialsMinimal() {
           })}
         </div>
 
-        <div className="flex w-full items-center justify-start md:hidden">
+        <div className="flex w-full flex-col gap-4 md:hidden">
           <div className="relative flex h-12 shrink-0 items-center justify-start">
             <img
               src={testimonials[active].logo}
@@ -96,11 +86,29 @@ export function TestimonialsMinimal() {
               `}
             />
           </div>
+          <div className="flex flex-wrap items-center gap-2" role="tablist" aria-label="Choose testimonial">
+            {testimonials.map((t, i) => {
+              const isActive = active === i;
+              return (
+                <button
+                  key={i}
+                  type="button"
+                  role="tab"
+                  aria-selected={isActive}
+                  aria-label={`Show testimonial from ${t.logoAlt}`}
+                  onClick={() => setActive(i)}
+                  className={`h-2.5 w-2.5 shrink-0 rounded-full transition-[transform,background-color] duration-200 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-white/35 ${
+                    isActive ? "scale-110 bg-white" : "bg-white/35 hover:bg-white/55"
+                  }`}
+                />
+              );
+            })}
+          </div>
         </div>
       </div>
 
       {/* Quote — room for ~2 lines at common breakpoints */}
-      <div className="relative mb-4 min-h-[156px] md:min-h-[118px]">
+      <div className="relative mb-8 min-h-[156px] md:min-h-[118px] md:mb-10">
         {testimonials.map((t, i) => (
           <p
             key={i}

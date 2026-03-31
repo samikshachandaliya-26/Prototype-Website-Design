@@ -21,7 +21,6 @@ import img1200X630Wa from "../assets/G3 logo.svg";
 import imgKeynoteSystemsLogoPngSeeklogo78182 from "../assets/key node logo.png";
 import imgUntrapLogo from "../assets/untrap logo.png";
 import imgParticipantLogo from "../assets/participant logo.png";
-import imgImage125 from "../assets/e8d5b166233ace22b929e25dbad387b37e84e73f.png";
 import imgUiAppConceptForCommunityOfDesigners from "../assets/586456e31488f8c169fa075ef9f5534fada3cc0d.png";
 import imgExperimentalMusicAppUi from "../assets/5c008c433b69e1c43602b9bfa4507f66610ed9d4.png";
 import imgImage126 from "../assets/8b55e6cc6038907cb96735a4bd022d2efe2032c7.png";
@@ -30,10 +29,17 @@ import imgJourneyBreweryEstablished from "../assets/journey-brewery-established.
 import imgJourneyKareemTrophy from "../assets/journey-kareem-trophy.png";
 import imgJourneyWebbyAward from "../assets/journey-webby-award.png";
 import imgJourney8YearsGrowing from "../assets/journey-8-years-growing.png";
+import imgIndustryNgo from "../assets/ngo industry.jpg";
+import imgIndustryAi from "../assets/AI industry.png";
+import imgIndustryHealthcare from "../assets/healthcare industry.png";
+import imgIndustryEducation from "../assets/Education industry.jpg";
+import imgIndustryRetail from "../assets/retail industry.jpg";
+import imgIndustryFintech from "../assets/fintech industry.jpg";
+import imgIndustryFashion from "../assets/entertainment industry.jpg";
 
 function Header() {
   return (
-    <div className="relative z-[2] w-full shrink-0 bg-[rgba(0,0,0,0.2)] py-[24px]">
+    <div className="relative z-[2] w-full shrink-0 py-4 sm:py-[24px]">
       <div
         className={`mx-auto flex w-full max-w-[1440px] content-stretch items-center justify-between ${SECTION_EDGE_X}`}
       >
@@ -88,6 +94,31 @@ function computeActiveNavHref(): string {
   return bestHref;
 }
 
+function useActiveSectionHref() {
+  const [activeHref, setActiveHref] = useState<string>(NAV_ITEMS[0].href);
+
+  useEffect(() => {
+    let raf = 0;
+    const sync = () => {
+      raf = 0;
+      setActiveHref(computeActiveNavHref());
+    };
+    const onScrollOrResize = () => {
+      if (raf === 0) raf = requestAnimationFrame(sync);
+    };
+    sync();
+    window.addEventListener("scroll", onScrollOrResize, { passive: true });
+    window.addEventListener("resize", onScrollOrResize);
+    return () => {
+      window.removeEventListener("scroll", onScrollOrResize);
+      window.removeEventListener("resize", onScrollOrResize);
+      if (raf !== 0) cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  return activeHref;
+}
+
 function NavButton({
   label,
   href,
@@ -115,31 +146,10 @@ function NavButton({
   );
 }
 
-function SideNav() {
-  const [activeHref, setActiveHref] = useState<string>(NAV_ITEMS[0].href);
-
-  useEffect(() => {
-    let raf = 0;
-    const sync = () => {
-      raf = 0;
-      setActiveHref(computeActiveNavHref());
-    };
-    const onScrollOrResize = () => {
-      if (raf === 0) raf = requestAnimationFrame(sync);
-    };
-    sync();
-    window.addEventListener("scroll", onScrollOrResize, { passive: true });
-    window.addEventListener("resize", onScrollOrResize);
-    return () => {
-      window.removeEventListener("scroll", onScrollOrResize);
-      window.removeEventListener("resize", onScrollOrResize);
-      if (raf !== 0) cancelAnimationFrame(raf);
-    };
-  }, []);
-
+function SideNav({ activeHref }: { activeHref: string }) {
   return (
     <nav
-      className="fixed left-[var(--sidenav-gutter)] top-1/2 -translate-y-1/2 content-stretch flex flex-col gap-[8px] items-start w-[var(--sidenav-width)] z-50 pointer-events-auto"
+      className="pointer-events-auto fixed left-[var(--sidenav-gutter)] top-1/2 z-50 hidden w-[var(--sidenav-width)] -translate-y-1/2 flex-col content-stretch items-start gap-[8px] lg:flex lg:flex-col"
       aria-label="Section navigation"
     >
       {NAV_ITEMS.map((item) => (
@@ -150,6 +160,35 @@ function SideNav() {
           isActive={activeHref === item.href}
         />
       ))}
+    </nav>
+  );
+}
+
+function MobileTopNav({ activeHref }: { activeHref: string }) {
+  return (
+    <nav
+      className="pointer-events-none fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black/80 pt-[max(0.35rem,env(safe-area-inset-top))] pb-2 backdrop-blur-md lg:hidden"
+      aria-label="Section navigation"
+    >
+      <div className="pointer-events-auto mx-auto flex max-w-[1440px] gap-1 overflow-x-auto px-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {NAV_ITEMS.map((item) => {
+          const isActive = activeHref === item.href;
+          return (
+            <a
+              key={item.href}
+              href={item.href}
+              aria-current={isActive ? "location" : undefined}
+              className={`shrink-0 rounded-full border border-transparent px-2.5 py-1.5 font-['Satoshi',sans-serif] text-[11px] font-normal leading-none tracking-[-0.2px] text-white no-underline transition-[background-color,transform] duration-300 active:scale-[0.98] ${
+                isActive
+                  ? "bg-white/20 ring-1 ring-white/25"
+                  : "bg-white/10 hover:bg-white/15"
+              }`}
+            >
+              {item.label}
+            </a>
+          );
+        })}
+      </div>
     </nav>
   );
 }
@@ -182,12 +221,24 @@ function HeroPlasmaLayer() {
 function HeroSection() {
   return (
     <div className="relative z-[2] flex w-full flex-1 min-h-0 flex-col content-stretch items-start">
-      <div className="h-[460px] relative shrink-0 w-full">
-        <div className="absolute content-stretch flex flex-col font-['Cormorant_Garamond',sans-serif] font-medium items-end leading-[normal] left-[210px] not-italic pb-[10px] text-[80px] text-white top-[230px] tracking-[-0.45px] w-[968px]">
-          <p className="min-w-full relative shrink-0 w-[min-content] whitespace-pre-wrap">{`We design products `}</p>
+      {/* Mobile / small tablet: stacked copy with safe horizontal padding */}
+      <div className={`w-full shrink-0 pb-10 pt-6 md:hidden ${SECTION_EDGE_X}`}>
+        <p className="mb-6 max-w-[min(100%,340px)] font-['Satoshi',sans-serif] font-normal leading-[1.45] not-italic text-[14px] text-white/95 tracking-[-0.23px]">
+          Since 2020 we've helped startups and enterprises design and build high-performance digital products that drive
+          growth and user adoption
+        </p>
+        <div className="font-['Cormorant_Garamond',sans-serif] font-medium leading-[1.08] not-italic text-[clamp(2rem,8.5vw,2.75rem)] text-white tracking-[-0.45px]">
+          <p className="text-right">{`We design products `}</p>
+          <p className="text-center">people actually want to use</p>
+        </div>
+      </div>
+      {/* Desktop: original absolute layout */}
+      <div className="relative hidden h-[460px] w-full shrink-0 md:block">
+        <div className="absolute left-[max(1rem,min(210px,12vw))] top-[230px] flex w-[min(968px,calc(100%-2rem))] max-w-[968px] flex-col items-end font-['Cormorant_Garamond',sans-serif] font-medium not-italic text-[clamp(3rem,6vw,80px)] leading-[normal] text-white tracking-[-0.45px] xl:left-[210px] xl:text-[80px]">
+          <p className="relative w-[min-content] min-w-full shrink-0 whitespace-pre-wrap">{`We design products `}</p>
           <p className="relative shrink-0 text-center">people actually want to use</p>
         </div>
-        <p className="absolute font-['Satoshi',sans-serif] font-normal leading-[normal] left-[793px] not-italic text-[14px] text-white top-[100px] tracking-[-0.23px] w-[300px] whitespace-pre-wrap">
+        <p className="absolute left-[max(1rem,min(793px,52vw))] top-[100px] w-[min(300px,calc(100%-2rem))] font-['Satoshi',sans-serif] font-normal leading-[normal] not-italic text-[14px] text-white tracking-[-0.23px] whitespace-pre-wrap xl:left-[793px]">
           Since 2020 we've helped startups and enterprises design and build high-performance digital products that drive
           growth and user adoption
         </p>
@@ -246,11 +297,11 @@ function ClientsSection() {
       <div className="flex flex-col items-center justify-center size-full">
         <SectionContainer className="content-stretch flex flex-col gap-10 items-stretch justify-center py-[60px] relative w-full">
           <div className="flex w-full flex-col gap-6 sm:gap-8 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
-            <div className="font-['Cormorant_Garamond',sans-serif] font-medium leading-[normal] not-italic text-white text-[60px] tracking-[-0.45px] max-w-[554px] shrink-0 whitespace-pre-wrap">
+            <div className="max-w-[554px] shrink-0 whitespace-pre-wrap font-['Cormorant_Garamond',sans-serif] text-[clamp(2.25rem,7vw,3.75rem)] font-medium leading-[normal] not-italic tracking-[-0.45px] text-white md:text-[52px] lg:text-[60px]">
               <p className="mb-0">{`They trusted us `}</p>
               <p>with their biggest bets</p>
             </div>
-            <p className="max-w-[346px] font-['Satoshi',sans-serif] font-normal leading-[normal] not-italic text-[rgba(255,255,255,0.82)] text-[18px] tracking-[-0.45px] text-left lg:shrink-0 lg:text-right w-full lg:w-auto lg:max-w-[346px]">
+            <p className="w-full max-w-[346px] text-left font-['Satoshi',sans-serif] text-[16px] font-normal leading-[normal] not-italic tracking-[-0.45px] text-[rgba(255,255,255,0.82)] sm:text-[17px] lg:max-w-[346px] lg:w-auto lg:shrink-0 lg:text-right lg:text-[18px]">
               From Fortune 500s to funded startups, we help teams ship products that users love
             </p>
           </div>
@@ -417,31 +468,32 @@ function ServicesSection() {
       <div className="flex flex-col items-center size-full">
         <SectionContainer className="content-stretch flex flex-col gap-[60px] items-stretch relative w-full">
           <div className="content-stretch flex flex-col gap-[24px] md:flex-row md:items-end md:justify-between not-italic relative shrink-0 text-white tracking-[-0.45px] w-full">
-            <p className="font-['Cormorant_Garamond',sans-serif] font-medium shrink-0 text-[60px] leading-[normal] max-w-[min(100%,520px)]">
+            <p className="max-w-[min(100%,520px)] shrink-0 font-['Cormorant_Garamond',sans-serif] text-[clamp(2.25rem,7vw,3.75rem)] font-medium leading-[normal] md:text-[52px] lg:text-[60px]">
               How we help you win
             </p>
-            <p className="max-w-full text-balance font-['Satoshi',sans-serif] font-normal text-[18px] leading-[1.45] text-left md:ml-auto md:max-w-[min(100%,560px)] md:text-right shrink-0">
+            <p className="max-w-full shrink-0 text-balance font-['Satoshi',sans-serif] text-[16px] font-normal leading-[1.45] text-left sm:text-[17px] md:ml-auto md:max-w-[min(100%,560px)] md:text-right md:text-[18px]">
               Our services include end-to-end product design and development spanning strategy, design, and engineering.
             </p>
           </div>
 
           <div className="w-full overflow-x-auto overflow-y-hidden -mx-[max(1.5rem,var(--content-inset-left))] px-[max(1.5rem,var(--content-inset-left))] sm:mx-0 sm:px-0 sm:overflow-visible">
-            <div className="flex min-w-[720px] sm:min-w-0 w-full">
+            <div className="flex w-full min-w-0 flex-col divide-y divide-[#bc312e] md:min-h-0 md:flex-row md:divide-x md:divide-y-0">
             {SERVICES_COLUMNS.map((col, idx) => (
               <div
                 key={idx}
-                className="group relative flex flex-[1_1_0%] min-w-0 flex-col justify-between min-h-[320px] md:min-h-[360px] px-[16px] sm:px-[20px] py-[24px] cursor-pointer border-l border-solid border-[#bc312e] transition-[flex-grow,flex-basis,background-color] duration-500 ease-out hover:flex-[1.35_1_0%] hover:z-10 hover:bg-[rgba(255,255,255,0.04)]"
+                className="group relative flex min-h-0 w-full min-w-0 cursor-pointer flex-col justify-between px-4 py-6 transition-[flex-grow,flex-basis,background-color] duration-500 ease-out md:min-h-[360px] md:flex-[1_1_0%] md:px-5 md:py-6 md:hover:z-10 md:hover:flex-[1.35_1_0%] md:hover:bg-[rgba(255,255,255,0.04)]"
               >
-                <p className="font-['Satoshi',sans-serif] font-normal leading-[normal] not-italic text-[18px] text-white tracking-[-0.45px] uppercase">
+                <p className="font-['Satoshi',sans-serif] font-normal leading-[normal] not-italic text-[16px] uppercase tracking-[-0.45px] text-white sm:text-[17px] md:text-[18px]">
                   {col.category}
                 </p>
-                <div className="flex flex-col items-stretch justify-end mt-auto">
-                  <p className="font-['Satoshi',sans-serif] font-medium text-[20px] sm:text-[22px] md:text-[24px] text-white leading-[normal] tracking-[-0.45px]">
+                <div className="mt-auto flex flex-col items-stretch justify-end">
+                  <p className="font-['Satoshi',sans-serif] font-medium text-[20px] leading-[normal] tracking-[-0.45px] text-white sm:text-[22px] md:text-[24px]">
                     {col.name}
                   </p>
-                  <div className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 ease-out group-hover:grid-rows-[1fr]">
+                  {/* Mobile / touch: always show copy; desktop: reveal on hover */}
+                  <div className="grid grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-out md:grid-rows-[0fr] md:group-hover:grid-rows-[1fr]">
                     <div className="min-h-0 overflow-hidden">
-                      <p className="font-['Satoshi',sans-serif] font-normal text-[14px] sm:text-[15px] leading-[1.45] text-[rgba(255,255,255,0.72)] tracking-[-0.23px] pt-[16px]">
+                      <p className="pt-4 font-['Satoshi',sans-serif] text-[14px] font-normal leading-[1.45] tracking-[-0.23px] text-[rgba(255,255,255,0.72)] sm:text-[15px]">
                         {col.description}
                       </p>
                     </div>
@@ -482,10 +534,8 @@ function IndustriesSection() {
         scrollable <= 0
           ? 0
           : Math.min(1, Math.max(0, (window.scrollY - trackTop) / scrollable));
-      // Horizontal motion uses the first ~2/3 of vertical travel (more pixels = easier to read each card).
-      // Remaining vertical scroll holds the last frame before the next section.
-      const HORIZONTAL_END = 0.66;
-      const horizontalT = Math.min(1, rawProgress / HORIZONTAL_END);
+      // Map full vertical travel through the track to horizontal motion (no dead scroll after the row finishes).
+      const horizontalT = Math.min(1, rawProgress);
       const eased = easeInOutQuad(horizontalT);
       const tx = -eased * maxScroll;
       row.style.transform = `translate3d(${tx}px, 0, 0)`;
@@ -510,54 +560,80 @@ function IndustriesSection() {
       title: "NGO & Social Welfare",
       description:
         "Mission-driven platforms that enable donations, volunteer coordination, and community impact at scale",
-      image: imgUiAppConceptForCommunityOfDesigners,
+      image: imgIndustryNgo,
     },
     {
       title: "IT & AI Workflows",
       description:
         "Scalable IT systems and AI-powered workflows that simplify complex operations and enhance productivity",
-      image: imgImage125,
-    },
-    {
-      title: "Healthcare & Wellness",
-      description:
-        "Digital platforms for patient care, telemedicine, and wellness experiences that improve outcomes and engagement",
-      image: imgUiAppConceptForCommunityOfDesigners,
-    },
-    {
-      title: "Education",
-      description:
-        "Engaging edtech platforms and learning systems designed to improve accessibility and learning experiences",
-      image: imgExperimentalMusicAppUi,
+      image: imgIndustryAi,
     },
     {
       title: "E-commerce & Retail",
       description:
         "Next-gen shopping experiences that blend seamless checkout, personalization, and inventory management",
-      image: imgImage126,
+      image: imgIndustryRetail,
+    },
+    {
+      title: "Healthcare & Wellness",
+      description:
+        "Digital platforms for patient care, telemedicine, and wellness experiences that improve outcomes and engagement",
+      image: imgIndustryHealthcare,
+    },
+    {
+      title: "Education",
+      description:
+        "Engaging edtech platforms and learning systems designed to improve accessibility and learning experiences",
+      image: imgIndustryEducation,
     },
     {
       title: "FinTech & Banking",
       description:
         "Secure financial platforms delivering intuitive banking, payments, and investment experiences",
-      image: imgImage127,
+      image: imgIndustryFintech,
     },
     {
-      title: "Entertainment & Media",
+      title: "Fashion & Lifestyle",
       description:
-        "Immersive content platforms for streaming, social engagement, and creative collaboration",
-      image: imgExperimentalMusicAppUi,
+        "Brand sites, seasonal campaigns, and commerce flows that showcase collections, drops, and storytelling for labels and DTC fashion",
+      image: imgIndustryFashion,
     },
   ];
 
   return (
-    <section id="industries" className="w-full bg-black py-[100px] scroll-mt-0">
+    <section id="industries" className="w-full bg-black scroll-mt-0">
       <SectionContainer>
-        <div className="relative left-1/2 w-screen -translate-x-1/2">
+        {/* Mobile / tablet: vertical list (scroll-linked horizontal strip is desktop-only) */}
+        <div className="flex flex-col gap-10 py-12 md:hidden">
+          <h2 className="font-['Cormorant_Garamond'] text-[clamp(2rem,8vw,2.75rem)] font-medium leading-[1.15] text-white">
+            8+ industries. 50+ products.
+            <br />
+            We understand your user's problems
+          </h2>
+          <div className="flex flex-col gap-12">
+            {industries.map((industry, idx) => (
+              <div key={idx} className="flex flex-col gap-4">
+                <div className="overflow-hidden rounded-sm">
+                  <img
+                    src={industry.image}
+                    alt=""
+                    className="block h-[200px] w-full object-cover sm:h-[220px]"
+                  />
+                </div>
+                <div className="min-w-0">
+                  <h3 className="break-words text-[20px] font-medium text-white sm:text-[22px]">{industry.title}</h3>
+                  <p className="mt-2 break-words text-[16px] leading-[1.45] text-white/70 sm:text-[17px]">{industry.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="relative left-1/2 hidden w-screen -translate-x-1/2 md:block">
           <div ref={trackRef} className="relative h-[520vh] w-full">
             <div className="sticky top-0 z-[5] flex h-screen w-full flex-col overflow-hidden bg-black">
               <div className={`mb-[60px] shrink-0 ${SECTION_EDGE_X}`}>
-                <h2 className="text-[60px] text-white font-['Cormorant_Garamond'] leading-tight">
+                <h2 className="font-['Cormorant_Garamond'] text-[clamp(2.5rem,5vw,60px)] font-medium leading-tight text-white">
                   8+ industries. 50+ products.
                   <br />
                   We understand your user's problems
@@ -571,18 +647,24 @@ function IndustriesSection() {
                   {industries.map((industry, idx) => (
                     <div
                       key={idx}
-                      className="flex gap-[24px] shrink-0 w-[600px] hover:scale-105 transition-transform duration-300"
+                      className="flex w-max shrink-0 gap-[24px] transition-transform duration-300 hover:scale-105"
                     >
-                      <div className="w-[291px] h-[300px] relative overflow-hidden rounded-lg">
+                      <div className="shrink-0 overflow-hidden rounded-none">
                         <img
                           src={industry.image}
                           alt=""
-                          className="absolute inset-0 w-full h-full object-cover"
+                          className="block h-[300px] w-auto max-w-none"
                         />
                       </div>
-                      <div className="w-[300px]">
-                        <h3 className="text-white text-[24px] font-medium">{industry.title}</h3>
-                        <p className="text-white/70 text-[18px] mt-2">{industry.description}</p>
+                      <div
+                        className={`flex h-[300px] w-[300px] shrink-0 flex-col ${
+                          idx % 2 === 0 ? "justify-start" : "justify-end"
+                        }`}
+                      >
+                        <div className="min-w-0 max-w-full">
+                          <h3 className="break-words text-[24px] font-medium text-white">{industry.title}</h3>
+                          <p className="mt-2 break-words text-[18px] text-white/70">{industry.description}</p>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -600,24 +682,29 @@ function ImpactSection() {
   return (
     <div className="relative shrink-0 w-full">
       <SectionContainer className="content-stretch flex flex-col gap-[60px] items-start relative w-full">
-        <p className="font-['Cormorant_Garamond',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[60px] text-white tracking-[-0.45px] w-full whitespace-pre-wrap">Impact at scale</p>
-        <div className="content-stretch flex items-center justify-between relative shrink-0 w-full">
+        <p className="w-full whitespace-pre-wrap font-['Cormorant_Garamond',sans-serif] text-[clamp(2.25rem,7vw,3.75rem)] font-medium leading-[normal] not-italic tracking-[-0.45px] text-white md:text-[52px] lg:text-[60px]">
+          Impact at scale
+        </p>
+        <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-8 xl:grid-cols-4 xl:gap-4 xl:justify-between">
           {[
             { label: "USERS OF OUR DESIGN", value: "3M+", description: "More than 3 million users interact with products we've designed every month" },
             { label: "CLIENT REVENUE", value: "$5M", description: "We partner with forward-thinking enterprises and startups and helped them to raise more than" },
             { label: "YEARS OF PRACTICE", value: "8", description: "8 years of crafting exceptional digital experiences across industries" },
             { label: "CLIENTS WORKED WITH", value: "50+", description: "From Fortune 500 companies to innovative startups across 8+ industries" }
           ].map((stat, idx) => (
-            <div key={idx} className="content-stretch flex flex-col h-[428px] items-start max-w-[350px] min-w-[250px] px-[20px] py-[24px] relative shrink-0 w-[250px] group cursor-pointer overflow-hidden">
-              <div aria-hidden="true" className="absolute border-[#bc312e] border-l border-solid inset-0 pointer-events-none group-hover:border-l-2 transition-all duration-300" />
-              <p className="font-['Satoshi',sans-serif] font-normal leading-[normal] not-italic relative shrink-0 text-[18px] text-white tracking-[-0.45px]">{stat.label}</p>
-              <div className="flex flex-col min-w-full relative shrink-0 w-[min-content] mt-auto">
-                <div className="flex flex-col font-['Satoshi',sans-serif] font-medium justify-end leading-[0] not-italic text-[100px] text-white transition-all duration-500 group-hover:-translate-y-[60px]">
+            <div
+              key={idx}
+              className="group relative flex min-h-[240px] w-full max-w-full cursor-pointer flex-col items-start overflow-hidden px-5 py-6 sm:min-h-[320px] xl:h-[428px] xl:min-w-0 xl:max-w-[350px] xl:w-[250px] xl:px-5 xl:py-6"
+            >
+              <div aria-hidden="true" className="pointer-events-none absolute inset-0 border-l border-solid border-[#bc312e] transition-all duration-300 group-hover:border-l-2" />
+              <p className="relative shrink-0 font-['Satoshi',sans-serif] text-[15px] font-normal leading-[normal] not-italic tracking-[-0.45px] text-white sm:text-[16px] md:text-[18px]">{stat.label}</p>
+              <div className="relative mt-auto flex min-w-full w-[min-content] flex-col">
+                <div className="flex flex-col justify-end font-['Satoshi',sans-serif] text-[clamp(3.5rem,12vw,6.25rem)] font-medium leading-[0] not-italic text-white transition-all duration-500 md:text-[100px] md:group-hover:-translate-y-[60px]">
                   <p className="leading-[normal] whitespace-pre-wrap">{stat.value}</p>
                 </div>
-                <div className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 ease-out group-hover:grid-rows-[1fr]">
+                <div className="grid grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-out md:grid-rows-[0fr] md:group-hover:grid-rows-[1fr]">
                   <div className="min-h-0 overflow-hidden">
-                    <p className="font-['Satoshi',sans-serif] font-normal leading-[normal] not-italic text-[18px] text-white tracking-[-0.45px] mt-[20px] whitespace-pre-wrap opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                    <p className="mt-4 font-['Satoshi',sans-serif] text-[15px] font-normal leading-[normal] not-italic tracking-[-0.45px] text-white opacity-100 transition-opacity duration-500 sm:text-[16px] md:mt-[20px] md:text-[18px] md:opacity-0 md:group-hover:opacity-100">
                       {stat.description}
                     </p>
                   </div>
@@ -679,16 +766,40 @@ function WorkSection() {
   return (
     <div id="our-work" className="relative shrink-0 w-full scroll-mt-0">
       <SectionContainer>
-        <div className="relative left-1/2 w-screen -translate-x-1/2">
+        {/* Mobile: vertical gallery */}
+        <div className="flex flex-col gap-8 py-12 md:hidden">
+          <p className="font-['Cormorant_Garamond',sans-serif] text-[clamp(2rem,8vw,2.75rem)] font-medium leading-[1.1] tracking-[-0.45px] text-white">
+            World-class work
+          </p>
+          <div className="flex flex-col gap-4">
+            <div className="relative h-[140px] w-full overflow-hidden rounded-sm sm:h-[160px]">
+              <img alt="" className="absolute inset-0 h-full w-full object-cover" src={imgImage126} />
+            </div>
+            <div className="relative h-[200px] w-full overflow-hidden rounded-sm sm:h-[220px]">
+              <img alt="" className="absolute inset-0 h-full w-full object-cover" src={imgImage127} />
+            </div>
+            <div className="relative h-[240px] w-full overflow-hidden rounded-sm sm:h-[260px]">
+              <img alt="" className="absolute inset-0 h-full w-full object-cover" src={imgUiAppConceptForCommunityOfDesigners} />
+            </div>
+            <div className="relative h-[200px] w-full overflow-hidden rounded-sm sm:h-[220px]">
+              <img alt="" className="absolute inset-0 h-full w-full object-cover" src={imgImage126} />
+            </div>
+            <div className="relative h-[240px] w-full overflow-hidden rounded-sm sm:h-[260px]">
+              <img alt="" className="absolute inset-0 h-full w-full object-cover" src={imgExperimentalMusicAppUi} />
+            </div>
+          </div>
+        </div>
+
+        <div className="relative left-1/2 hidden w-screen -translate-x-1/2 md:block">
           <div ref={trackRef} className="relative h-[520vh] w-full">
             <div className="sticky top-0 z-[5] flex h-screen w-full flex-col overflow-hidden bg-black">
               <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center">
-                <div className="relative h-[60px] w-[425px] shrink-0 rounded-[99px]">
+                <div className="relative h-[60px] w-[min(425px,90vw)] shrink-0 rounded-[99px]">
                   <div
                     aria-hidden="true"
                     className="absolute bg-[#bc312e] blur-[15px] h-[94px] left-[-51.5px] opacity-25 rounded-[99px] top-[-15px] w-[498px]"
                   />
-                  <p className="absolute font-['Cormorant_Garamond',sans-serif] font-medium leading-[normal] left-[24px] not-italic text-[60px] text-white top-0 tracking-[-0.45px] text-center">{`World-class work `}</p>
+                  <p className="absolute left-[24px] top-0 text-center font-['Cormorant_Garamond',sans-serif] text-[clamp(2rem,6vw,60px)] font-medium leading-[normal] not-italic tracking-[-0.45px] text-white">{`World-class work `}</p>
                 </div>
               </div>
 
@@ -864,7 +975,7 @@ function TestimonialsSection() {
   return (
     <div id="testimonials" className="relative shrink-0 w-full scroll-mt-0">
       <SectionContainer className="content-stretch flex flex-col gap-[60px] items-start relative w-full">
-        <p className="font-['Cormorant_Garamond',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[60px] text-white tracking-[-0.45px]">What Our Partners Say</p>
+        <p className="font-['Cormorant_Garamond',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[clamp(2.25rem,7vw,3.75rem)] text-white tracking-[-0.45px] md:text-[52px] lg:text-[60px]">What Our Partners Say</p>
         <TestimonialsMinimal />
       </SectionContainer>
     </div>
@@ -894,10 +1005,10 @@ function FAQItem({
         aria-controls={answerId}
         className={`relative w-full cursor-pointer transition-colors duration-300 hover:bg-[rgba(255,255,255,0.05)] text-left ${
           isOpen ? "items-start" : "items-center"
-        } content-stretch flex gap-[16px] px-[60px] py-[30px]`}
+        } content-stretch flex gap-[16px] px-4 py-5 sm:px-8 sm:py-6 md:px-[60px] md:py-[30px]`}
       >
         <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px min-w-px relative">
-          <p className="font-['Satoshi',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[24px] text-white tracking-[-0.45px] w-full whitespace-pre-wrap pr-[8px]">
+          <p className="font-['Satoshi',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[18px] text-white tracking-[-0.45px] w-full whitespace-pre-wrap pr-[8px] sm:text-[20px] md:text-[24px]">
             {question}
           </p>
           <div
@@ -908,7 +1019,7 @@ function FAQItem({
             <div className="min-h-0 overflow-hidden">
               <p
                 id={answerId}
-                className="font-['Satoshi',sans-serif] font-normal leading-[normal] not-italic pt-[16px] text-[18px] text-[rgba(255,255,255,0.75)] tracking-[-0.45px] w-full whitespace-pre-wrap"
+                className="font-['Satoshi',sans-serif] font-normal leading-[normal] not-italic pt-[16px] text-[16px] text-[rgba(255,255,255,0.75)] tracking-[-0.45px] w-full whitespace-pre-wrap sm:text-[17px] md:text-[18px]"
               >
                 {answer}
               </p>
@@ -968,7 +1079,7 @@ function FAQsSection() {
   return (
     <div id="faqs" className="relative shrink-0 w-full scroll-mt-0">
       <SectionContainer className="content-stretch flex flex-col gap-[40px] items-start relative w-full">
-        <p className="font-['Cormorant_Garamond',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[60px] text-white tracking-[-0.45px]">
+        <p className="font-['Cormorant_Garamond',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[clamp(2.25rem,7vw,3.75rem)] text-white tracking-[-0.45px] md:text-[52px] lg:text-[60px]">
           FAQs
         </p>
         <div className="content-stretch flex flex-col items-start pb-[0.5px] relative shrink-0 w-full">
@@ -991,36 +1102,36 @@ function FAQsSection() {
 function ContactSection() {
   return (
     <div id="contact" className="bg-black relative shrink-0 w-full scroll-mt-0">
-      <SectionContainer className="content-stretch flex flex-col gap-[150px] items-start pb-[24px] pt-[60px] relative w-full">
-        <div className="content-stretch flex items-start relative shrink-0 w-full">
-          <div className="content-stretch flex flex-[1_0_0] flex-col gap-[24px] items-start min-h-px min-w-px relative">
+      <SectionContainer className="content-stretch flex flex-col gap-16 items-start pb-[24px] pt-[60px] relative w-full sm:gap-24 lg:gap-[150px]">
+        <div className="content-stretch flex w-full flex-col items-start gap-12 lg:flex-row lg:items-start lg:justify-between lg:gap-8">
+          <div className="content-stretch flex min-h-px min-w-px flex-[1_0_0] flex-col gap-[24px] items-start relative">
             <div className="content-stretch flex flex-col items-start relative shrink-0 w-full">
-              <div className="font-['Cormorant_Garamond',sans-serif] font-medium leading-[0] not-italic relative shrink-0 text-[60px] tracking-[-0.45px] w-full whitespace-pre-wrap">
+              <div className="font-['Cormorant_Garamond',sans-serif] font-medium leading-[1.1] not-italic relative shrink-0 text-[clamp(2.25rem,7vw,3.75rem)] tracking-[-0.45px] w-full whitespace-pre-wrap md:text-[52px] lg:text-[60px]">
                 <p className="mb-0">
-                  <span className="leading-[60px] text-[#bc312e]">{`Let's talk. `}</span>
-                  <span className="leading-[60px] text-white">{`We'd love `}</span>
+                  <span className="text-[#bc312e]">{`Let's talk. `}</span>
+                  <span className="text-white">{`We'd love `}</span>
                 </p>
-                <p className="leading-[60px] text-white">to work with you!</p>
+                <p className="text-white">to work with you!</p>
               </div>
             </div>
             <InteractiveHoverButton text="Contact Us" onClick={() => window.open("mailto:vijay@brewery.agency", "_self")} />
           </div>
-          <div className="ml-auto flex w-max max-w-full shrink-0 flex-col gap-[24px] text-right leading-[normal] not-italic text-white tracking-[-0.45px]">
-            <p className="w-full font-['Satoshi',sans-serif] font-medium text-[24px] whitespace-pre-wrap">
+          <div className="flex w-full max-w-full shrink-0 flex-col gap-[24px] text-left leading-[normal] not-italic text-white tracking-[-0.45px] lg:ml-auto lg:w-max lg:text-right">
+            <p className="w-full font-['Satoshi',sans-serif] font-medium text-[20px] whitespace-pre-wrap sm:text-[22px] md:text-[24px]">
               Locations
             </p>
-            <div className="flex w-full flex-col gap-[12px] text-right font-['Satoshi',sans-serif] font-normal text-[18px] [&_p]:block [&_p]:w-full">
+            <div className="flex w-full flex-col gap-[12px] font-['Satoshi',sans-serif] text-[16px] font-normal sm:text-[17px] md:text-[18px] [&_p]:block [&_p]:w-full lg:text-right">
               <p>New York, USA</p>
               <p>Toronto, Canada</p>
               <p>Delhi, India</p>
             </div>
           </div>
         </div>
-        <div className="content-stretch flex font-['Satoshi',sans-serif] font-normal items-start justify-between leading-[normal] not-italic relative shrink-0 text-white text-[18px] tracking-[-0.45px] w-full">
+        <div className="content-stretch flex w-full flex-col gap-4 font-['Satoshi',sans-serif] font-normal items-start justify-between leading-[normal] not-italic text-white text-[15px] tracking-[-0.45px] sm:flex-row sm:items-center sm:gap-0 sm:text-[16px] md:text-[18px]">
           <p className="relative shrink-0">@2026 Brewery Agency</p>
-          <div className="content-stretch flex gap-[24px] items-start relative shrink-0 cursor-pointer">
-            <p className="relative shrink-0 hover:text-[#bc312e] transition-colors duration-300">LinkedIn</p>
-            <p className="relative shrink-0 hover:text-[#bc312e] transition-colors duration-300">Email</p>
+          <div className="content-stretch flex gap-6 items-start relative shrink-0 sm:gap-[24px]">
+            <p className="relative shrink-0 cursor-pointer transition-colors duration-300 hover:text-[#bc312e]">LinkedIn</p>
+            <p className="relative shrink-0 cursor-pointer transition-colors duration-300 hover:text-[#bc312e]">Email</p>
           </div>
         </div>
       </SectionContainer>
@@ -1029,11 +1140,14 @@ function ContactSection() {
 }
 
 export default function App() {
+  const activeSectionHref = useActiveSectionHref();
+
   return (
-    <div className="relative min-h-screen w-full overflow-x-clip bg-black">
+    <div className="relative min-h-screen w-full overflow-x-clip bg-black pt-[calc(env(safe-area-inset-top,0px)+3rem)] lg:pt-0">
       <CustomCursor />
-      <SideNav />
-      <div className="content-stretch relative z-[2] flex w-full flex-col items-start gap-[120px]">
+      <SideNav activeHref={activeSectionHref} />
+      <MobileTopNav activeHref={activeSectionHref} />
+      <div className="content-stretch relative z-[2] flex w-full flex-col items-start gap-16 sm:gap-24 md:gap-28 lg:gap-[120px]">
         <div
           id="intro"
           className="relative flex min-h-[100dvh] w-full flex-col scroll-mt-0"

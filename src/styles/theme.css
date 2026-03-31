@@ -49,6 +49,14 @@ html {
   --sidebar-ring: oklch(0.708 0 0);
 }
 
+/* Below lg: vertical sidenav hidden — use full-width content insets */
+@media (max-width: 1023px) {
+  :root {
+    --content-inset-left: max(1.25rem, env(safe-area-inset-left, 0px));
+    --content-inset-right: max(1.25rem, env(safe-area-inset-right, 0px));
+  }
+}
+
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);

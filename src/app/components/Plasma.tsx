@@ -214,11 +214,7 @@ export const Plasma = ({
       if (mouseInteractive && containerEl) {
         containerEl.removeEventListener('mousemove', handleMouseMove);
       }
-      try {
-        containerEl?.removeChild(canvas);
-      } catch {
-        console.warn('Canvas already removed from container');
-      }
+      canvas.remove();
     };
   }, [color, speed, direction, scale, opacity, mouseInteractive]);
 
