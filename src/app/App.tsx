@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, lazy, Suspense } from "react";
+import { useState, useRef, useEffect, lazy, Suspense, type ReactNode } from "react";
 import { AddieClientLogo } from "@/components/AddieClientLogo";
 import { TestimonialsMinimal } from "@/components/TestimonialsMinimal";
 import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button";
@@ -316,8 +316,10 @@ const HERO_MOBILE_HEADLINE_TYPO =
   "font-['Cormorant_Garamond',sans-serif] font-medium leading-[1.08] not-italic tracking-[-0.45px] text-white text-[clamp(3.25rem,7.5vw,4.75rem)]";
 
 /** Full-width grid: cells stretch; logos stay centered; gap comes from column distribution (xl: five equal columns). */
-const clientLogoCellClass =
-  "flex min-h-[48px] w-full min-w-0 max-w-full items-center justify-center p-1 transition-all duration-300 hover:scale-110 cursor-pointer";
+const clientLogoCellBase =
+  "flex min-h-[48px] w-full min-w-0 max-w-full items-center justify-center p-1 transition-all duration-300";
+const clientLogoCellClass = `${clientLogoCellBase} hover:scale-110 cursor-pointer`;
+const clientLogoCellClassStatic = `${clientLogoCellBase} cursor-default`;
 /** Slightly smaller — visually heavy marks (Coca-Cola, Lead Me Not) */
 const clientLogoImgSm =
   "max-h-[44px] max-w-full h-auto w-auto object-contain object-center pointer-events-none sm:max-h-[46px]";
@@ -346,10 +348,73 @@ const clientLogoImgKeyNode =
 const MGP_ORANGE = "#FF5F23";
 
 /** Marquee row: fixed-width cells only — do not use `clientLogoCellClass` here (`w-full` breaks horizontal flex). */
-const clientLogoMarqueeCellClass =
+const clientLogoMarqueeCellBase =
   "flex min-h-[52px] w-[112px] min-w-[112px] max-w-[112px] shrink-0 items-center justify-center p-1";
+const clientLogoMarqueeCellClass = `${clientLogoMarqueeCellBase} cursor-pointer transition-transform duration-300 hover:scale-105`;
 
 const MARQUEE_STRIP_GAP_PX = 24;
+
+/** External URLs for client logos. `null` = no link. */
+const CLIENT_LOGO_HREFS = {
+  cocaCola: "https://www.coca-colacompany.com/",
+  nba: "https://www.nba.com/news/nba-unveils-redesigned-kareem-abdul-jabbar-trophy-social-justice-champion-award",
+  google: "https://www.youtube.com/watch?v=dHfHr-pGrMI",
+  fossil: "https://www.fossilgroup.com/fossil-announces-voter-registration-campaign-partnerships/",
+  marcusGrahamProject: "https://marcusgrahamproject.org/",
+  leadMeNot: "https://www.leadmenot.org/",
+  klasNobl: null,
+  addie: "https://getaddie.com/",
+  hennessy: "https://www.hennessy.com/en-us",
+  trailerPark: "https://trailerparkgroup.com/",
+  futureSight: "https://futuresight.ventures/",
+  digitalBrilliance: null,
+  untrap: "https://www.getuntrap.com/",
+  keyNode: "https://keynode.co/",
+  participant:
+    "https://winners.webbyawards.com/2022/social/social-content-series-campaigns/public-service-activism/214414/judas-and-the-black-messiah-social-impact-campaign",
+} as const;
+
+function ClientLogoGridCell({
+  href,
+  className,
+  children,
+}: {
+  href: string | null;
+  className: string;
+  children: ReactNode;
+}) {
+  const cell = href ? clientLogoCellClass : clientLogoCellClassStatic;
+  const full = `${cell} ${className}`;
+  if (href) {
+    return (
+      <a href={href} target="_blank" rel="noopener noreferrer" className={full}>
+        {children}
+      </a>
+    );
+  }
+  return <div className={full}>{children}</div>;
+}
+
+function ClientLogoMarqueeCell({
+  href,
+  className = "",
+  children,
+}: {
+  href: string | null;
+  className?: string;
+  children: ReactNode;
+}) {
+  const base = href ? clientLogoMarqueeCellClass : clientLogoMarqueeCellBase;
+  const full = [base, className].filter(Boolean).join(" ");
+  if (href) {
+    return (
+      <a href={href} target="_blank" rel="noopener noreferrer" className={full}>
+        {children}
+      </a>
+    );
+  }
+  return <div className={full}>{children}</div>;
+}
 
 /**
  * One horizontal pass of client logos for the mobile marquee.
@@ -361,27 +426,27 @@ function ClientsMarqueeStrip({ clipPathId, row }: { clipPathId: string; row: "A"
   if (row === "A") {
     return (
       <>
-        <div className={`${clientLogoMarqueeCellClass} justify-center`}>
+        <ClientLogoMarqueeCell href={CLIENT_LOGO_HREFS.cocaCola} className="justify-center">
           <img alt="" className={clientLogoImgSm} src={imgCocaColaLogoSvg} />
-        </div>
-        <div className={`${clientLogoMarqueeCellClass} justify-center`}>
+        </ClientLogoMarqueeCell>
+        <ClientLogoMarqueeCell href={CLIENT_LOGO_HREFS.nba} className="justify-center">
           <img
             alt=""
             className={`${clientLogoImgLg} brightness-125 contrast-110 scale-50 origin-center`}
             src={imgNbaLogoNbaIconTransparentFreePng}
           />
-        </div>
-        <div className={`${clientLogoMarqueeCellClass} justify-center`}>
+        </ClientLogoMarqueeCell>
+        <ClientLogoMarqueeCell href={CLIENT_LOGO_HREFS.google} className="justify-center">
           <img alt="" className={`${clientLogoImgLg} scale-[0.6] origin-center`} src={img5968863} />
-        </div>
-        <div className={`${clientLogoMarqueeCellClass} justify-center`}>
+        </ClientLogoMarqueeCell>
+        <ClientLogoMarqueeCell href={CLIENT_LOGO_HREFS.fossil} className="justify-center">
           <img
             alt=""
             className={`${clientLogoImgLg} brightness-0 invert opacity-90 scale-[0.8] origin-center`}
             src={imgFossilGroupLogoWine}
           />
-        </div>
-        <div className={`${clientLogoMarqueeCellClass} justify-center`}>
+        </ClientLogoMarqueeCell>
+        <ClientLogoMarqueeCell href={CLIENT_LOGO_HREFS.leadMeNot} className="justify-center">
           <svg className="max-h-[40px] w-auto max-w-full shrink-0" fill="none" preserveAspectRatio="xMidYMid meet" viewBox="0 0 118 42">
             <g clipPath={`url(#${clipPathId})`}>
               <path d={svgPaths.p19b2bd00} fill="#f1f5f9" />
@@ -405,35 +470,35 @@ function ClientsMarqueeStrip({ clipPathId, row }: { clipPathId: string; row: "A"
               </clipPath>
             </defs>
           </svg>
-        </div>
-        <div className={`${clientLogoMarqueeCellClass} justify-center`}>
+        </ClientLogoMarqueeCell>
+        <ClientLogoMarqueeCell href={CLIENT_LOGO_HREFS.klasNobl} className="justify-center">
           <img alt="" className={`${clientLogoImgKlas} brightness-0 invert opacity-90`} src={imgImage122} />
-        </div>
-        <div className={`${clientLogoMarqueeCellClass} justify-center`}>
+        </ClientLogoMarqueeCell>
+        <ClientLogoMarqueeCell href={CLIENT_LOGO_HREFS.addie} className="justify-center">
           <AddieClientLogo className={`${clientLogoImgAddie} w-auto max-w-full shrink-0`} />
-        </div>
-        <div className={`${clientLogoMarqueeCellClass} justify-center`}>
+        </ClientLogoMarqueeCell>
+        <ClientLogoMarqueeCell href={CLIENT_LOGO_HREFS.hennessy} className="justify-center">
           <img alt="" className={`${clientLogoImgMd} brightness-0 invert opacity-90`} src={imgHennessyLogoPngImageHd} />
-        </div>
+        </ClientLogoMarqueeCell>
       </>
     );
   }
 
   return (
     <>
-      <div className={`${clientLogoMarqueeCellClass} justify-center`}>
+      <ClientLogoMarqueeCell href={CLIENT_LOGO_HREFS.futureSight} className="justify-center">
         <img alt="" className={clientLogoImgMd} src={imgIvukLogo30011} />
-      </div>
-      <div className={`${clientLogoMarqueeCellClass} justify-center`}>
+      </ClientLogoMarqueeCell>
+      <ClientLogoMarqueeCell href={CLIENT_LOGO_HREFS.digitalBrilliance} className="justify-center">
         <img alt="" className={`${clientLogoImgMd} brightness-0 invert opacity-90`} src={imgColourLogoOnWhiteV11} />
-      </div>
-      <div className={`${clientLogoMarqueeCellClass} justify-center`}>
+      </ClientLogoMarqueeCell>
+      <ClientLogoMarqueeCell href={CLIENT_LOGO_HREFS.untrap} className="justify-center">
         <img alt="" className={`${clientLogoImgMd} scale-[0.8] origin-center`} src={imgUntrapLogo} />
-      </div>
-      <div className={`${clientLogoMarqueeCellClass} justify-center`}>
+      </ClientLogoMarqueeCell>
+      <ClientLogoMarqueeCell href={CLIENT_LOGO_HREFS.keyNode} className="justify-center">
         <img alt="" className={clientLogoImgKeyNode} src={imgKeynoteSystemsLogoPngSeeklogo78182} />
-      </div>
-      <div className={`${clientLogoMarqueeCellClass} justify-center`}>
+      </ClientLogoMarqueeCell>
+      <ClientLogoMarqueeCell href={CLIENT_LOGO_HREFS.marcusGrahamProject} className="justify-center">
         <div className="relative inline-flex max-w-full items-center justify-center scale-50 origin-center">
           <img alt="MGP" className={`${clientLogoImgIconColLg} max-w-full opacity-0`} src={img67499F452B7D45C48Cb5Ab3FSeo} />
           <div
@@ -446,17 +511,17 @@ function ClientsMarqueeStrip({ clipPathId, row }: { clipPathId: string; row: "A"
             }}
           />
         </div>
-      </div>
-      <div className={`${clientLogoMarqueeCellClass} justify-center`}>
+      </ClientLogoMarqueeCell>
+      <ClientLogoMarqueeCell href={CLIENT_LOGO_HREFS.trailerPark} className="justify-center">
         <img
           alt=""
           className={`${clientLogoImgIconColLg} brightness-0 invert contrast-200`}
           src={img482Df7C8B90645369C33B8445Ce39Aa31}
         />
-      </div>
-      <div className={`${clientLogoMarqueeCellClass} justify-center`}>
+      </ClientLogoMarqueeCell>
+      <ClientLogoMarqueeCell href={CLIENT_LOGO_HREFS.participant} className="justify-center">
         <img alt="" className={`${clientLogoImgMd} brightness-0 invert opacity-90`} src={imgParticipantLogo} />
-      </div>
+      </ClientLogoMarqueeCell>
     </>
   );
 }
@@ -589,28 +654,28 @@ function ClientsSection() {
 
           <div className="hidden w-full md:grid md:grid-cols-3 md:justify-items-stretch md:gap-x-[clamp(1rem,3.5vw,2.25rem)] md:gap-y-2 xl:grid-cols-5 xl:gap-x-[clamp(1.25rem,4vw,3rem)] xl:gap-y-2">
               {/* DOM order: main 4×3 block first, then icon column (MGP, Trailer, Participant) for <xl auto-flow; xl uses explicit placement */}
-              <div className={`${clientLogoCellClass} xl:col-start-1 xl:row-start-1`}>
+              <ClientLogoGridCell href={CLIENT_LOGO_HREFS.cocaCola} className="xl:col-start-1 xl:row-start-1">
                 <img alt="" className={clientLogoImgSm} src={imgCocaColaLogoSvg} />
-              </div>
-              <div className={`${clientLogoCellClass} xl:col-start-2 xl:row-start-1`}>
+              </ClientLogoGridCell>
+              <ClientLogoGridCell href={CLIENT_LOGO_HREFS.nba} className="xl:col-start-2 xl:row-start-1">
                 <img
                   alt=""
                   className={`${clientLogoImgLg} brightness-125 contrast-110 scale-50 origin-center`}
                   src={imgNbaLogoNbaIconTransparentFreePng}
                 />
-              </div>
-              <div className={`${clientLogoCellClass} xl:col-start-3 xl:row-start-1`}>
+              </ClientLogoGridCell>
+              <ClientLogoGridCell href={CLIENT_LOGO_HREFS.google} className="xl:col-start-3 xl:row-start-1">
                 <img alt="" className={`${clientLogoImgLg} scale-[0.6] origin-center`} src={img5968863} />
-              </div>
-              <div className={`${clientLogoCellClass} xl:col-start-4 xl:row-start-1`}>
+              </ClientLogoGridCell>
+              <ClientLogoGridCell href={CLIENT_LOGO_HREFS.fossil} className="xl:col-start-4 xl:row-start-1">
                 <img
                   alt=""
                   className={`${clientLogoImgLg} brightness-0 invert opacity-90 scale-[0.8] origin-center`}
                   src={imgFossilGroupLogoWine}
                 />
-              </div>
+              </ClientLogoGridCell>
 
-              <div className={`${clientLogoCellClass} xl:col-start-1 xl:row-start-2`}>
+              <ClientLogoGridCell href={CLIENT_LOGO_HREFS.leadMeNot} className="xl:col-start-1 xl:row-start-2">
                 <svg
                   className="max-h-[44px] w-auto max-w-full shrink-0 sm:max-h-[46px]"
                   fill="none"
@@ -639,31 +704,31 @@ function ClientsSection() {
                     </clipPath>
                   </defs>
                 </svg>
-              </div>
-              <div className={`${clientLogoCellClass} xl:col-start-2 xl:row-start-2`}>
+              </ClientLogoGridCell>
+              <ClientLogoGridCell href={CLIENT_LOGO_HREFS.klasNobl} className="xl:col-start-2 xl:row-start-2">
                 <img alt="" className={`${clientLogoImgKlas} brightness-0 invert opacity-90`} src={imgImage122} />
-              </div>
-              <div className={`${clientLogoCellClass} xl:col-start-3 xl:row-start-2`}>
+              </ClientLogoGridCell>
+              <ClientLogoGridCell href={CLIENT_LOGO_HREFS.addie} className="xl:col-start-3 xl:row-start-2">
                 <AddieClientLogo className={`${clientLogoImgAddie} w-auto max-w-full shrink-0`} />
-              </div>
-              <div className={`${clientLogoCellClass} xl:col-start-4 xl:row-start-2`}>
+              </ClientLogoGridCell>
+              <ClientLogoGridCell href={CLIENT_LOGO_HREFS.hennessy} className="xl:col-start-4 xl:row-start-2">
                 <img alt="" className={`${clientLogoImgMd} brightness-0 invert opacity-90`} src={imgHennessyLogoPngImageHd} />
-              </div>
+              </ClientLogoGridCell>
 
-              <div className={`${clientLogoCellClass} xl:col-start-1 xl:row-start-3 xl:mt-8`}>
+              <ClientLogoGridCell href={CLIENT_LOGO_HREFS.futureSight} className="xl:col-start-1 xl:row-start-3 xl:mt-8">
                 <img alt="" className={clientLogoImgMd} src={imgIvukLogo30011} />
-              </div>
-              <div className={`${clientLogoCellClass} xl:col-start-2 xl:row-start-3 xl:mt-8`}>
+              </ClientLogoGridCell>
+              <ClientLogoGridCell href={CLIENT_LOGO_HREFS.digitalBrilliance} className="xl:col-start-2 xl:row-start-3 xl:mt-8">
                 <img alt="" className={`${clientLogoImgMd} brightness-0 invert opacity-90`} src={imgColourLogoOnWhiteV11} />
-              </div>
-              <div className={`${clientLogoCellClass} xl:col-start-3 xl:row-start-3 xl:mt-8`}>
+              </ClientLogoGridCell>
+              <ClientLogoGridCell href={CLIENT_LOGO_HREFS.untrap} className="xl:col-start-3 xl:row-start-3 xl:mt-8">
                 <img alt="" className={`${clientLogoImgMd} scale-[0.8] origin-center`} src={imgUntrapLogo} />
-              </div>
-              <div className={`${clientLogoCellClass} xl:col-start-4 xl:row-start-3 xl:mt-8`}>
+              </ClientLogoGridCell>
+              <ClientLogoGridCell href={CLIENT_LOGO_HREFS.keyNode} className="xl:col-start-4 xl:row-start-3 xl:mt-8">
                 <img alt="" className={clientLogoImgKeyNode} src={imgKeynoteSystemsLogoPngSeeklogo78182} />
-              </div>
+              </ClientLogoGridCell>
 
-              <div className={`${clientLogoCellClass} xl:col-start-5 xl:row-start-1`}>
+              <ClientLogoGridCell href={CLIENT_LOGO_HREFS.marcusGrahamProject} className="xl:col-start-5 xl:row-start-1">
                 <div className="relative inline-flex max-w-full items-center justify-center scale-50 origin-center">
                   <img
                     alt="MGP"
@@ -680,17 +745,17 @@ function ClientsSection() {
                     }}
                   />
                 </div>
-              </div>
-              <div className={`${clientLogoCellClass} xl:col-start-5 xl:row-start-2`}>
+              </ClientLogoGridCell>
+              <ClientLogoGridCell href={CLIENT_LOGO_HREFS.trailerPark} className="xl:col-start-5 xl:row-start-2">
                 <img
                   alt=""
                   className={`${clientLogoImgIconColLg} brightness-0 invert contrast-200`}
                   src={img482Df7C8B90645369C33B8445Ce39Aa31}
                 />
-              </div>
-              <div className={`${clientLogoCellClass} xl:col-start-5 xl:row-start-3 xl:mt-8`}>
+              </ClientLogoGridCell>
+              <ClientLogoGridCell href={CLIENT_LOGO_HREFS.participant} className="xl:col-start-5 xl:row-start-3 xl:mt-8">
                 <img alt="" className={`${clientLogoImgMd} brightness-0 invert opacity-90`} src={imgParticipantLogo} />
-              </div>
+              </ClientLogoGridCell>
           </div>
         </SectionContainer>
       </div>
