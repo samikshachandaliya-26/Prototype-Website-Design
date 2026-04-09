@@ -218,7 +218,7 @@ export const Plasma = ({
     };
   }, [color, speed, direction, scale, opacity, mouseInteractive]);
 
-  return <div ref={containerRef} className="plasma-container h-full w-full min-h-[100dvh]" />;
+  return <div ref={containerRef} className="plasma-container h-full min-h-0 w-full" />;
 };
 
 export default Plasma;

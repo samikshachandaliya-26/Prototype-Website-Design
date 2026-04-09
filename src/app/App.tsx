@@ -1,8 +1,7 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, lazy, Suspense } from "react";
 import { AddieClientLogo } from "@/components/AddieClientLogo";
 import { TestimonialsMinimal } from "@/components/TestimonialsMinimal";
 import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button";
-import { CustomCursor } from "@/components/CustomCursor";
 import svgPaths from "../imports/svg-9yfe37tpyu";
 import Plasma from "./components/Plasma";
 import imgImage120 from "../assets/Brewery logo red.svg";
@@ -16,8 +15,6 @@ import img482Df7C8B90645369C33B8445Ce39Aa31 from "../assets/trailerpark logo.png
 import imgHennessyLogoPngImageHd from "../assets/4b99611c8f53821098dec44346dab8471c3a10a2.png";
 import imgIvukLogo30011 from "../assets/future ventures logo.svg";
 import imgColourLogoOnWhiteV11 from "../assets/ff35cc666d39aacef5eb058126345d78ae40e40f.png";
-import img2E42C9A6Ba16477CBa47A104557E051B from "../assets/5648a147c55d19bcd5774622c1b331d60d8fdb6d.png";
-import img1200X630Wa from "../assets/G3 logo.svg";
 import imgKeynoteSystemsLogoPngSeeklogo78182 from "../assets/key node logo.png";
 import imgUntrapLogo from "../assets/untrap logo.png";
 import imgParticipantLogo from "../assets/participant logo.png";
@@ -37,20 +34,50 @@ import imgIndustryRetail from "../assets/retail industry.jpg";
 import imgIndustryFintech from "../assets/fintech industry.jpg";
 import imgIndustryFashion from "../assets/entertainment industry.jpg";
 
+const CustomCursorLazy = lazy(() =>
+  import("@/components/CustomCursor").then((m) => ({ default: m.CustomCursor })),
+);
+
+function DesktopCustomCursorGate() {
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const sync = () => setShow(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+  if (!show) return null;
+  return (
+    <Suspense fallback={null}>
+      <CustomCursorLazy />
+    </Suspense>
+  );
+}
+
+const HERO_INTRO_L1 = "Since 2020 we've helped startups and enterprises";
+const HERO_INTRO_L2 = "design and build high\u2011performance digital products";
+const HERO_INTRO_L3 = "that drive growth and user adoption";
+/** Mobile: one paragraph; desktop hero uses three lines (see `HeroSection`). */
+const HERO_INTRO_COPY = `${HERO_INTRO_L1} ${HERO_INTRO_L2} ${HERO_INTRO_L3}`;
+
+/** Footer social — update if your company slug differs. */
+const BREWERY_LINKEDIN_URL = "https://linkedin.com/company/breweryagency";
+
 function Header() {
   return (
     <div className="relative z-[2] w-full shrink-0 py-4 sm:py-[24px]">
       <div
         className={`mx-auto flex w-full max-w-[1440px] content-stretch items-center justify-between ${SECTION_EDGE_X}`}
       >
-        <div className="flex h-[50px] min-w-0 shrink-0 items-center justify-start">
+        <div className="flex h-8 min-w-0 shrink-0 items-center justify-start md:h-[50px]">
           <img
             alt="Brewery"
-            className="h-[42px] w-auto max-h-[50px] max-w-[min(240px,calc(100vw-180px))] object-contain object-left pointer-events-none"
+            className="h-[1.8rem] w-auto max-h-8 max-w-[7.4rem] object-contain object-left pointer-events-none md:h-[42px] md:max-h-[50px] md:max-w-[min(240px,calc(100vw-180px))]"
             src={imgImage120}
           />
         </div>
-        <InteractiveHoverButton text="Contact Us" onClick={() => window.open("mailto:vijay@brewery.agency", "_self")} />
+        <InteractiveHoverButton text="Contact Us" href="mailto:vijay@brewery.agency" />
       </div>
     </div>
   );
@@ -61,6 +88,7 @@ const NAV_ITEMS: { label: string; href: string }[] = [
   { label: "Clients", href: "#clients" },
   { label: "Services", href: "#services" },
   { label: "Industries", href: "#industries" },
+  { label: "Impact", href: "#impact" },
   { label: "Our Work", href: "#our-work" },
   { label: "Testimonials", href: "#testimonials" },
   { label: "FAQs", href: "#faqs" },
@@ -139,7 +167,7 @@ function NavButton({
       {isActive ? (
         <span className="size-[5px] shrink-0 rounded-full bg-white" aria-hidden />
       ) : null}
-      <p className="font-['Satoshi',sans-serif] font-normal leading-[normal] not-italic relative shrink-0 text-[14px] text-white tracking-[-0.23px]">
+      <p className="font-['Satoshi',sans-serif] font-normal leading-[normal] not-italic relative shrink-0 text-[16px] text-white tracking-[-0.23px]">
         {label}
       </p>
     </a>
@@ -167,10 +195,12 @@ function SideNav({ activeHref }: { activeHref: string }) {
 function MobileTopNav({ activeHref }: { activeHref: string }) {
   return (
     <nav
-      className="pointer-events-none fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black/80 pt-[max(0.35rem,env(safe-area-inset-top))] pb-2 backdrop-blur-md lg:hidden"
+      className="pointer-events-none fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black/80 pt-[calc(2px+max(0.35rem,env(safe-area-inset-top,0px)))] pb-[calc(0.5rem+2px)] backdrop-blur-md lg:hidden"
       aria-label="Section navigation"
     >
-      <div className="pointer-events-auto mx-auto flex max-w-[1440px] gap-1 overflow-x-auto px-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div
+        className={`pointer-events-auto mx-auto flex max-w-[1440px] gap-1 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pl-[max(1.5rem,var(--content-inset-left))] pr-[max(1.5rem,var(--content-inset-right))] sm:pl-[max(2.5rem,var(--content-inset-left))] sm:pr-[max(2.5rem,var(--content-inset-right))]`}
+      >
         {NAV_ITEMS.map((item) => {
           const isActive = activeHref === item.href;
           return (
@@ -178,7 +208,7 @@ function MobileTopNav({ activeHref }: { activeHref: string }) {
               key={item.href}
               href={item.href}
               aria-current={isActive ? "location" : undefined}
-              className={`shrink-0 rounded-full border border-transparent px-2.5 py-1.5 font-['Satoshi',sans-serif] text-[11px] font-normal leading-none tracking-[-0.2px] text-white no-underline transition-[background-color,transform] duration-300 active:scale-[0.98] ${
+              className={`shrink-0 rounded-full border border-transparent px-2.5 py-1.5 font-['Satoshi',sans-serif] text-[16px] font-normal leading-none tracking-[-0.2px] text-white no-underline transition-[background-color,transform] duration-300 active:scale-[0.98] ${
                 isActive
                   ? "bg-white/20 ring-1 ring-white/25"
                   : "bg-white/10 hover:bg-white/15"
@@ -196,7 +226,7 @@ function MobileTopNav({ activeHref }: { activeHref: string }) {
 function HeroPlasmaLayer() {
   return (
     <div
-      className="pointer-events-none absolute inset-0 z-0 w-full overflow-hidden min-h-[100dvh]"
+      className="pointer-events-none absolute left-0 right-0 top-0 z-0 h-[100dvh] w-full overflow-hidden"
       style={{
         WebkitMaskImage:
           "linear-gradient(to bottom, #000 0%, #000 70%, rgba(0,0,0,0.75) 88%, transparent 100%)",
@@ -204,7 +234,7 @@ function HeroPlasmaLayer() {
           "linear-gradient(to bottom, #000 0%, #000 70%, rgba(0,0,0,0.75) 88%, transparent 100%)",
       }}
     >
-      <div className="h-full min-h-[100dvh] w-full">
+      <div className="h-full w-full">
         <Plasma
           color="#bc312e"
           speed={0.6}
@@ -220,17 +250,20 @@ function HeroPlasmaLayer() {
 
 function HeroSection() {
   return (
-    <div className="relative z-[2] flex w-full flex-1 min-h-0 flex-col content-stretch items-start">
-      {/* Mobile / small tablet: stacked copy with safe horizontal padding */}
-      <div className={`w-full shrink-0 pb-10 pt-6 md:hidden ${SECTION_EDGE_X}`}>
-        <p className="mb-6 max-w-[min(100%,340px)] font-['Satoshi',sans-serif] font-normal leading-[1.45] not-italic text-[14px] text-white/95 tracking-[-0.23px]">
-          Since 2020 we've helped startups and enterprises design and build high-performance digital products that drive
-          growth and user adoption
-        </p>
-        <div className="font-['Cormorant_Garamond',sans-serif] font-medium leading-[1.08] not-italic text-[clamp(2rem,8.5vw,2.75rem)] text-white tracking-[-0.45px]">
-          <p className="text-right">{`We design products `}</p>
-          <p className="text-center">people actually want to use</p>
+    <div className="relative z-[2] flex w-full flex-1 min-h-0 flex-col content-stretch items-stretch">
+      {/* Mobile: left-aligned copy; flex spacers 1 : 5 → ~⅙ space above, ~⅚ below (another step up from 1:3) */}
+      <div className="flex min-h-0 w-full flex-1 flex-col md:hidden">
+        <div className="min-h-0 flex-[1] basis-0" aria-hidden />
+        <div className={`flex shrink-0 flex-col items-start text-left ${SECTION_EDGE_X}`}>
+          <div className={`w-full ${HERO_MOBILE_HEADLINE_TYPO}`}>
+            <p className="text-left">{`We design products `}</p>
+            <p className="text-left">people actually want to use</p>
+          </div>
+          <p className="mt-8 w-full max-w-[min(100%,340px)] text-pretty font-['Satoshi',sans-serif] font-normal leading-[1.45] not-italic text-[16px] text-white/95 tracking-[-0.23px]">
+            {HERO_INTRO_COPY}
+          </p>
         </div>
+        <div className="min-h-0 flex-[5] basis-0" aria-hidden />
       </div>
       {/* Desktop: original absolute layout */}
       <div className="relative hidden h-[460px] w-full shrink-0 md:block">
@@ -238,9 +271,12 @@ function HeroSection() {
           <p className="relative w-[min-content] min-w-full shrink-0 whitespace-pre-wrap">{`We design products `}</p>
           <p className="relative shrink-0 text-center">people actually want to use</p>
         </div>
-        <p className="absolute left-[max(1rem,min(793px,52vw))] top-[100px] w-[min(300px,calc(100%-2rem))] font-['Satoshi',sans-serif] font-normal leading-[normal] not-italic text-[14px] text-white tracking-[-0.23px] whitespace-pre-wrap xl:left-[793px]">
-          Since 2020 we've helped startups and enterprises design and build high-performance digital products that drive
-          growth and user adoption
+        <p className="absolute left-[max(1rem,min(793px,52vw))] top-[100px] w-[min(580px,calc(100%-max(1rem,min(793px,52vw))-1.5rem))] font-['Satoshi',sans-serif] font-normal leading-[1.45] not-italic text-[16px] text-white tracking-[-0.23px] xl:left-[793px] xl:w-[min(580px,calc(100%-793px-1.5rem))]">
+          {HERO_INTRO_L1}
+          <br />
+          {HERO_INTRO_L2}
+          <br />
+          {HERO_INTRO_L3}
         </p>
       </div>
     </div>
@@ -258,6 +294,26 @@ function SectionContainer({ children, className = "" }: { children: React.ReactN
     </div>
   );
 }
+
+/** Vertical space between stacked main sections (100px mobile; hero block is separate). */
+const SECTION_STACK_GAP = "gap-[100px] sm:gap-[100px] md:gap-28 lg:gap-[120px]";
+/** No extra vertical padding inside sections on mobile — rhythm comes from SECTION_STACK_GAP + heading gaps. */
+const SECTION_BODY_PY_MOBILE = "py-0 md:py-0";
+/** Extra bottom padding after Clients — stacks with SECTION_STACK_GAP (Clients → Services). */
+const SECTION_AFTER_CLIENTS = "md:pb-10 lg:pb-14 xl:pb-[4.5rem]";
+/** Section title → body: 40px mobile, larger from md up. */
+const SECTION_HEADING_TO_CONTENT_GAP = "gap-[40px] md:gap-16 lg:gap-[60px]";
+/** Services header → columns (40px mobile). */
+const SERVICES_HEADING_TO_CONTENT_GAP =
+  "gap-[40px] md:gap-20 lg:gap-[72px]";
+
+/** Cormorant scale for main section titles (Clients, Services, Industries, Work, Impact, Journey, Testimonials, FAQs, Contact). */
+const SECTION_TITLE_TYPO =
+  "font-['Cormorant_Garamond',sans-serif] font-medium leading-[normal] not-italic tracking-[-0.45px] text-[clamp(2.25rem,7vw,3.75rem)] md:text-[52px] lg:text-[60px]";
+
+/** Hero mobile headline: same fluid scale as section titles, +1rem on min/max clamp (visible only below `md`). */
+const HERO_MOBILE_HEADLINE_TYPO =
+  "font-['Cormorant_Garamond',sans-serif] font-medium leading-[1.08] not-italic tracking-[-0.45px] text-white text-[clamp(3.25rem,7.5vw,4.75rem)]";
 
 /** Full-width grid: cells stretch; logos stay centered; gap comes from column distribution (xl: five equal columns). */
 const clientLogoCellClass =
@@ -289,27 +345,250 @@ const clientLogoImgKeyNode =
 /** MGP brand orange (mask fill) */
 const MGP_ORANGE = "#FF5F23";
 
+/** Marquee row: fixed-width cells only — do not use `clientLogoCellClass` here (`w-full` breaks horizontal flex). */
+const clientLogoMarqueeCellClass =
+  "flex min-h-[52px] w-[112px] min-w-[112px] max-w-[112px] shrink-0 items-center justify-center p-1";
+
+const MARQUEE_STRIP_GAP_PX = 24;
+
+/**
+ * One horizontal pass of client logos for the mobile marquee.
+ * `row="A"` renders logos 1-8; `row="B"` renders logos 9-15.
+ * `clipPathId` is only consumed by the inline SVG in row A but must still be
+ * unique across all mounted strips to avoid SVG id collisions.
+ */
+function ClientsMarqueeStrip({ clipPathId, row }: { clipPathId: string; row: "A" | "B" }) {
+  if (row === "A") {
+    return (
+      <>
+        <div className={`${clientLogoMarqueeCellClass} justify-center`}>
+          <img alt="" className={clientLogoImgSm} src={imgCocaColaLogoSvg} />
+        </div>
+        <div className={`${clientLogoMarqueeCellClass} justify-center`}>
+          <img
+            alt=""
+            className={`${clientLogoImgLg} brightness-125 contrast-110 scale-50 origin-center`}
+            src={imgNbaLogoNbaIconTransparentFreePng}
+          />
+        </div>
+        <div className={`${clientLogoMarqueeCellClass} justify-center`}>
+          <img alt="" className={`${clientLogoImgLg} scale-[0.6] origin-center`} src={img5968863} />
+        </div>
+        <div className={`${clientLogoMarqueeCellClass} justify-center`}>
+          <img
+            alt=""
+            className={`${clientLogoImgLg} brightness-0 invert opacity-90 scale-[0.8] origin-center`}
+            src={imgFossilGroupLogoWine}
+          />
+        </div>
+        <div className={`${clientLogoMarqueeCellClass} justify-center`}>
+          <svg className="max-h-[40px] w-auto max-w-full shrink-0" fill="none" preserveAspectRatio="xMidYMid meet" viewBox="0 0 118 42">
+            <g clipPath={`url(#${clipPathId})`}>
+              <path d={svgPaths.p19b2bd00} fill="#f1f5f9" />
+              <path d={svgPaths.p3e5bbff2} fill="#f1f5f9" />
+              <path d={svgPaths.p282f8280} fill="#f1f5f9" />
+              <path d={svgPaths.p15c8db30} fill="#f1f5f9" />
+              <path d={svgPaths.p1e7c3c80} fill="#f1f5f9" />
+              <path d={svgPaths.p30b32200} fill="#f1f5f9" />
+              <path d={svgPaths.p1fbdbdc0} fill="#f1f5f9" />
+              <path d={svgPaths.pa7f9cc0} fill="#f1f5f9" />
+              <path d={svgPaths.pee90500} fill="#f1f5f9" />
+              <path d={svgPaths.p2fcec900} fill="#f1f5f9" />
+              <path d={svgPaths.p34b57500} fill="#f1f5f9" />
+              <path d={svgPaths.p3caaac00} fill="#f1f5f9" />
+              <path d={svgPaths.p271d7b80} fill="#f1f5f9" />
+              <path d={svgPaths.p37e38b00} fill="#f1f5f9" />
+            </g>
+            <defs>
+              <clipPath id={clipPathId}>
+                <rect fill="white" height="42" width="118" />
+              </clipPath>
+            </defs>
+          </svg>
+        </div>
+        <div className={`${clientLogoMarqueeCellClass} justify-center`}>
+          <img alt="" className={`${clientLogoImgKlas} brightness-0 invert opacity-90`} src={imgImage122} />
+        </div>
+        <div className={`${clientLogoMarqueeCellClass} justify-center`}>
+          <AddieClientLogo className={`${clientLogoImgAddie} w-auto max-w-full shrink-0`} />
+        </div>
+        <div className={`${clientLogoMarqueeCellClass} justify-center`}>
+          <img alt="" className={`${clientLogoImgMd} brightness-0 invert opacity-90`} src={imgHennessyLogoPngImageHd} />
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <div className={`${clientLogoMarqueeCellClass} justify-center`}>
+        <img alt="" className={clientLogoImgMd} src={imgIvukLogo30011} />
+      </div>
+      <div className={`${clientLogoMarqueeCellClass} justify-center`}>
+        <img alt="" className={`${clientLogoImgMd} brightness-0 invert opacity-90`} src={imgColourLogoOnWhiteV11} />
+      </div>
+      <div className={`${clientLogoMarqueeCellClass} justify-center`}>
+        <img alt="" className={`${clientLogoImgMd} scale-[0.8] origin-center`} src={imgUntrapLogo} />
+      </div>
+      <div className={`${clientLogoMarqueeCellClass} justify-center`}>
+        <img alt="" className={clientLogoImgKeyNode} src={imgKeynoteSystemsLogoPngSeeklogo78182} />
+      </div>
+      <div className={`${clientLogoMarqueeCellClass} justify-center`}>
+        <div className="relative inline-flex max-w-full items-center justify-center scale-50 origin-center">
+          <img alt="MGP" className={`${clientLogoImgIconColLg} max-w-full opacity-0`} src={img67499F452B7D45C48Cb5Ab3FSeo} />
+          <div
+            aria-hidden
+            className="absolute inset-0 m-auto max-h-full max-w-full [mask-size:contain] [mask-repeat:no-repeat] [mask-position:center]"
+            style={{
+              backgroundColor: MGP_ORANGE,
+              maskImage: `url(${img67499F452B7D45C48Cb5Ab3FSeo})`,
+              WebkitMaskImage: `url(${img67499F452B7D45C48Cb5Ab3FSeo})`,
+            }}
+          />
+        </div>
+      </div>
+      <div className={`${clientLogoMarqueeCellClass} justify-center`}>
+        <img
+          alt=""
+          className={`${clientLogoImgIconColLg} brightness-0 invert contrast-200`}
+          src={img482Df7C8B90645369C33B8445Ce39Aa31}
+        />
+      </div>
+      <div className={`${clientLogoMarqueeCellClass} justify-center`}>
+        <img alt="" className={`${clientLogoImgMd} brightness-0 invert opacity-90`} src={imgParticipantLogo} />
+      </div>
+    </>
+  );
+}
+
+/** One animated row of the mobile marquee. Scrolls left when `direction="left"`, right when `direction="right"`. */
+function MobileMarqueeRow({
+  direction,
+  row,
+  clipIdA,
+  clipIdB,
+  pausedRef,
+}: {
+  direction: "left" | "right";
+  row: "A" | "B";
+  clipIdA: string;
+  clipIdB: string;
+  pausedRef: { current: boolean };
+}) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const stripRef = useRef<HTMLDivElement>(null);
+  const xRef = useRef(0);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    const stripEl = stripRef.current;
+    if (!track || !stripEl) return;
+
+    let rafId = 0;
+    const speed = 0.75;
+    const isLeft = direction === "left";
+
+    const loopPeriod = () => {
+      const w = stripEl.getBoundingClientRect().width;
+      if (!Number.isFinite(w) || w < 8) return 0;
+      return w + MARQUEE_STRIP_GAP_PX;
+    };
+
+    const tick = () => {
+      rafId = requestAnimationFrame(tick);
+      if (pausedRef.current) return;
+
+      const p = loopPeriod();
+      if (p <= 0) return;
+
+      let x: number;
+      if (isLeft) {
+        x = xRef.current - speed;
+        while (x <= -p) x += p;
+      } else {
+        // Right-scrolling: x increases toward 0, then wraps to -p
+        x = xRef.current + speed;
+        while (x >= 0) x -= p;
+      }
+      xRef.current = x;
+      track.style.transform = `translate3d(${x}px,0,0)`;
+    };
+
+    rafId = requestAnimationFrame(tick);
+
+    const ro = new ResizeObserver(() => {
+      const p = loopPeriod();
+      if (p <= 0) return;
+      if (isLeft) {
+        while (xRef.current <= -p) xRef.current += p;
+      } else {
+        while (xRef.current >= 0) xRef.current -= p;
+      }
+      track.style.transform = `translate3d(${xRef.current}px,0,0)`;
+    });
+    ro.observe(stripEl);
+    ro.observe(track);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      ro.disconnect();
+    };
+  }, [direction, pausedRef]);
+
+  return (
+    <div
+      ref={trackRef}
+      className="flex w-max flex-row flex-nowrap items-center gap-6 will-change-transform"
+    >
+      <div ref={stripRef} className="flex shrink-0 flex-row flex-nowrap items-center gap-6 px-6">
+        <ClientsMarqueeStrip clipPathId={clipIdA} row={row} />
+      </div>
+      <div className="flex shrink-0 flex-row flex-nowrap items-center gap-6 px-6">
+        <ClientsMarqueeStrip clipPathId={clipIdB} row={row} />
+      </div>
+    </div>
+  );
+}
+
+/** Below `md`: two-row infinite marquee — row 1 scrolls left, row 2 scrolls right. */
+function MobileClientLogosMarquee() {
+  const pausedRef = useRef(false);
+
+  return (
+    <div
+      className="relative z-[3] w-full overflow-hidden pb-3 pt-0 md:hidden flex flex-col gap-3"
+      aria-label="Client logos"
+      onMouseEnter={() => { pausedRef.current = true; }}
+      onMouseLeave={() => { pausedRef.current = false; }}
+    >
+      <MobileMarqueeRow direction="left"  row="A" clipIdA="clients-mq-a" clipIdB="clients-mq-b" pausedRef={pausedRef} />
+      <MobileMarqueeRow direction="right" row="B" clipIdA="clients-mq-c" clipIdB="clients-mq-d" pausedRef={pausedRef} />
+    </div>
+  );
+}
+
 function ClientsSection() {
   return (
     <div
       id="clients"
-      className="relative z-[2] shrink-0 w-full scroll-mt-0 bg-[linear-gradient(to_bottom,transparent_0%,rgba(0,0,0,0.15)_22%,rgba(0,0,0,0.55)_48%,#000000_72%)]"
+      className={`relative z-[2] shrink-0 w-full scroll-mt-0 bg-[linear-gradient(to_bottom,transparent_0%,rgba(0,0,0,0.15)_22%,rgba(0,0,0,0.55)_48%,#000000_72%)] ${SECTION_AFTER_CLIENTS}`}
     >
       <div className="flex flex-col items-center justify-center size-full">
-        <SectionContainer className="content-stretch flex flex-col gap-10 items-stretch justify-center py-[60px] relative w-full">
-          <div className="flex w-full flex-col gap-6 sm:gap-8 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
-            <div className="max-w-[554px] shrink-0 whitespace-pre-wrap font-['Cormorant_Garamond',sans-serif] text-[clamp(2.25rem,7vw,3.75rem)] font-medium leading-[normal] not-italic tracking-[-0.45px] text-white md:text-[52px] lg:text-[60px]">
+        <SectionContainer className={`content-stretch flex flex-col gap-8 items-stretch justify-center ${SECTION_BODY_PY_MOBILE} relative w-full`}>
+          <div className="flex w-full min-w-0 flex-col gap-4 lg:flex-row lg:items-end lg:justify-between lg:gap-4">
+            <div className={`min-w-0 max-w-[min(100%,554px)] shrink-0 whitespace-pre-wrap text-white ${SECTION_TITLE_TYPO}`}>
               <p className="mb-0">{`They trusted us `}</p>
               <p>with their biggest bets</p>
             </div>
-            <p className="w-full max-w-[346px] text-left font-['Satoshi',sans-serif] text-[16px] font-normal leading-[normal] not-italic tracking-[-0.45px] text-[rgba(255,255,255,0.82)] sm:text-[17px] lg:max-w-[346px] lg:w-auto lg:shrink-0 lg:text-right lg:text-[18px]">
+            <p className="ml-0 w-full min-w-0 max-w-full text-left font-['Satoshi',sans-serif] text-[16px] font-normal leading-[1.45] not-italic tracking-[-0.45px] text-[rgba(255,255,255,0.82)] md:max-w-[min(100%,24rem)] md:text-[17px] lg:ml-0 lg:max-w-[346px] lg:w-auto lg:shrink-0 lg:text-right lg:text-[18px]">
               From Fortune 500s to funded startups, we help teams ship products that users love
             </p>
           </div>
 
-          <div className="w-full">
-            <div className="grid w-full grid-cols-2 justify-items-stretch gap-x-[clamp(0.75rem,3vw,2rem)] gap-y-2 sm:grid-cols-3 sm:gap-x-[clamp(1rem,3.5vw,2.25rem)] sm:gap-y-2 xl:grid-cols-5 xl:gap-x-[clamp(1.25rem,4vw,3rem)] xl:gap-y-2">
-              {/* DOM order: main 4×3 block first, then icon column (MGP, Trailer, G3) for <xl auto-flow; xl uses explicit placement */}
+          <MobileClientLogosMarquee />
+
+          <div className="hidden w-full md:grid md:grid-cols-3 md:justify-items-stretch md:gap-x-[clamp(1rem,3.5vw,2.25rem)] md:gap-y-2 xl:grid-cols-5 xl:gap-x-[clamp(1.25rem,4vw,3rem)] xl:gap-y-2">
+              {/* DOM order: main 4×3 block first, then icon column (MGP, Trailer, Participant) for <xl auto-flow; xl uses explicit placement */}
               <div className={`${clientLogoCellClass} xl:col-start-1 xl:row-start-1`}>
                 <img alt="" className={clientLogoImgSm} src={imgCocaColaLogoSvg} />
               </div>
@@ -371,22 +650,16 @@ function ClientsSection() {
                 <img alt="" className={`${clientLogoImgMd} brightness-0 invert opacity-90`} src={imgHennessyLogoPngImageHd} />
               </div>
 
-              <div className={`${clientLogoCellClass} xl:col-start-1 xl:row-start-3 xl:mt-2`}>
+              <div className={`${clientLogoCellClass} xl:col-start-1 xl:row-start-3 xl:mt-8`}>
                 <img alt="" className={clientLogoImgMd} src={imgIvukLogo30011} />
               </div>
-              <div className={`${clientLogoCellClass} xl:col-start-1 xl:row-start-4 xl:mt-6`}>
-                <img alt="" className={`${clientLogoImgMd} scale-[0.8] origin-center`} src={imgUntrapLogo} />
-              </div>
-              <div className={`${clientLogoCellClass} xl:col-start-2 xl:row-start-3 xl:mt-2`}>
+              <div className={`${clientLogoCellClass} xl:col-start-2 xl:row-start-3 xl:mt-8`}>
                 <img alt="" className={`${clientLogoImgMd} brightness-0 invert opacity-90`} src={imgColourLogoOnWhiteV11} />
               </div>
-              <div className={`${clientLogoCellClass} xl:col-start-2 xl:row-start-4 xl:mt-6`}>
-                <img alt="" className={`${clientLogoImgMd} brightness-0 invert opacity-90`} src={imgParticipantLogo} />
+              <div className={`${clientLogoCellClass} xl:col-start-3 xl:row-start-3 xl:mt-8`}>
+                <img alt="" className={`${clientLogoImgMd} scale-[0.8] origin-center`} src={imgUntrapLogo} />
               </div>
-              <div className={`${clientLogoCellClass} xl:col-start-3 xl:row-start-3 xl:mt-2`}>
-                <img alt="" className={clientLogoImgMd} src={img2E42C9A6Ba16477CBa47A104557E051B} />
-              </div>
-              <div className={`${clientLogoCellClass} xl:col-start-4 xl:row-start-3 xl:mt-2`}>
+              <div className={`${clientLogoCellClass} xl:col-start-4 xl:row-start-3 xl:mt-8`}>
                 <img alt="" className={clientLogoImgKeyNode} src={imgKeynoteSystemsLogoPngSeeklogo78182} />
               </div>
 
@@ -415,10 +688,9 @@ function ClientsSection() {
                   src={img482Df7C8B90645369C33B8445Ce39Aa31}
                 />
               </div>
-              <div className={`${clientLogoCellClass} xl:col-start-5 xl:row-start-3 xl:mt-2`}>
-                <img alt="" className={clientLogoImgIconCol} src={img1200X630Wa} />
+              <div className={`${clientLogoCellClass} xl:col-start-5 xl:row-start-3 xl:mt-8`}>
+                <img alt="" className={`${clientLogoImgMd} brightness-0 invert opacity-90`} src={imgParticipantLogo} />
               </div>
-            </div>
           </div>
         </SectionContainer>
       </div>
@@ -465,24 +737,32 @@ const SERVICES_COLUMNS: {
 
 function ServicesSection() {
   return (
-    <div id="services" className="relative shrink-0 w-full scroll-mt-0">
+    <div
+      id="services"
+      className="relative -mt-6 shrink-0 w-full scroll-mt-0 sm:-mt-7 md:-mt-8"
+    >
       <div className="flex flex-col items-center size-full">
-        <SectionContainer className="content-stretch flex flex-col gap-[60px] items-stretch relative w-full">
-          <div className="content-stretch flex flex-col gap-[24px] md:flex-row md:items-end md:justify-between not-italic relative shrink-0 text-white tracking-[-0.45px] w-full">
-            <p className="max-w-[min(100%,520px)] shrink-0 font-['Cormorant_Garamond',sans-serif] text-[clamp(2.25rem,7vw,3.75rem)] font-medium leading-[normal] md:text-[52px] lg:text-[60px]">
+        <SectionContainer
+          className={`content-stretch flex flex-col ${SERVICES_HEADING_TO_CONTENT_GAP} items-stretch ${SECTION_BODY_PY_MOBILE} relative w-full`}
+        >
+          <div className="content-stretch flex w-full min-w-0 flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-4 not-italic relative shrink-0 text-white tracking-[-0.45px]">
+            <p className={`min-w-0 max-w-[min(100%,520px)] shrink-0 text-white ${SECTION_TITLE_TYPO}`}>
               How we help you win
             </p>
-            <p className="max-w-full shrink-0 text-balance font-['Satoshi',sans-serif] text-[16px] font-normal leading-[1.45] text-left sm:text-[17px] md:ml-auto md:max-w-[min(100%,560px)] md:text-right md:text-[18px]">
+            <p className="ml-0 w-full min-w-0 max-w-full text-left font-['Satoshi',sans-serif] text-[16px] font-normal leading-[1.45] sm:max-w-[min(100%,24rem)] md:ml-auto md:max-w-[min(100%,520px)] md:text-balance md:text-[17px] md:text-right lg:max-w-[min(100%,560px)] lg:text-[18px]">
               Our services include end-to-end product design and development spanning strategy, design, and engineering.
             </p>
           </div>
 
-          <div className="w-full overflow-x-auto overflow-y-hidden -mx-[max(1.5rem,var(--content-inset-left))] px-[max(1.5rem,var(--content-inset-left))] sm:mx-0 sm:px-0 sm:overflow-visible">
-            <div className="flex w-full min-w-0 flex-col divide-y divide-[#bc312e] md:min-h-0 md:flex-row md:divide-x md:divide-y-0">
+          {/* Below md: true viewport full-bleed so cards + dividers span screen width (inset only by padding). Section padding alone cannot reach the right edge when layout is complex. */}
+          <div
+            className="relative w-full min-w-0 overflow-x-auto overflow-y-hidden max-md:ml-[calc(50%-50vw)] max-md:w-screen max-md:max-w-[100dvw] max-md:shrink-0 max-md:pl-[max(1.5rem,var(--content-inset-left))] max-md:pr-[max(1.5rem,var(--content-inset-right))] sm:max-md:pl-[max(2.5rem,var(--content-inset-left))] sm:max-md:pr-[max(2.5rem,var(--content-inset-right))] md:ml-0 md:w-full md:max-w-none md:overflow-visible md:px-0"
+          >
+            <div className="flex w-full min-w-0 max-w-none flex-col divide-y divide-[#bc312e] md:min-h-0 md:flex-row md:divide-x md:divide-y-0">
             {SERVICES_COLUMNS.map((col, idx) => (
               <div
                 key={idx}
-                className={`group relative flex min-h-0 w-full min-w-0 cursor-pointer flex-col justify-between px-4 py-6 transition-[flex-grow,flex-basis,background-color] duration-500 ease-out md:min-h-[360px] md:flex-[1_1_0%] md:px-5 md:py-6 md:hover:z-10 md:hover:flex-[1.35_1_0%] md:hover:bg-[rgba(255,255,255,0.04)] ${
+                className={`group relative flex min-h-0 w-full min-w-0 max-w-none cursor-pointer flex-col justify-between py-6 transition-[flex-grow,flex-basis,background-color] duration-500 ease-out max-md:px-0 md:min-h-[360px] md:flex-[1_1_0%] md:px-5 md:py-6 md:hover:z-10 md:hover:flex-[1.35_1_0%] md:hover:bg-[rgba(255,255,255,0.04)] ${
                   idx === 0 ? "md:border-l md:border-[#bc312e]" : ""
                 }`}
               >
@@ -490,13 +770,13 @@ function ServicesSection() {
                   {col.category}
                 </p>
                 <div className="mt-auto flex flex-col items-stretch justify-end">
-                  <p className="font-['Satoshi',sans-serif] font-medium text-[20px] leading-[normal] tracking-[-0.45px] text-white sm:text-[22px] md:text-[24px]">
+                  <p className="font-['Satoshi',sans-serif] font-medium text-[20px] leading-[normal] tracking-[-0.45px] text-white sm:text-[24px] md:text-[24px]">
                     {col.name}
                   </p>
                   {/* Mobile / touch: always show copy; desktop: reveal on hover */}
                   <div className="grid grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-out md:grid-rows-[0fr] md:group-hover:grid-rows-[1fr]">
                     <div className="min-h-0 overflow-hidden">
-                      <p className="pt-4 font-['Satoshi',sans-serif] text-[14px] font-normal leading-[1.45] tracking-[-0.23px] text-[rgba(255,255,255,0.72)] sm:text-[15px]">
+                      <p className="pt-4 font-['Satoshi',sans-serif] text-[16px] font-normal leading-[1.45] tracking-[-0.23px] text-[rgba(255,255,255,0.72)]">
                         {col.description}
                       </p>
                     </div>
@@ -532,7 +812,7 @@ function IndustriesSection() {
       const scrollable = Math.max(0, track.offsetHeight - window.innerHeight);
       // Row is as wide as its content; use the clip container width, not row.clientWidth.
       const visibleW = viewport.clientWidth;
-      const maxScroll = Math.max(0, row.scrollWidth - visibleW);
+      const maxScroll = Math.max(0, row.scrollWidth - visibleW +100);
       const rawProgress =
         scrollable <= 0
           ? 0
@@ -605,10 +885,10 @@ function IndustriesSection() {
 
   return (
     <section id="industries" className="w-full bg-black scroll-mt-0">
-      <SectionContainer>
+      <SectionContainer className={SECTION_BODY_PY_MOBILE}>
         {/* Mobile: horizontal carousel (desktop unchanged below) */}
-        <div className="flex flex-col gap-8 py-12 md:hidden">
-          <h2 className="font-['Cormorant_Garamond'] text-[clamp(2rem,8vw,2.75rem)] font-medium leading-[1.15] text-white">
+        <div className={`flex flex-col ${SECTION_HEADING_TO_CONTENT_GAP} md:hidden`}>
+          <h2 className={`text-white ${SECTION_TITLE_TYPO}`}>
             8+ industries. 50+ products.
             <br />
             We understand your user's problems
@@ -644,8 +924,8 @@ function IndustriesSection() {
         <div className="relative left-1/2 hidden w-screen -translate-x-1/2 md:block">
           <div ref={trackRef} className="relative h-[520vh] w-full">
             <div className="sticky top-0 z-[5] flex h-screen w-full flex-col overflow-hidden bg-black">
-              <div className={`mb-[60px] shrink-0 ${SECTION_EDGE_X}`}>
-                <h2 className="font-['Cormorant_Garamond'] text-[clamp(2.5rem,5vw,60px)] font-medium leading-tight text-white">
+              <div className={`mb-12 shrink-0 sm:mb-14 md:mb-16 lg:mb-[60px] ${SECTION_EDGE_X}`}>
+                <h2 className={`text-white ${SECTION_TITLE_TYPO}`}>
                   8+ industries. 50+ products.
                   <br />
                   We understand your user's problems
@@ -653,7 +933,7 @@ function IndustriesSection() {
               </div>
               <div
                 ref={viewportRef}
-                className="min-h-[300px] flex-1 overflow-hidden px-6 sm:px-10 md:px-14 lg:px-20 xl:px-[90px]"
+                className="flex min-h-0 flex-1 items-center overflow-hidden px-6 sm:px-10 md:px-14 lg:px-20 xl:px-[90px]"
               >
                 <div ref={rowRef} className="flex w-max gap-[80px] will-change-transform">
                   {industries.map((industry, idx) => (
@@ -661,11 +941,11 @@ function IndustriesSection() {
                       key={idx}
                       className="flex w-max shrink-0 gap-[24px] transition-transform duration-300 hover:scale-105"
                     >
-                      <div className="shrink-0 overflow-hidden rounded-none">
+                      <div className="h-[300px] w-[300px] shrink-0 overflow-hidden rounded-none">
                         <img
                           src={industry.image}
                           alt=""
-                          className="block h-[300px] w-auto max-w-none"
+                          className="h-full w-full object-cover object-center"
                         />
                       </div>
                       <div
@@ -692,12 +972,12 @@ function IndustriesSection() {
 
 function ImpactSection() {
   return (
-    <div className="relative shrink-0 w-full">
-      <SectionContainer className="content-stretch flex flex-col gap-[60px] items-start relative w-full">
-        <p className="w-full whitespace-pre-wrap font-['Cormorant_Garamond',sans-serif] text-[clamp(2.25rem,7vw,3.75rem)] font-medium leading-[normal] not-italic tracking-[-0.45px] text-white md:text-[52px] lg:text-[60px]">
+    <div id="impact" className="relative shrink-0 w-full scroll-mt-0">
+      <SectionContainer className={`content-stretch flex flex-col ${SECTION_HEADING_TO_CONTENT_GAP} items-start ${SECTION_BODY_PY_MOBILE} relative w-full`}>
+        <p className={`w-full whitespace-pre-wrap text-white ${SECTION_TITLE_TYPO}`}>
           Impact at scale
         </p>
-        <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-8 xl:grid-cols-4 xl:gap-4 xl:justify-between">
+        <div className="grid w-full auto-rows-auto grid-cols-2 gap-[40px] sm:gap-6 xl:auto-rows-[1fr] xl:grid-cols-4 xl:gap-4 xl:justify-between">
           {[
             { label: "USERS OF OUR DESIGN", value: "3M+", description: "More than 3 million users interact with products we've designed every month" },
             { label: "CLIENT REVENUE", value: "$5M", description: "We partner with forward-thinking enterprises and startups and helped them to raise more than" },
@@ -706,19 +986,31 @@ function ImpactSection() {
           ].map((stat, idx) => (
             <div
               key={idx}
-              className="group relative flex min-h-[240px] w-full max-w-full cursor-pointer flex-col items-start overflow-hidden px-5 py-6 sm:min-h-[320px] xl:h-[428px] xl:min-w-0 xl:max-w-[350px] xl:w-[250px] xl:px-5 xl:py-6"
+              className="group relative flex w-full min-w-0 max-w-full cursor-pointer flex-col items-stretch overflow-hidden px-4 py-5 sm:px-5 sm:py-6 xl:h-[428px] xl:min-w-0 xl:max-w-[350px] xl:w-[250px] xl:px-5 xl:py-6"
             >
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 border-l border-solid border-[#bc312e] transition-all duration-300 group-hover:border-l-2" />
-              <p className="relative shrink-0 font-['Satoshi',sans-serif] text-[15px] font-normal leading-[normal] not-italic tracking-[-0.45px] text-white sm:text-[16px] md:text-[18px]">{stat.label}</p>
-              <div className="relative mt-auto flex min-w-full w-[min-content] flex-col">
-                <div className="flex flex-col justify-end font-['Satoshi',sans-serif] text-[clamp(3.5rem,12vw,6.25rem)] font-medium leading-[0] not-italic text-white transition-all duration-500 md:text-[100px] md:group-hover:-translate-y-[60px]">
-                  <p className="leading-[normal] whitespace-pre-wrap">{stat.value}</p>
-                </div>
-                <div className="grid grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-out md:grid-rows-[0fr] md:group-hover:grid-rows-[1fr]">
-                  <div className="min-h-0 overflow-hidden">
-                    <p className="mt-4 font-['Satoshi',sans-serif] text-[15px] font-normal leading-[normal] not-italic tracking-[-0.45px] text-white opacity-100 transition-opacity duration-500 sm:text-[16px] md:mt-[20px] md:text-[18px] md:opacity-0 md:group-hover:opacity-100">
-                      {stat.description}
-                    </p>
+              <p className="relative shrink-0 font-['Satoshi',sans-serif] text-[16px] font-normal leading-[normal] not-italic tracking-[-0.45px] text-white md:text-[18px]">
+                {stat.label}
+              </p>
+              <div className="relative mt-4 flex w-full min-w-0 flex-col items-stretch xl:hidden">
+                <p className="relative shrink-0 font-['Satoshi',sans-serif] text-[clamp(3.1rem,10.5vw,5.5rem)] font-medium leading-[normal] not-italic text-white">
+                  {stat.value}
+                </p>
+                <p className="font-['Satoshi',sans-serif] text-[16px] font-normal leading-[normal] not-italic tracking-[-0.45px] text-white md:text-[18px]">
+                  {stat.description}
+                </p>
+              </div>
+              <div className="relative mt-4 hidden min-h-0 min-w-full flex-1 flex-col xl:flex">
+                <div className="relative mt-auto flex min-w-full w-[min-content] flex-col">
+                  <div className="flex flex-col justify-end font-['Satoshi',sans-serif] text-[92px] font-medium leading-[0] not-italic text-white transition-all duration-500 md:group-hover:-translate-y-[60px]">
+                    <p className="leading-[normal] whitespace-pre-wrap">{stat.value}</p>
+                  </div>
+                  <div className="grid grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-out md:grid-rows-[0fr] md:group-hover:grid-rows-[1fr]">
+                    <div className="min-h-0 overflow-hidden">
+                      <p className="font-['Satoshi',sans-serif] text-[16px] font-normal leading-[normal] not-italic tracking-[-0.45px] text-white opacity-100 transition-opacity duration-500 md:text-[18px] md:opacity-0 md:group-hover:opacity-100">
+                        {stat.description}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -777,34 +1069,37 @@ function WorkSection() {
 
   return (
     <div id="our-work" className="relative shrink-0 w-full scroll-mt-0">
-      <SectionContainer>
-        {/* Mobile: horizontal image carousel (desktop unchanged below) */}
-        <div className="flex flex-col gap-8 py-12 md:hidden">
-          <p className="font-['Cormorant_Garamond',sans-serif] text-[clamp(2rem,8vw,2.75rem)] font-medium leading-[1.1] tracking-[-0.45px] text-white">
+      <SectionContainer className={SECTION_BODY_PY_MOBILE}>
+        {/* Mobile / tablet &lt; md: two horizontal rows × three images each (independent scroll) */}
+        <div className={`flex flex-col ${SECTION_HEADING_TO_CONTENT_GAP} md:hidden`}>
+          <p className={`text-white ${SECTION_TITLE_TYPO}`}>
             World-class work
           </p>
-          <div
-            className="-mx-[max(1.5rem,var(--content-inset-left))] snap-x snap-mandatory overflow-x-auto overflow-y-hidden px-[max(1.5rem,var(--content-inset-left))] [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-            role="region"
-            aria-label="Selected work"
-          >
-            <div className="flex w-max items-stretch gap-4 pb-1">
-              {[
-                { h: "h-[160px] sm:h-[180px]", src: imgImage126 },
-                { h: "h-[220px] sm:h-[240px]", src: imgImage127 },
-                { h: "h-[260px] sm:h-[280px]", src: imgUiAppConceptForCommunityOfDesigners },
-                { h: "h-[220px] sm:h-[240px]", src: imgImage126 },
-                { h: "h-[260px] sm:h-[280px]", src: imgExperimentalMusicAppUi },
-                { h: "h-[200px] sm:h-[220px]", src: imgUiAppConceptForCommunityOfDesigners },
-              ].map((item, idx) => (
-                <div
-                  key={idx}
-                  className={`relative w-[min(88vw,320px)] shrink-0 snap-start overflow-hidden rounded-sm ${item.h}`}
-                >
-                  <img alt="" className="absolute inset-0 h-full w-full object-cover" src={item.src} />
+          <div className="flex flex-col gap-[20px]">
+            {(
+              [
+                [imgImage126, imgImage127, imgUiAppConceptForCommunityOfDesigners],
+                [imgImage126, imgExperimentalMusicAppUi, imgUiAppConceptForCommunityOfDesigners],
+              ] as const
+            ).map((row, rowIdx) => (
+              <div
+                key={rowIdx}
+                className="-mx-[max(1.5rem,var(--content-inset-left))] snap-x snap-mandatory overflow-x-auto overflow-y-hidden px-[max(1.5rem,var(--content-inset-left))] scroll-pl-[max(1.5rem,var(--content-inset-left))] scroll-pr-[max(1.5rem,var(--content-inset-right))] sm:-mx-[max(2.5rem,var(--content-inset-left))] sm:px-[max(2.5rem,var(--content-inset-left))] sm:scroll-pl-[max(2.5rem,var(--content-inset-left))] sm:scroll-pr-[max(2.5rem,var(--content-inset-right))] [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                role="region"
+                aria-label={rowIdx === 0 ? "Selected work, row one" : "Selected work, row two"}
+              >
+                <div className="flex w-max items-stretch gap-3 pb-1">
+                  {row.map((src, idx) => (
+                    <div
+                      key={`${rowIdx}-${idx}`}
+                      className="relative h-[200px] w-[min(85vw,300px)] shrink-0 snap-start overflow-hidden rounded-sm sm:h-[220px] sm:w-[min(82vw,320px)]"
+                    >
+                      <img alt="" className="absolute inset-0 h-full w-full object-cover" src={src} />
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         </div>
 
@@ -817,7 +1112,7 @@ function WorkSection() {
                     aria-hidden="true"
                     className="absolute bg-[#bc312e] blur-[15px] h-[94px] left-[-51.5px] opacity-25 rounded-[99px] top-[-15px] w-[498px]"
                   />
-                  <p className="absolute left-[24px] top-0 text-center font-['Cormorant_Garamond',sans-serif] text-[clamp(2rem,6vw,60px)] font-medium leading-[normal] not-italic tracking-[-0.45px] text-white">{`World-class work `}</p>
+                  <p className={`absolute left-[24px] top-0 text-center text-white ${SECTION_TITLE_TYPO}`}>{`World-class work `}</p>
                 </div>
               </div>
 
@@ -917,9 +1212,9 @@ function JourneySection() {
 
   return (
     <div id="our-journey" className="hidden relative shrink-0 w-full scroll-mt-0" aria-hidden="true">
-      <SectionContainer className="content-stretch flex flex-col gap-[60px] items-start relative w-full">
+      <SectionContainer className={`content-stretch flex flex-col ${SECTION_HEADING_TO_CONTENT_GAP} items-start ${SECTION_BODY_PY_MOBILE} relative w-full`}>
         <div className="content-stretch flex flex-col items-start relative shrink-0 w-[430px]">
-          <p className="font-['Cormorant_Garamond',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[60px] text-white tracking-[-0.45px] w-full whitespace-pre-wrap">How we got here</p>
+          <p className={`relative shrink-0 w-full whitespace-pre-wrap text-white ${SECTION_TITLE_TYPO}`}>How we got here</p>
         </div>
         <div className="relative w-full shrink-0 pt-[24px] pb-[24px] md:pt-[83px] md:pb-[40px]">
           <div className="relative mx-auto w-full max-w-[706px]">
@@ -945,7 +1240,7 @@ function JourneySection() {
                 <div className="flex w-full min-w-0 justify-center sm:justify-end">
                   <div className="bg-[rgba(118,118,128,0.12)] content-stretch flex items-center justify-center px-[10px] py-[4px] relative rounded-[1000px] shrink-0 cursor-pointer transition-all duration-300 group-hover:bg-[rgba(118,118,128,0.25)]">
                     <div aria-hidden="true" className="absolute border border-solid border-white inset-0 pointer-events-none rounded-[1000px] group-hover:border-2 transition-all duration-300" />
-                    <p className="font-['Satoshi',sans-serif] font-bold leading-[normal] not-italic relative shrink-0 text-[14px] text-white tracking-[-0.23px]">{milestone.year}</p>
+                    <p className="font-['Satoshi',sans-serif] font-bold leading-[normal] not-italic relative shrink-0 text-[16px] text-white tracking-[-0.23px]">{milestone.year}</p>
                   </div>
                 </div>
                 {/* Marker: auto column stays centered — width change expands left+right from dot (spine) */}
@@ -977,7 +1272,7 @@ function JourneySection() {
                 {/* Text: right track */}
                 <div className="content-stretch flex min-w-0 flex-col gap-[8px] items-start justify-self-start leading-[normal] not-italic text-white sm:max-w-[212px] sm:whitespace-pre-wrap">
                   <p className="font-['Satoshi',sans-serif] font-bold relative shrink-0 text-[18px] tracking-[-0.45px]">{milestone.title}</p>
-                  <p className="font-['Satoshi',sans-serif] font-normal relative shrink-0 text-[14px] tracking-[-0.23px] sm:w-[203px]">{milestone.description}</p>
+                  <p className="font-['Satoshi',sans-serif] font-normal relative shrink-0 text-[16px] tracking-[-0.23px] sm:w-[203px]">{milestone.description}</p>
                 </div>
               </div>
             );})}
@@ -992,8 +1287,8 @@ function JourneySection() {
 function TestimonialsSection() {
   return (
     <div id="testimonials" className="relative shrink-0 w-full scroll-mt-0">
-      <SectionContainer className="content-stretch flex flex-col gap-[60px] items-start relative w-full">
-        <p className="font-['Cormorant_Garamond',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[clamp(2.25rem,7vw,3.75rem)] text-white tracking-[-0.45px] md:text-[52px] lg:text-[60px]">What Our Partners Say</p>
+      <SectionContainer className={`content-stretch flex flex-col ${SECTION_HEADING_TO_CONTENT_GAP} items-start ${SECTION_BODY_PY_MOBILE} relative w-full`}>
+        <p className={`relative shrink-0 text-white ${SECTION_TITLE_TYPO}`}>What Our Partners Say</p>
         <TestimonialsMinimal />
       </SectionContainer>
     </div>
@@ -1096,8 +1391,8 @@ function FAQsSection() {
 
   return (
     <div id="faqs" className="relative shrink-0 w-full scroll-mt-0">
-      <SectionContainer className="content-stretch flex flex-col gap-[40px] items-start relative w-full">
-        <p className="font-['Cormorant_Garamond',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[clamp(2.25rem,7vw,3.75rem)] text-white tracking-[-0.45px] md:text-[52px] lg:text-[60px]">
+      <SectionContainer className={`content-stretch flex flex-col ${SECTION_HEADING_TO_CONTENT_GAP} items-start ${SECTION_BODY_PY_MOBILE} relative w-full`}>
+        <p className={`relative shrink-0 text-white ${SECTION_TITLE_TYPO}`}>
           FAQs
         </p>
         <div className="content-stretch flex flex-col items-start pb-[0.5px] relative shrink-0 w-full">
@@ -1120,11 +1415,11 @@ function FAQsSection() {
 function ContactSection() {
   return (
     <div id="contact" className="bg-black relative shrink-0 w-full scroll-mt-0">
-      <SectionContainer className="content-stretch flex flex-col gap-16 items-start pb-[24px] pt-[60px] relative w-full sm:gap-24 lg:gap-[150px]">
-        <div className="content-stretch flex w-full flex-col items-start gap-12 lg:flex-row lg:items-start lg:justify-between lg:gap-8">
-          <div className="content-stretch flex min-h-px min-w-px flex-[1_0_0] flex-col gap-[24px] items-start relative">
+      <SectionContainer className={`content-stretch flex flex-col gap-8 items-start ${SECTION_BODY_PY_MOBILE} pb-[max(2.75rem,calc(1.75rem+env(safe-area-inset-bottom,0px)))] relative w-full md:pb-16 lg:pb-20 xl:pb-24 lg:gap-[150px]`}>
+        <div className="content-stretch flex w-full flex-col items-start gap-8 lg:flex-row lg:items-start lg:justify-between lg:gap-8">
+          <div className="content-stretch flex min-h-px min-w-px max-md:flex-none flex-[1_0_0] flex-col gap-4 items-start relative max-md:pb-2">
             <div className="content-stretch flex flex-col items-start relative shrink-0 w-full">
-              <div className="font-['Cormorant_Garamond',sans-serif] font-medium leading-[1.1] not-italic relative shrink-0 text-[clamp(2.25rem,7vw,3.75rem)] tracking-[-0.45px] w-full whitespace-pre-wrap md:text-[52px] lg:text-[60px]">
+              <div className={`relative shrink-0 w-full whitespace-pre-wrap ${SECTION_TITLE_TYPO}`}>
                 <p className="mb-0">
                   <span className="text-[#bc312e]">{`Let's talk. `}</span>
                   <span className="text-white">{`We'd love `}</span>
@@ -1132,25 +1427,33 @@ function ContactSection() {
                 <p className="text-white">to work with you!</p>
               </div>
             </div>
-            <InteractiveHoverButton text="Contact Us" onClick={() => window.open("mailto:vijay@brewery.agency", "_self")} />
+            <InteractiveHoverButton
+              variant="accent"
+              text="Contact Us"
+              href="mailto:vijay@brewery.agency"
+            />
           </div>
-          <div className="flex w-full max-w-full shrink-0 flex-col gap-[24px] text-left leading-[normal] not-italic text-white tracking-[-0.45px] lg:ml-auto lg:w-max lg:text-right">
-            <p className="w-full font-['Satoshi',sans-serif] font-medium text-[20px] whitespace-pre-wrap sm:text-[22px] md:text-[24px]">
+          <div className="flex w-full max-w-full shrink-0 flex-col gap-5 text-left leading-[normal] not-italic text-white tracking-[-0.45px] max-md:mt-1 max-md:gap-2 lg:ml-auto lg:w-max lg:gap-[24px] lg:text-right">
+            <p className="w-full font-['Satoshi',sans-serif] font-medium text-[18px] whitespace-pre-wrap sm:text-[20px] md:text-[24px]">
               Locations
             </p>
-            <div className="flex w-full flex-col gap-[12px] font-['Satoshi',sans-serif] text-[16px] font-normal sm:text-[17px] md:text-[18px] [&_p]:block [&_p]:w-full lg:text-right">
-              <p>New York, USA</p>
+            <div className="flex w-full flex-col gap-3 font-['Satoshi',sans-serif] text-[16px] font-normal max-md:gap-1 md:text-[18px] [&_p]:block [&_p]:w-full lg:gap-[12px] lg:text-right">
+              <p>Dallas, USA</p>
               <p>Toronto, Canada</p>
               <p>Delhi, India</p>
             </div>
           </div>
         </div>
-        <div className="content-stretch flex w-full flex-col gap-4 font-['Satoshi',sans-serif] font-normal items-start justify-between leading-[normal] not-italic text-white text-[15px] tracking-[-0.45px] sm:flex-row sm:items-center sm:gap-0 sm:text-[16px] md:text-[18px]">
+        <div className="content-stretch flex w-full flex-col gap-4 font-['Satoshi',sans-serif] font-normal items-start justify-between leading-[normal] not-italic text-white text-[16px] tracking-[-0.45px] max-md:gap-2 sm:flex-row sm:items-center sm:gap-0 pb-6 md:pb-8 lg:pb-10 md:text-[18px]">
           <p className="relative shrink-0">@2026 Brewery Agency</p>
-          <div className="content-stretch flex gap-6 items-start relative shrink-0 sm:gap-[24px]">
-            <p className="relative shrink-0 cursor-pointer transition-colors duration-300 hover:text-[#bc312e]">LinkedIn</p>
-            <p className="relative shrink-0 cursor-pointer transition-colors duration-300 hover:text-[#bc312e]">Email</p>
-          </div>
+          <a
+            href={BREWERY_LINKEDIN_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="relative shrink-0 text-inherit no-underline transition-colors duration-300 hover:text-[#bc312e] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/35 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+          >
+            LinkedIn
+          </a>
         </div>
       </SectionContainer>
     </div>
@@ -1162,19 +1465,22 @@ export default function App() {
 
   return (
     <div className="relative min-h-screen w-full overflow-x-clip bg-black pt-[calc(env(safe-area-inset-top,0px)+3rem)] lg:pt-0">
-      <CustomCursor />
+      <DesktopCustomCursorGate />
       <SideNav activeHref={activeSectionHref} />
       <MobileTopNav activeHref={activeSectionHref} />
-      <div className="content-stretch relative z-[2] flex w-full flex-col items-start gap-16 sm:gap-24 md:gap-28 lg:gap-[120px]">
+      <div className={`content-stretch relative z-[2] flex w-full flex-col items-start ${SECTION_STACK_GAP}`}>
         <div
           id="intro"
-          className="relative flex min-h-[100dvh] w-full flex-col scroll-mt-0"
+          className="relative flex min-h-[80dvh] md:min-h-[100dvh] w-full flex-col scroll-mt-0"
         >
           <HeroPlasmaLayer />
           <Header />
           <HeroSection />
         </div>
-        <ClientsSection />
+        {/* Negative margin cancels the gap increase on mobile so hero→clients stays at the original 60px */}
+        <div className="w-full -mt-[40px] md:mt-0">
+          <ClientsSection />
+        </div>
         <ServicesSection />
         <IndustriesSection />
         <ImpactSection />

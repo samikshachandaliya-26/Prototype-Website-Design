@@ -27,9 +27,13 @@ function Frame7() {
       <div className="h-[50px] relative shrink-0 w-[147px]" data-name="image 120">
         <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgImage120} />
       </div>
-      <div className="bg-[#bc312e] content-stretch flex items-center justify-center px-[14px] py-[7px] relative rounded-[1000px] shrink-0" data-name="Button - Content Area">
+      <a
+        href="mailto:vijay@brewery.agency"
+        className="bg-[#bc312e] content-stretch flex items-center justify-center px-[14px] py-[7px] relative rounded-[1000px] shrink-0 no-underline"
+        data-name="Button - Content Area"
+      >
         <p className="font-['Satoshi_Variable:Medium',sans-serif] leading-[normal] not-italic relative shrink-0 text-[24px] text-white tracking-[-0.45px]">Contact Us</p>
-      </div>
+      </a>
     </div>
   );
 }
@@ -1018,9 +1022,13 @@ function Frame65() {
   return (
     <div className="content-stretch flex flex-[1_0_0] flex-col gap-[24px] items-start min-h-px min-w-px relative">
       <Frame26 />
-      <div className="bg-[#bc312e] content-stretch flex items-center justify-center px-[14px] py-[7px] relative rounded-[1000px] shrink-0" data-name="Button - Content Area">
+      <a
+        href="mailto:vijay@brewery.agency"
+        className="bg-[#bc312e] content-stretch flex items-center justify-center px-[14px] py-[7px] relative rounded-[1000px] shrink-0 no-underline"
+        data-name="Button - Content Area"
+      >
         <p className="font-['Satoshi_Variable:Medium',sans-serif] leading-[normal] not-italic relative shrink-0 text-[24px] text-white tracking-[-0.45px]">Contact Us</p>
-      </div>
+      </a>
     </div>
   );
 }
@@ -1028,7 +1036,7 @@ function Frame65() {
 function Frame30() {
   return (
     <div className="content-stretch flex flex-col font-['Satoshi_Variable:Regular',sans-serif] gap-[12px] items-start relative shrink-0 text-[18px]">
-      <p className="relative shrink-0">New York, USA</p>
+      <p className="relative shrink-0">Dallas, USA</p>
       <p className="relative shrink-0">Toronto, Canada</p>
       <p className="relative shrink-0">Delhi, India</p>
     </div>
